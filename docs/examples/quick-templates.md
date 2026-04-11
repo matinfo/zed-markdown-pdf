@@ -12,6 +12,18 @@ Add these to your Zed `settings.json` under `context_servers.markdown-pdf.settin
 
 The simplest setup. Adds page numbers at the bottom.
 
+```
+┌────────────────────────────────────────────────────────────┐
+│                                                            │
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│                                                            │
+│                                                            │
+│                      Page 1 of 5                           │
+└────────────────────────────────────────────────────────────┘
+```
+
 ```json
 {
   "context_servers": {
@@ -31,6 +43,18 @@ The simplest setup. Adds page numbers at the bottom.
 ### 📄 Simple Header & Footer
 
 Title and date in header, page numbers in footer.
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ My Document                                     2026-04-11 │
+│                                                            │
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│                                                            │
+│                      Page 1 of 5                           │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```json
 {
@@ -57,6 +81,18 @@ Title and date in header, page numbers in footer.
 ### 📋 Professional Document
 
 Clean look with borders and styling.
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ Project Report                            April 11, 2026   │
+│────────────────────────────────────────────────────────────│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ Jane Smith              Page 1 of 5              report.md │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```json
 {
@@ -96,6 +132,18 @@ Clean look with borders and styling.
 ### 🏢 Company Logo Header
 
 Logo on left, title centered, date on right.
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ [LOGO]          Project Report            April 11, 2026   │
+│════════════════════════════════════════════════════════════│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│                                                            │
+│                      Page 1 of 5                           │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```json
 {
@@ -139,6 +187,18 @@ Place your logo at `~/.config/zed-markdown-pdf/assets/company-logo.svg`
 
 Your logo on left, partner logo on right.
 
+```
+┌────────────────────────────────────────────────────────────┐
+│ [OUR LOGO]         Joint Proposal          [PARTNER LOGO] │
+│────────────────────────────────────────────────────────────│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ © 2026 Company           Page 1 of 5          Confidential │
+└────────────────────────────────────────────────────────────┘
+```
+
 ```json
 {
   "context_servers": {
@@ -180,6 +240,18 @@ Your logo on left, partner logo on right.
 
 Author-focused with institutional format.
 
+```
+┌────────────────────────────────────────────────────────────┐
+│ Dr. Jane Smith                  Research on Climate Change │
+│┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│                                                            │
+│                            5                               │
+└────────────────────────────────────────────────────────────┘
+```
+
 ```json
 {
   "context_servers": {
@@ -220,6 +292,18 @@ Author-focused with institutional format.
 
 Detailed footer with document metadata.
 
+```
+┌────────────────────────────────────────────────────────────┐
+│ API Documentation                             Version 2.1  │
+│════════════════════════════════════════════════════════════│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ J. Smith • Engineering    Page 1 of 12    Updated: 2026-04 │
+└────────────────────────────────────────────────────────────┘
+```
+
 ```json
 {
   "context_servers": {
@@ -246,7 +330,7 @@ Detailed footer with document metadata.
           "border_top": "1px solid #ddd",
           "left_text": "{author} • {department}",
           "center_text": "Page {page} of {pages}",
-          "right_text": "Last updated: {date:yyyy-MM-dd}"
+          "right_text": "Updated: {date:yyyy-MM}"
         }
       }
     }
@@ -262,7 +346,19 @@ Add these to the top of your Markdown files:
 
 ---
 
-### Basic Document
+### 📝 Basic Document
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ My Document                                     2026-04-11 │
+│                                                            │
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│                                                            │
+│                      Page 1 of 5                           │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```yaml
 ---
@@ -285,13 +381,25 @@ Start writing...
 
 ---
 
-### Meeting Notes
+### 📅 Meeting Notes
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ Project X           Team Meeting Notes          2026-04-11 │
+│────────────────────────────────────────────────────────────│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ Attendees: Alice, Bob, Charlie                     Page 1  │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```yaml
 ---
 title: Team Meeting Notes
 author: Note Taker
-date: 2025-01-15
+date: 2026-04-11
 attendees: Alice, Bob, Charlie
 project: Project X
 markdown-pdf:
@@ -327,7 +435,19 @@ markdown-pdf:
 
 ---
 
-### Project Proposal
+### 📑 Project Proposal
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ Project Proposal      Phase 1 Implementation         v1.0  │
+│════════════════════════════════════════════════════════════│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ Engineering • J. Smith    Page 1 of 8    Draft — 2026-04   │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```yaml
 ---
@@ -335,7 +455,7 @@ title: Project Proposal
 subtitle: Phase 1 Implementation
 author: Your Name
 department: Engineering
-date: 2025-01-15
+date: 2026-04-11
 version: "1.0"
 status: Draft
 markdown-pdf:
@@ -374,13 +494,26 @@ markdown-pdf:
 
 ---
 
-### Report with Logo
+### 📈 Report with Logo
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ [LOGO]              Quarterly Report              Q1 2026  │
+│                                                  April 2026│
+│════════════════════════════════════════════════════════════│
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ © 2026 Company         Page 1 of 10           Confidential │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```yaml
 ---
 title: Quarterly Report
 author: Jane Smith
-quarter: Q1 2025
+quarter: Q1 2026
 markdown-pdf:
   margin:
     top: 28mm
@@ -414,7 +547,7 @@ markdown-pdf:
     right_text: "Confidential"
 ---
 
-# Quarterly Report — Q1 2025
+# Quarterly Report — Q1 2026
 
 ## Highlights
 
@@ -425,15 +558,27 @@ markdown-pdf:
 
 ---
 
-### Invoice / Formal Document
+### 🧾 Invoice / Formal Document
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ [LOGO]                                            INVOICE  │
+│                                               INV-2026-001 │
+│                                                            │
+│                     Document Content                       │
+│                                                            │
+│────────────────────────────────────────────────────────────│
+│ Due: 2026-05-11         Page 1 of 2    Thank you!          │
+└────────────────────────────────────────────────────────────┘
+```
 
 ```yaml
 ---
 title: Invoice
-invoice_number: INV-2025-001
+invoice_number: INV-2026-001
 client: Client Company Name
-date: 2025-01-15
-due_date: 2025-02-15
+date: 2026-04-11
+due_date: 2026-05-11
 markdown-pdf:
   page_format: A4
   margin:
@@ -462,9 +607,9 @@ markdown-pdf:
     font_size: 8px
     color: "#666"
     border_top: 1px solid #ddd
-    left_text: "Payment due: {due_date}"
+    left_text: "Due: {due_date}"
     center_text: "Page {page} of {pages}"
-    right_text: "Thank you for your business"
+    right_text: "Thank you!"
 ---
 
 **Bill To:** {client}
@@ -489,10 +634,10 @@ markdown-pdf:
 
 | Format | Result |
 |--------|--------|
-| `{date:yyyy-MM-dd}` | 2025-01-15 |
-| `{date:MMMM d, yyyy}` | January 15, 2025 |
-| `{date:dd/MM/yyyy}` | 15/01/2025 |
-| `{date:MMM yyyy}` | Jan 2025 |
+| `{date:yyyy-MM-dd}` | 2026-04-11 |
+| `{date:MMMM d, yyyy}` | April 11, 2026 |
+| `{date:dd/MM/yyyy}` | 11/04/2026 |
+| `{date:MMM yyyy}` | Apr 2026 |
 
 ### Common Colors
 
