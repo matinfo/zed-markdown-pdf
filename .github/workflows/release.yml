@@ -48,14 +48,20 @@ jobs:
         run: |
           TAG=$(grep 'SERVER_RELEASE_TAG' src/lib.rs | grep -oP '"\K[^"]+' | head -1)
           echo "SERVER_RELEASE_TAG in lib.rs: $TAG"
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-            echo "✅ Server release '$TAG' exists."
-          else
-            echo ""
-            echo "❌ Server release '$TAG' not found on GitHub."
-            echo "Push the '$TAG' tag first to trigger the server-release workflow."
-            exit 1
-          fi
+          RETRIES=12
+          DELAY=15
+          for i in $(seq 1 $RETRIES); do
+            if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+              echo "✅ Server release '$TAG' exists."
+              exit 0
+            fi
+            echo "⏳ Attempt $i/$RETRIES — release '$TAG' not yet available, retrying in ${DELAY}s..."
+            sleep $DELAY
+          done
+          echo ""
+          echo "❌ Server release '$TAG' not found after $((RETRIES * DELAY))s."
+          echo "Ensure the server-release workflow completed successfully for tag '$TAG'."
+          exit 1
 
   release:
     name: Bump Zed Extension

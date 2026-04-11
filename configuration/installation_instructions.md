@@ -42,7 +42,7 @@ All settings can be placed in your Zed `settings.json` under the
 `context_servers.markdown-pdf.settings` key, or passed directly as tool-call
 arguments to override them on a per-export basis.
 
-For the full settings reference and header/footer documentation, see the [online documentation](https://zed-markdown-pdf.matinfo.github.io/).
+For the full settings reference and header/footer documentation, see the [online documentation](https://matinfo.github.io/zed-markdown-pdf/).
 
 ## Example settings
 
