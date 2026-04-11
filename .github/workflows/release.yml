@@ -68,7 +68,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, build, verify-server]
     steps:
-      - uses: huacnlee/zed-extension-action@v2
+      # This step is a no-op until the initial PR to zed-industries/extensions
+      # is reviewed and merged by the Zed team.
+      # Once merged, remove the `if: false` line — every future v* tag will
+      # then automatically open a version-bump PR via this action.
+      - if: false
+        uses: huacnlee/zed-extension-action@v2
         with:
           extension-name: markdown-pdf
           push-to: matinfo/zed-extensions

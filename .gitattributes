@@ -1,0 +1,21 @@
+# ── Zed extension packaging ────────────────────────────────────────────────────
+# Files and directories marked export-ignore are excluded from git archive
+# outputs and from the Zed extension registry packaging step.
+# Only the files needed to build and run the extension are distributed.
+
+# Documentation site (VitePress — not part of the extension)
+docs/                   export-ignore
+
+# CI/CD workflows
+.github/                export-ignore
+
+# Test fixtures and developer tooling
+test-fixtures/          export-ignore
+scripts/                export-ignore
+
+# Developer documentation (kept in repo for contributors, not for users)
+QUICKSTART.md           export-ignore
+TESTING.md              export-ignore
+
+# AI tooling
+.claude/                export-ignore
