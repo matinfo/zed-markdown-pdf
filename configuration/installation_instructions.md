@@ -24,7 +24,7 @@ If `server/node_modules` is missing the server will repair itself by running
 On your first PDF export, Chromium (~150 MB) will download automatically in
 the background. You will see a brief message while it installs:
 
-```sh
+```text
 Chromium not found, installing automatically (this may take a few minutes)...
 Chromium installed successfully
 ```
@@ -35,7 +35,7 @@ on macOS, Linux, and Windows.
 
 **If automatic installation fails**, you can install Chromium manually:
 
-```sh
+```bash
 # macOS
 cd ~/Library/Application\ Support/Zed/extensions/installed/markdown-pdf/server
 node node_modules/playwright-core/cli.js install chromium
@@ -285,7 +285,7 @@ hard page break.
 
 The server writes a debug log to your system temp directory:
 
-```
+```text
 /tmp/zed-markdown-pdf-debug.log          # macOS / Linux
 %TEMP%\zed-markdown-pdf-debug.log        # Windows
 ```
