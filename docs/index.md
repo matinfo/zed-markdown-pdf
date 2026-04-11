@@ -13,6 +13,9 @@ hero:
       text: Get Started
       link: /guide/getting-started
     - theme: alt
+      text: Quick Start Templates
+      link: /examples/quick-templates
+    - theme: alt
       text: View on GitHub
       link: https://github.com/matinfo/zed-markdown-pdf
 
@@ -67,6 +70,6 @@ That's it! The PDF will have a professional header with your company name, docum
 ## Next Steps
 
 - [Getting Started](/guide/getting-started) — Install and configure the extension
+- [Quick Start Templates](/examples/quick-templates) — Copy-paste ready configurations
 - [Header & Footer Guide](/guide/header-footer) — Learn the structured configuration
-- [Examples](/examples/basic) — Copy-paste ready configurations
 - [Reference](/reference/settings) — Complete settings documentation
