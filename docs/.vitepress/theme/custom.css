@@ -1,0 +1,209 @@
+/* =============================================================
+   Markdown PDF for Zed — VitePress brand theme
+   Master color: #e8231f
+   Dark mode: .dark class on <html> (VitePress standard)
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   Light mode — VitePress color tokens
+   -vp-c-brand-1  primary interactive  (links, active nav, CTA)
+   -vp-c-brand-2  hover / slightly lighter
+   -vp-c-brand-3  softer accent
+   -vp-c-brand-soft  transparent tint for badges, code bg, etc.
+   ------------------------------------------------------------- */
+:root {
+  --vp-c-brand-1: #e8231f;
+  --vp-c-brand-2: #eb4541;
+  --vp-c-brand-3: #f06462;
+  --vp-c-brand-soft: rgba(232, 35, 31, 0.12);
+
+  /* ---- CTA / brand button ---------------------------------- */
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: #ffffff;
+  --vp-button-brand-active-bg: var(--vp-c-brand-3);
+
+  /* ---- Home hero ------------------------------------------ */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    #e8231f 20%,
+    #f06462 80%
+  );
+
+  /* No glow — we disable the blob entirely below */
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+}
+
+/* -------------------------------------------------------------
+   Dark mode
+   ------------------------------------------------------------- */
+.dark {
+  --vp-c-brand-1: #f05753;
+  --vp-c-brand-2: #e8231f;
+  --vp-c-brand-3: #c91c19;
+  --vp-c-brand-soft: rgba(232, 35, 31, 0.16);
+
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-bg: var(--vp-c-brand-2);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-hover-bg: var(--vp-c-brand-1);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: #ffffff;
+  --vp-button-brand-active-bg: var(--vp-c-brand-3);
+
+  --vp-home-hero-name-background: linear-gradient(
+    135deg,
+    #f05753 20%,
+    #f08080 80%
+  );
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+}
+
+/* -------------------------------------------------------------
+   Nav bar active link
+   ------------------------------------------------------------- */
+.VPNavBarMenuLink.active,
+.VPNavBarMenuLink:hover {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* Sidebar active item */
+.VPSidebarItem.is-active > .item .link,
+.VPSidebarItem.is-active > .item .text {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* Active sidebar indicator line */
+.VPSidebarItem.is-active > .item {
+  border-left: 2px solid var(--vp-c-brand-1);
+  padding-left: 10px;
+  margin-left: -12px;
+}
+
+/* -------------------------------------------------------------
+   Local search highlight
+   ------------------------------------------------------------- */
+.VPLocalSearchBox mark {
+  color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
+}
+
+/* -------------------------------------------------------------
+   Table of contents active heading
+   ------------------------------------------------------------- */
+.VPDocOutlineItem a.outline-link.active,
+.VPDocOutlineItem a.outline-link:hover {
+  color: var(--vp-c-brand-1);
+}
+
+/* -------------------------------------------------------------
+   Custom block tip color (uses brand instead of green)
+   ------------------------------------------------------------- */
+.custom-block.tip {
+  --vp-custom-block-tip-border: var(--vp-c-brand-soft);
+  --vp-custom-block-tip-text: var(--vp-c-text-1);
+  --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
+  --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
+}
+
+.custom-block.tip .custom-block-title {
+  color: var(--vp-c-brand-1);
+}
+
+/* -------------------------------------------------------------
+   Inline code — subtle brand tint
+   ------------------------------------------------------------- */
+:not(pre) > code {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+}
+
+/* -------------------------------------------------------------
+   Focus-visible ring using brand color
+   ------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 3px;
+}
+
+/* -------------------------------------------------------------
+   Reduce motion
+   ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================================
+   Hero image — remove VitePress glow blob & floating animation,
+   then size the logo up.
+   ============================================================= */
+
+/* Hide the decorative radial-gradient blob rendered behind the image */
+.VPHero .image-bg {
+  display: none !important;
+}
+
+/* Kill any animation — do NOT add transform:none, the centering
+   relies on translate(-50%, -50%) set by VitePress on .image-src */
+.VPHero .image-src {
+  animation: none !important;
+}
+
+/* Base size (mobile) — match VitePress's approach: constrain via
+   max-width/max-height so the absolute-centered image scales correctly */
+.VPHero .image-container {
+  width: 190px;
+  height: 190px;
+}
+
+.VPHero .image-src {
+  max-width: 80px !important;
+  max-height: 80px !important;
+}
+
+/* Medium viewport (≥ 640 px) */
+@media (min-width: 640px) {
+  .VPHero .image-container {
+    width: 280px;
+    height: 280px;
+  }
+
+  .VPHero .image-src {
+    max-width: 120px !important;
+    max-height: 120px !important;
+  }
+}
+
+/* Large viewport (≥ 960 px) — VitePress sets width:100%;height:100%
+   on the container so we only need to raise the image cap */
+@media (min-width: 960px) {
+  .VPHero .image-src {
+    max-width: 230px !important;
+    max-height: 230px !important;
+  }
+}
+
+/* =============================================================
+   Navbar logo
+   ============================================================= */
+.VPNavBarTitle .logo {
+  height: 28px;
+  width: auto;
+}

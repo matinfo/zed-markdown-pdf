@@ -1,11 +1,21 @@
 {
+  "font_family": null,
   "open_after_export": false,
+  "include_default_styles": true,
   "page_format": "A4",
+  "orientation": "portrait",
+  "scale": 1,
+  "page_ranges": "",
   "print_background": true,
   "margin": {
-    "top": "18mm",
-    "right": "18mm",
-    "bottom": "18mm",
-    "left": "18mm"
-  }
+    "top": "15mm",
+    "right": "15mm",
+    "bottom": "15mm",
+    "left": "15mm"
+  },
+  "highlight": true,
+  "highlight_style": "github.css",
+  "breaks": false,
+  "emoji": true,
+  "display_header_footer": false
 }

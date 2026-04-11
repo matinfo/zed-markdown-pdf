@@ -6,11 +6,12 @@
 #   2. Installs npm dependencies in server/node_modules
 #   3. Pre-installs the Chromium browser via the playwright-core CLI
 #      (uses `node` directly — no npx / global tools needed)
-#   4. Prints the one-time Zed step to finish the installation
+#   4. Copies server files to Zed's work directory (so the WASM can find them
+#      without needing a GitHub release download)
+#   5. Prints the one-time Zed step to finish the installation
 #
-# The script intentionally does NOT copy files to Zed's work/ directory.
-# Zed populates extensions/installed/<id>/ itself when you run
-# "zed: install dev extension"; that is the only directory that matters.
+# After installation, the server files are also copied to Zed's work directory
+# so the WASM can locate them without requiring a GitHub release download.
 
 set -euo pipefail
 
@@ -105,8 +106,27 @@ else
 fi
 echo ""
 
+# ── Step 4: Populate Zed work directory ──────────────────────────────────────
+bold "[4/4] Copying server files to Zed work directory…"
+echo "  (Ensures the MCP server is found after a dev extension reinstall.)"
+echo ""
+
+case "$OSTYPE" in
+    darwin*)
+        ZED_WORK_DIR="$HOME/Library/Application Support/Zed/extensions/work/markdown-pdf"
+        ;;
+    linux*)
+        ZED_WORK_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zed/extensions/work/markdown-pdf"
+        ;;
+esac
+
+mkdir -p "$ZED_WORK_DIR"
+cp -r "$SCRIPT_DIR/server" "$ZED_WORK_DIR/"
+green "  ✓ server files copied to $ZED_WORK_DIR/server"
+echo ""
+
 # ── Next steps ────────────────────────────────────────────────────────────────
-bold "Setup complete!  Final step — install the extension in Zed:"
+bold "Setup complete!  Final step — install/reinstall the extension in Zed:"
 echo ""
 echo "  1. Open Zed"
 echo "  2. Open the command palette"

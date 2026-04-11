@@ -1,11 +1,484 @@
 {
-  "open_after_export": false,
-  "page_format": "A4",
-  "print_background": true,
-  "margin": {
-    "top": "18mm",
-    "right": "18mm",
-    "bottom": "18mm",
-    "left": "18mm"
+  "type": "object",
+  "title": "Markdown PDF",
+  "properties": {
+    "font_family": {
+      "type": ["string", "null"],
+      "default": null,
+      "markdownDescription": "CSS `font-family` value applied to the document body and header/footer. `null` uses the default system font stack. Examples:\n- `\"Georgia, 'Times New Roman', serif\"`\n- `\"'Helvetica Neue', Arial, sans-serif\"`\n- `\"'Courier New', Courier, monospace\"`"
+    },
+    "stylesheet_path": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Path to a custom CSS file. Relative paths are resolved from the Markdown file's directory."
+    },
+    "output_directory": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Directory for the output PDF. Relative to the Markdown file's location."
+    },
+    "assets_directory": {
+      "type": ["string", "null"],
+      "default": null,
+      "markdownDescription": "Global directory for shared assets (images, logos). Supports `~` for home directory.\n\nPaths starting with `@/` in image sources are resolved relative to this directory.\n\n**Examples:**\n- `\"~/.config/zed-markdown-pdf/assets\"`\n- `\"~/Documents/brand-assets\"`\n\n**Usage in header/footer:**\n```json\n\"left_image\": \"@/company-logo.svg\"\n```"
+    },
+    "open_after_export": {
+      "type": "boolean",
+      "default": false,
+      "description": "Open the PDF in the default viewer after export."
+    },
+    "include_default_styles": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include the built-in CSS stylesheet. Disable to use only your own stylesheet."
+    },
+    "page_format": {
+      "type": "string",
+      "enum": [
+        "A4",
+        "Letter",
+        "Legal",
+        "Tabloid",
+        "Ledger",
+        "A0",
+        "A1",
+        "A2",
+        "A3",
+        "A5",
+        "A6"
+      ],
+      "default": "A4",
+      "description": "Paper format."
+    },
+    "orientation": {
+      "type": "string",
+      "enum": ["portrait", "landscape"],
+      "default": "portrait",
+      "description": "Page orientation."
+    },
+    "scale": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0.1,
+      "maximum": 2,
+      "description": "Scale of the page rendering."
+    },
+    "page_ranges": {
+      "type": "string",
+      "default": "",
+      "description": "Paper ranges to print, e.g. '1-5, 8, 11-13'. Leave empty to print all pages."
+    },
+    "print_background": {
+      "type": "boolean",
+      "default": true,
+      "description": "Print background graphics and colours."
+    },
+    "margin": {
+      "type": "object",
+      "description": "Page margins.",
+      "properties": {
+        "top": {
+          "type": "string",
+          "default": "15mm",
+          "description": "Top margin."
+        },
+        "right": {
+          "type": "string",
+          "default": "15mm",
+          "description": "Right margin."
+        },
+        "bottom": {
+          "type": "string",
+          "default": "15mm",
+          "description": "Bottom margin."
+        },
+        "left": {
+          "type": "string",
+          "default": "15mm",
+          "description": "Left margin."
+        }
+      }
+    },
+    "highlight": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable syntax highlighting for fenced code blocks."
+    },
+    "highlight_style": {
+      "type": "string",
+      "enum": [
+        "1c-light.css",
+        "a11y-dark.css",
+        "a11y-light.css",
+        "agate.css",
+        "an-old-hope.css",
+        "androidstudio.css",
+        "arduino-light.css",
+        "arta.css",
+        "ascetic.css",
+        "atom-one-dark-reasonable.css",
+        "atom-one-dark.css",
+        "atom-one-light.css",
+        "brown-paper.css",
+        "codepen-embed.css",
+        "color-brewer.css",
+        "cybertopia-cherry.css",
+        "cybertopia-dimmer.css",
+        "cybertopia-icecap.css",
+        "cybertopia-saturated.css",
+        "dark.css",
+        "default.css",
+        "devibeans.css",
+        "docco.css",
+        "far.css",
+        "felipec.css",
+        "foundation.css",
+        "github-dark-dimmed.css",
+        "github-dark.css",
+        "github.css",
+        "gml.css",
+        "googlecode.css",
+        "gradient-dark.css",
+        "gradient-light.css",
+        "grayscale.css",
+        "hybrid.css",
+        "idea.css",
+        "intellij-light.css",
+        "ir-black.css",
+        "isbl-editor-dark.css",
+        "isbl-editor-light.css",
+        "kimbie-dark.css",
+        "kimbie-light.css",
+        "lightfair.css",
+        "lioshi.css",
+        "magula.css",
+        "mono-blue.css",
+        "monokai-sublime.css",
+        "monokai.css",
+        "night-owl.css",
+        "nnfx-dark.css",
+        "nnfx-light.css",
+        "nord.css",
+        "obsidian.css",
+        "panda-syntax-dark.css",
+        "panda-syntax-light.css",
+        "paraiso-dark.css",
+        "paraiso-light.css",
+        "pojoaque.css",
+        "purebasic.css",
+        "qtcreator-dark.css",
+        "qtcreator-light.css",
+        "rainbow.css",
+        "rose-pine-dawn.css",
+        "rose-pine-moon.css",
+        "rose-pine.css",
+        "routeros.css",
+        "school-book.css",
+        "shades-of-purple.css",
+        "srcery.css",
+        "stackoverflow-dark.css",
+        "stackoverflow-light.css",
+        "sunburst.css",
+        "tokyo-night-dark.css",
+        "tokyo-night-light.css",
+        "tomorrow-night-blue.css",
+        "tomorrow-night-bright.css",
+        "vs.css",
+        "vs2015.css",
+        "xcode.css",
+        "xt256.css"
+      ],
+      "default": "github.css",
+      "markdownDescription": "Highlight.js style. See [highlight.js demo](https://highlightjs.org/demo). Only effective when `highlight` is `true`."
+    },
+    "breaks": {
+      "type": "boolean",
+      "default": false,
+      "description": "Convert single newlines in paragraphs into hard line breaks."
+    },
+    "emoji": {
+      "type": "boolean",
+      "default": true,
+      "description": "Render :emoji: shortcodes as Unicode characters."
+    },
+    "display_header_footer": {
+      "type": "boolean",
+      "default": false,
+      "description": "Display header and footer on each PDF page."
+    },
+
+    "header": {
+      "type": ["object", "null"],
+      "default": null,
+      "markdownDescription": "**Structured header configuration.** Supports zones (left, center, right) with typed elements.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "properties": {
+        "height": {
+          "type": "string",
+          "description": "Height of the header area, e.g. '15mm', '0.5in'."
+        },
+        "padding": {
+          "type": "string",
+          "description": "CSS padding, e.g. '0 10mm'."
+        },
+        "font_family": {
+          "type": "string",
+          "description": "CSS font-family for all text in the header."
+        },
+        "font_size": {
+          "type": "string",
+          "description": "Default font-size for all elements, e.g. '9px', '10pt'."
+        },
+        "color": {
+          "type": "string",
+          "description": "Default text color, e.g. '#333', 'gray'."
+        },
+        "border_bottom": {
+          "type": "string",
+          "description": "Bottom border, e.g. '1px solid #ccc'."
+        },
+        "background": {
+          "type": "string",
+          "description": "Background color or CSS background value."
+        },
+        "left": {
+          "description": "Left zone content. Can be a single element or array of elements.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "center": {
+          "description": "Center zone content. Can be a single element or array of elements.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "right": {
+          "description": "Right zone content. Can be a single element or array of elements.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "left_text": {
+          "type": "string",
+          "description": "Shorthand: text content for left zone. Supports placeholders like {page}, {date}, {title}."
+        },
+        "left_image": {
+          "type": "string",
+          "description": "Shorthand: image path for left zone (relative to Markdown file)."
+        },
+        "left_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for left_image, e.g. '15mm'."
+        },
+        "center_text": {
+          "type": "string",
+          "description": "Shorthand: text content for center zone."
+        },
+        "center_image": {
+          "type": "string",
+          "description": "Shorthand: image path for center zone."
+        },
+        "center_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for center_image."
+        },
+        "right_text": {
+          "type": "string",
+          "description": "Shorthand: text content for right zone."
+        },
+        "right_image": {
+          "type": "string",
+          "description": "Shorthand: image path for right zone."
+        },
+        "right_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for right_image."
+        }
+      }
+    },
+    "footer": {
+      "type": ["object", "null"],
+      "default": null,
+      "markdownDescription": "**Structured footer configuration.** Supports the same options as `header`.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "properties": {
+        "height": {
+          "type": "string",
+          "description": "Height of the footer area, e.g. '10mm', '0.4in'."
+        },
+        "padding": {
+          "type": "string",
+          "description": "CSS padding, e.g. '0 10mm'."
+        },
+        "font_family": {
+          "type": "string",
+          "description": "CSS font-family for all text in the footer."
+        },
+        "font_size": {
+          "type": "string",
+          "description": "Default font-size for all elements."
+        },
+        "color": {
+          "type": "string",
+          "description": "Default text color."
+        },
+        "border_top": {
+          "type": "string",
+          "description": "Top border, e.g. '1px solid #ccc'."
+        },
+        "background": {
+          "type": "string",
+          "description": "Background color or CSS background value."
+        },
+        "left": {
+          "description": "Left zone content.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "center": {
+          "description": "Center zone content.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "right": {
+          "description": "Right zone content.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "left_text": {
+          "type": "string",
+          "description": "Shorthand: text for left zone."
+        },
+        "left_image": {
+          "type": "string",
+          "description": "Shorthand: image path for left zone."
+        },
+        "left_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for left_image."
+        },
+        "center_text": {
+          "type": "string",
+          "description": "Shorthand: text for center zone."
+        },
+        "center_image": {
+          "type": "string",
+          "description": "Shorthand: image path for center zone."
+        },
+        "center_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for center_image."
+        },
+        "right_text": {
+          "type": "string",
+          "description": "Shorthand: text for right zone."
+        },
+        "right_image": {
+          "type": "string",
+          "description": "Shorthand: image path for right zone."
+        },
+        "right_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for right_image."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "headerFooterElement": {
+      "type": "object",
+      "description": "An element in a header/footer zone.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "image",
+            "page_number",
+            "total_pages",
+            "date",
+            "title",
+            "spacer"
+          ],
+          "description": "Element type."
+        },
+        "content": {
+          "type": "string",
+          "description": "For 'text' type: text content with placeholder support ({page}, {pages}, {date}, {date:FORMAT}, {title}, {filename}, {author}, or custom front matter variables)."
+        },
+        "src": {
+          "type": "string",
+          "description": "For 'image' type: path to image file (SVG, PNG, JPG). Relative to Markdown file."
+        },
+        "format": {
+          "type": "string",
+          "description": "For 'date' type: date-fns format string, e.g. 'yyyy-MM-dd', 'MMMM d, yyyy', 'MM/dd/yyyy'."
+        },
+        "height": {
+          "type": "string",
+          "description": "CSS height for images, e.g. '15mm', '20px'."
+        },
+        "width": {
+          "type": "string",
+          "description": "CSS width (usually omit to preserve aspect ratio)."
+        },
+        "font_size": {
+          "type": "string",
+          "description": "CSS font-size, e.g. '9px', '10pt'."
+        },
+        "font_weight": {
+          "type": ["string", "number"],
+          "description": "CSS font-weight, e.g. 'bold', 'normal', 600."
+        },
+        "font_style": {
+          "type": "string",
+          "enum": ["normal", "italic", "oblique"],
+          "description": "CSS font-style."
+        },
+        "color": {
+          "type": "string",
+          "description": "CSS color, e.g. '#333', 'gray', 'rgb(100,100,100)'."
+        },
+        "style": {
+          "type": "string",
+          "description": "Additional inline CSS styles."
+        },
+        "fallback": {
+          "type": "string",
+          "description": "For 'title' type: fallback text if no title is found."
+        },
+        "alt": {
+          "type": "string",
+          "description": "For 'image' type: alt text for accessibility."
+        }
+      },
+      "required": ["type"]
+    }
   }
 }

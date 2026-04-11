@@ -1,54 +1,82 @@
+# Installation Instructions
 
-# Installation instruction
-
-This extension exports Markdown files to PDF using a modern,
-fully automated pipeline:
-
-1. Render Markdown to HTML with `markdown-it`
-2. Apply built-in print stylesheet and optional user CSS
-3. Convert HTML to PDF with Playwright's Chromium browser
+This extension exports Markdown files to PDF using a modern, fully automated pipeline.
 
 ## Zero external dependencies
 
-Unlike traditional PDF exporters, this extension requires **no manual system installation**.
+Unlike traditional PDF exporters, this extension requires **no manual system
+installation**.
 
-This extension bundle includes the server's JavaScript dependencies for normal
-dev installs. If `server/node_modules` is missing, the server will repair it by
-running `npm install` the first time you use a tool.
-
-## Automatic browser setup
-
-On your first PDF export, Chromium (~150MB) will download automatically in
-the background. You'll see a brief message while it installs:
-
-```sh
-Chromium not found, installing automatically (this may take a few minutes)...
-Chromium installed successfully
-```
-
-This happens only once. The browser is cached on your system and shared across
-all Playwright-based tools. Subsequent exports are instant and work identically
-on macOS, Linux, and Windows.
-
-**If automatic installation fails**, you can manually install Chromium:
-
-```sh
-# macOS
-cd ~/Library/Application\ Support/Zed/extensions/installed/markdown-pdf/server
-node node_modules/playwright-core/cli.js install chromium
-
-# Linux
-cd ~/.local/share/zed/extensions/installed/markdown-pdf/server
-node node_modules/playwright-core/cli.js install chromium
-```
+The MCP server script is **not bundled** with the extension. Instead, the
+extension downloads `markdown-pdf-server.tar.gz` from the matching GitHub
+release the first time you invoke a tool. If `server/node_modules` is missing,
+the server repairs itself by running `npm install` automatically.
 
 ## Usage
 
-After enabling the server:
+After enabling the extension:
 
-1. Open any Markdown file in Zed
-2. Ask the AI assistant: "Export this to PDF"
-3. The `export_markdown_pdf` tool will generate a high-quality PDF
-4. On first use, wait a few minutes for automatic Chromium installation
+1. Open any Markdown file in Zed.
+2. Trigger an export using one of the methods below.
+3. On the very first use the extension downloads the MCP server from GitHub
+   and installs its npm dependencies — this takes a few seconds and happens
+   only once.
+4. The `export_markdown_pdf` tool generates a high-quality PDF next to the
+   source file (or in `output_directory` if configured).
 
-No manual setup required. It just works.
+No manual setup is required.
+
+### Natural-language prompts
+
+You can also just describe what you want to the assistant:
+
+- *"Export this to PDF"*
+- *"Export in landscape with the monokai theme"*
+- *"Export with header and footer showing page numbers"*
+
+---
+
+## Settings reference
+
+All settings can be placed in your Zed `settings.json` under the
+`context_servers.markdown-pdf.settings` key, or passed directly as tool-call
+arguments to override them on a per-export basis.
+
+For the full settings reference and header/footer documentation, see the [online documentation](https://zed-markdown-pdf.matinfo.github.io/).
+
+## Example settings
+
+Minimal Zed `settings.json` snippet:
+
+```json
+{
+  "context_servers": {
+    "markdown-pdf": {
+      "settings": {
+        "page_format": "Letter",
+        "orientation": "portrait",
+        "margin": { "top": "20mm", "right": "18mm", "bottom": "20mm", "left": "18mm" },
+        "highlight": true,
+        "highlight_style": "github.css",
+        "emoji": true,
+        "display_header_footer": false,
+        "open_after_export": false
+      }
+    }
+  }
+}
+```
+
+---
+
+## Page-break helper
+
+The built-in stylesheet provides a `.page` utility class that forces a page
+break after the element:
+
+```html
+<div class="page"></div>
+```
+
+Place it in your Markdown (HTML pass-through is enabled) wherever you want a
+hard page break.

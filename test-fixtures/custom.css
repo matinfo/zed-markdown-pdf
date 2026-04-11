@@ -1,159 +1,230 @@
-/* Custom PDF Styling for Markdown PDF Extension */
+/* Custom PDF Styling — zed-markdown-pdf test fixture
+ *
+ * This stylesheet is meant to be layered on top of the built-in neutral
+ * default.css (include_default_styles: true) OR used standalone
+ * (include_default_styles: false). It demonstrates a clean serif-accented
+ * document theme with blue heading accents.
+ *
+ * Compatible with highlight.js: pre:not(.hljs) receives the custom box style,
+ * while pre.hljs gets only the left-accent border so the active hljs theme
+ * controls its own background and text colours.
+ */
 
-/* Typography */
+/* ── Typography ───────────────────────────────────────────────────────────── */
+
 body {
-  font-family: 'Georgia', 'Times New Roman', serif;
+  font-family: "Georgia", "Times New Roman", serif;
   font-size: 11pt;
-  line-height: 1.6;
+  line-height: 1.65;
   color: #2c3e50;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+/* ── Headings ─────────────────────────────────────────────────────────────── */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Helvetica Neue", Arial, sans-serif;
   color: #1a1a1a;
   page-break-after: avoid;
 }
 
 h1 {
-  font-size: 24pt;
+  font-size: 22pt;
   margin-top: 0;
-  margin-bottom: 24pt;
+  margin-bottom: 18pt;
   border-bottom: 3px solid #3498db;
-  padding-bottom: 8pt;
+  padding-bottom: 6pt;
 }
 
 h2 {
-  font-size: 18pt;
-  margin-top: 20pt;
-  margin-bottom: 12pt;
+  font-size: 16pt;
+  margin-top: 18pt;
+  margin-bottom: 10pt;
   border-bottom: 1px solid #bdc3c7;
-  padding-bottom: 4pt;
+  padding-bottom: 3pt;
 }
 
 h3 {
-  font-size: 14pt;
-  margin-top: 16pt;
-  margin-bottom: 8pt;
+  font-size: 13pt;
+  margin-top: 14pt;
+  margin-bottom: 6pt;
   color: #2980b9;
 }
 
-/* Code Blocks */
-pre {
+h4,
+h5,
+h6 {
+  font-size: 11pt;
+  margin-top: 10pt;
+  margin-bottom: 4pt;
+  color: #34495e;
+}
+
+/* ── Plain code blocks (no highlight.js) ──────────────────────────────────── */
+
+pre:not(.hljs) {
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   border-left: 4px solid #3498db;
-  padding: 12pt;
-  margin: 12pt 0;
+  border-radius: 4px;
+  padding: 10pt 12pt;
+  margin: 10pt 0;
   overflow-x: auto;
   page-break-inside: avoid;
 }
 
-code {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-  font-size: 9pt;
-  background-color: #f8f9fa;
-  padding: 2pt 4pt;
-  border-radius: 2pt;
-}
-
-pre code {
+pre:not(.hljs) code {
   background-color: transparent;
   padding: 0;
+  font-size: 9pt;
+  color: inherit;
 }
 
-/* Tables */
+/* ── Highlight.js code blocks ─────────────────────────────────────────────── */
+/*
+ * Let the active hljs theme control the background and text colour.
+ * We only add the left-accent border and a few layout properties so the block
+ * visually matches the plain pre style without overriding hljs colours.
+ */
+
+pre.hljs {
+  border-left: 4px solid #3498db;
+  border-radius: 4px;
+  padding: 10pt 12pt;
+  margin: 10pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre.hljs code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 9pt;
+}
+
+/* ── Inline code ──────────────────────────────────────────────────────────── */
+
+code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 9pt;
+  background-color: #f0f4f8;
+  padding: 1pt 4pt;
+  border-radius: 3px;
+}
+
+/* ── Tables ───────────────────────────────────────────────────────────────── */
+
 table {
   border-collapse: collapse;
   width: 100%;
-  margin: 16pt 0;
+  margin: 14pt 0;
   page-break-inside: avoid;
+  font-size: 10pt;
 }
 
 th {
   background-color: #3498db;
-  color: white;
-  font-weight: bold;
-  padding: 8pt;
+  color: #ffffff;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  padding: 6pt 8pt;
   text-align: left;
   border: 1px solid #2980b9;
 }
 
 td {
-  padding: 6pt 8pt;
+  padding: 5pt 8pt;
   border: 1px solid #bdc3c7;
+  vertical-align: top;
 }
 
-tr:nth-child(even) {
-  background-color: #ecf0f1;
+tbody tr:nth-child(even) td {
+  background-color: #f4f6f7;
 }
 
-/* Links */
+/* ── Links ────────────────────────────────────────────────────────────────── */
+
 a {
   color: #2980b9;
   text-decoration: none;
   border-bottom: 1px dotted #2980b9;
 }
 
-a:hover {
-  color: #3498db;
-  border-bottom: 1px solid #3498db;
-}
+/* ── Blockquotes ──────────────────────────────────────────────────────────── */
 
-/* Blockquotes */
 blockquote {
-  margin: 16pt 0;
-  padding: 8pt 16pt;
+  margin: 14pt 0;
+  padding: 6pt 14pt;
   background-color: #f8f9fa;
   border-left: 4px solid #95a5a6;
-  color: #555;
+  color: #555555;
   font-style: italic;
   page-break-inside: avoid;
 }
 
-blockquote p {
-  margin: 0;
+blockquote > :first-child {
+  margin-top: 0;
 }
 
-/* Lists */
-ul, ol {
-  margin: 8pt 0;
-  padding-left: 24pt;
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* ── Lists ────────────────────────────────────────────────────────────────── */
+
+ul,
+ol {
+  margin: 6pt 0;
+  padding-left: 22pt;
 }
 
 li {
-  margin: 4pt 0;
+  margin: 3pt 0;
 }
 
-/* Horizontal Rules */
+/* ── Horizontal rules ─────────────────────────────────────────────────────── */
+
 hr {
   border: none;
   border-top: 2px solid #bdc3c7;
-  margin: 24pt 0;
+  margin: 20pt 0;
 }
 
-/* Images */
+/* ── Images ───────────────────────────────────────────────────────────────── */
+
 img {
   max-width: 100%;
   height: auto;
   page-break-inside: avoid;
 }
 
-/* Page Break Utilities */
-.page-break {
+/* ── Page-break utilities ─────────────────────────────────────────────────── */
+
+/*
+ * .page  — forces a page break AFTER the element.
+ *          Usage: <div class="page"></div>
+ *          Matches the class name used by the built-in default.css.
+ */
+.page {
   page-break-after: always;
 }
 
+/*
+ * .avoid-break — prevents a page break INSIDE the element.
+ *                Useful around tables, figures, or call-out boxes.
+ */
 .avoid-break {
   page-break-inside: avoid;
 }
 
-/* Print-specific adjustments */
+/* ── Print-specific overrides ─────────────────────────────────────────────── */
+
 @media print {
   body {
-    background: white;
-  }
-
-  a {
-    color: #2980b9;
+    background: #ffffff;
   }
 }
