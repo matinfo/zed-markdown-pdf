@@ -3,6 +3,8 @@
  *
  * This module handles:
  * - Resolving relative paths from the Markdown file location
+ * - Resolving paths from a global assets directory (@/ prefix)
+ * - Expanding tilde (~) to user home directory (cross-platform)
  * - Reading image files (SVG, PNG, JPG)
  * - Converting to base64 data URIs
  * - Warning on large images (configurable threshold)
@@ -12,12 +14,10 @@
  */
 
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 
-import {
-  IMAGE_FORMATS,
-  IMAGE_SIZE_WARNING_THRESHOLD,
-} from "./types.mjs";
+import { IMAGE_FORMATS, IMAGE_SIZE_WARNING_THRESHOLD } from "./types.mjs";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Asset Cache
@@ -83,23 +83,94 @@ class AssetCache {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Resolve an image path relative to a base path.
+ * Expand tilde (~) to the user's home directory.
+ * Works cross-platform (Unix/macOS and Windows).
  *
- * @param {string} imagePath - Image path (relative or absolute)
- * @param {string} basePath - Base path (typically the Markdown file path)
- * @returns {string} Absolute path to the image
+ * @param {string} filePath - Path that may start with ~
+ * @returns {string} Path with ~ expanded to home directory
+ *
+ * @example
+ * // On Unix/macOS with HOME=/Users/john
+ * expandTilde("~/docs/logo.svg") // => "/Users/john/docs/logo.svg"
+ *
+ * // On Windows with USERPROFILE=C:\Users\john
+ * expandTilde("~/docs/logo.svg") // => "C:\Users\john\docs\logo.svg"
  */
-export function resolveImagePath(imagePath, basePath) {
-  // If already absolute, return as-is
-  if (path.isAbsolute(imagePath)) {
-    return imagePath;
+export function expandTilde(filePath) {
+  if (!filePath || typeof filePath !== "string") {
+    return filePath;
+  }
+
+  // Check for tilde at start (~ or ~/ or ~\)
+  if (
+    filePath === "~" ||
+    filePath.startsWith("~/") ||
+    filePath.startsWith("~\\")
+  ) {
+    const homeDir = os.homedir();
+    if (filePath === "~") {
+      return homeDir;
+    }
+    // Replace ~ with home directory, preserving the path separator
+    return path.join(homeDir, filePath.slice(2));
+  }
+
+  return filePath;
+}
+
+/**
+ * Resolve an image path relative to a base path, with support for:
+ * - Tilde expansion (~) for home directory
+ * - Global assets directory (@/ prefix)
+ * - Relative paths from base file
+ * - Absolute paths
+ *
+ * @param {string} imagePath - Image path (relative, absolute, ~, or @/)
+ * @param {string} basePath - Base path (typically the Markdown file path)
+ * @param {string} [assetsDirectory] - Optional global assets directory for @/ paths
+ * @returns {string} Absolute path to the image
+ *
+ * @example
+ * // Relative path
+ * resolveImagePath("./logo.svg", "/home/user/doc.md")
+ * // => "/home/user/logo.svg"
+ *
+ * // Tilde expansion
+ * resolveImagePath("~/assets/logo.svg", "/home/user/doc.md")
+ * // => "/home/user/assets/logo.svg" (if home is /home/user)
+ *
+ * // Global assets with @/ prefix
+ * resolveImagePath("@/logo.svg", "/home/user/doc.md", "~/.config/markdown-pdf/assets")
+ * // => "/home/user/.config/markdown-pdf/assets/logo.svg"
+ */
+export function resolveImagePath(imagePath, basePath, assetsDirectory = null) {
+  // Handle @/ prefix for global assets directory
+  if (imagePath.startsWith("@/") || imagePath.startsWith("@\\")) {
+    if (!assetsDirectory) {
+      throw new Error(
+        `Cannot resolve "${imagePath}": No assets_directory configured. ` +
+          `Set "assets_directory" in your settings to use @/ paths.`,
+      );
+    }
+    // Expand tilde in assets directory if present
+    const expandedAssetsDir = expandTilde(assetsDirectory);
+    const relativePath = imagePath.slice(2); // Remove @/ or @\
+    return path.resolve(expandedAssetsDir, relativePath);
+  }
+
+  // Expand tilde if present
+  const expandedPath = expandTilde(imagePath);
+
+  // If already absolute (or was made absolute by tilde expansion), return as-is
+  if (path.isAbsolute(expandedPath)) {
+    return expandedPath;
   }
 
   // Get the directory of the base file
   const baseDir = path.dirname(basePath);
 
   // Resolve relative to base directory
-  return path.resolve(baseDir, imagePath);
+  return path.resolve(baseDir, expandedPath);
 }
 
 /**
@@ -135,7 +206,10 @@ export function isSupportedImage(filePath) {
  * @returns {Promise<import('./types.mjs').ResolvedAsset>}
  * @throws {Error} If file cannot be read or format is unsupported
  */
-export async function resolveAsset(absolutePath, warningThreshold = IMAGE_SIZE_WARNING_THRESHOLD) {
+export async function resolveAsset(
+  absolutePath,
+  warningThreshold = IMAGE_SIZE_WARNING_THRESHOLD,
+) {
   // Check if file exists
   try {
     await fs.access(absolutePath);
@@ -148,7 +222,7 @@ export async function resolveAsset(absolutePath, warningThreshold = IMAGE_SIZE_W
   if (!mimeType) {
     const ext = path.extname(absolutePath) || "(no extension)";
     throw new Error(
-      `Unsupported image format: ${ext}. Supported formats: ${Object.keys(IMAGE_FORMATS).join(", ")}`
+      `Unsupported image format: ${ext}. Supported formats: ${Object.keys(IMAGE_FORMATS).join(", ")}`,
     );
   }
 
@@ -187,10 +261,17 @@ export async function resolveAsset(absolutePath, warningThreshold = IMAGE_SIZE_W
  * @param {string} basePath - Base path for resolving relative paths
  * @param {AssetCache} cache - Asset cache instance
  * @param {number} [warningThreshold] - Size threshold for warnings
+ * @param {string} [assetsDirectory] - Optional global assets directory for @/ paths
  * @returns {Promise<{asset: import('./types.mjs').ResolvedAsset, absolutePath: string}>}
  */
-async function resolveWithCache(imagePath, basePath, cache, warningThreshold) {
-  const absolutePath = resolveImagePath(imagePath, basePath);
+async function resolveWithCache(
+  imagePath,
+  basePath,
+  cache,
+  warningThreshold,
+  assetsDirectory,
+) {
+  const absolutePath = resolveImagePath(imagePath, basePath, assetsDirectory);
 
   // Check cache
   if (cache.has(absolutePath)) {
@@ -214,6 +295,7 @@ async function resolveWithCache(imagePath, basePath, cache, warningThreshold) {
 /**
  * @typedef {Object} AssetResolverOptions
  * @property {string} basePath - Base path for resolving relative paths (typically the Markdown file)
+ * @property {string} [assetsDirectory] - Global assets directory for @/ paths (supports ~ expansion)
  * @property {number} [warningThreshold=IMAGE_SIZE_WARNING_THRESHOLD] - Size threshold for warnings (bytes)
  * @property {(message: string, path: string, size: number) => void} [onWarning] - Warning callback
  */
@@ -247,6 +329,7 @@ async function resolveWithCache(imagePath, basePath, cache, warningThreshold) {
 export function createAssetResolver(options) {
   const {
     basePath,
+    assetsDirectory = null,
     warningThreshold = IMAGE_SIZE_WARNING_THRESHOLD,
     onWarning,
   } = options;
@@ -254,6 +337,11 @@ export function createAssetResolver(options) {
   const cache = new AssetCache();
   const warnings = [];
   let resolvedCount = 0;
+
+  // Expand tilde in assetsDirectory once at creation time
+  const expandedAssetsDirectory = assetsDirectory
+    ? expandTilde(assetsDirectory)
+    : null;
 
   /**
    * Format file size for display.
@@ -288,7 +376,8 @@ export function createAssetResolver(options) {
       imagePath,
       basePath,
       cache,
-      warningThreshold
+      warningThreshold,
+      expandedAssetsDirectory,
     );
 
     resolvedCount++;
