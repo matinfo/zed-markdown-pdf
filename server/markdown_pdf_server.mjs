@@ -26,6 +26,16 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+// ── Structured header/footer pipeline imports ─────────────────────────────────
+import { parseFrontMatter } from "./lib/frontmatter-parser.mjs";
+import { mergeConfig, detectMode } from "./lib/config-merger.mjs";
+import { createAssetResolver } from "./lib/asset-resolver.mjs";
+import {
+  createPlaceholderResolver,
+  createRenderContext,
+} from "./lib/placeholder-resolver.mjs";
+import { createHtmlGenerator } from "./lib/html-generator.mjs";
+
 // ── Debug logging ──────────────────────────────────────────────────────────────
 // On macOS os.tmpdir() returns /var/folders/…/T which is hard to find.
 // Use /tmp directly on macOS/Linux so the path matches what is documented.
@@ -278,8 +288,15 @@ function normalizeSettings(raw) {
 
 function loadSettings() {
   try {
-    const parsed = JSON.parse(process.env.MARKDOWN_PDF_SETTINGS ?? "{}");
-    return normalizeSettings(parsed);
+    const raw = process.env.MARKDOWN_PDF_SETTINGS ?? "{}";
+    debugLog(`MARKDOWN_PDF_SETTINGS env: ${raw}`);
+    const parsed = JSON.parse(raw);
+    debugLog(`parsed settings: ${JSON.stringify(parsed)}`);
+    const normalized = normalizeSettings(parsed);
+    debugLog(
+      `normalized settings.display_header_footer: ${normalized.display_header_footer}`,
+    );
+    return normalized;
   } catch (error) {
     debugLog(
       `settings parse failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -289,6 +306,9 @@ function loadSettings() {
 }
 
 const settings = loadSettings();
+debugLog(
+  `final loaded settings.display_header_footer: ${settings.display_header_footer}`,
+);
 
 function buildEffectiveOptions(args = {}) {
   return {
@@ -906,7 +926,9 @@ async function handleMessage(message) {
                 },
                 display_header_footer: {
                   type: "boolean",
-                  description: "Display header and footer on each page.",
+                  default: false,
+                  description:
+                    "Display header and footer on each page. Defaults to false — omit this parameter to use the saved setting (which defaults to false if not configured).",
                 },
                 header_template: {
                   type: "string",
@@ -1076,16 +1098,126 @@ function transformTemplate(templateText, title = "", fontFamily = null) {
 
 async function exportMarkdownPdf(args) {
   const inputPath = await resolveInputPath(args.input_path);
+  debugLog(`exportMarkdownPdf args: ${JSON.stringify(args)}`);
+  debugLog(
+    `exportMarkdownPdf args.display_header_footer: ${args.display_header_footer} (type: ${typeof args.display_header_footer})`,
+  );
+
+  // ── Step 1: Read source and parse front matter ────────────────────────────
+  const source = await fs.readFile(inputPath, "utf8");
+  const filename = path.basename(inputPath);
+
+  const {
+    data: frontMatterData,
+    body: markdownBody,
+    validation: fmValidation,
+    parseError: fmParseError,
+  } = parseFrontMatter(source, { filename, validate: true });
+
+  if (fmParseError) {
+    debugLog(`Front matter parse error: ${fmParseError}`);
+  }
+  if (fmValidation && !fmValidation.valid) {
+    debugLog(
+      `Front matter validation errors: ${JSON.stringify(fmValidation.errors)}`,
+    );
+  }
+  if (fmValidation && fmValidation.warnings.length > 0) {
+    debugLog(
+      `Front matter validation warnings: ${JSON.stringify(fmValidation.warnings)}`,
+    );
+  }
+
+  const {
+    title,
+    author,
+    pdfConfig: frontMatterPdfConfig,
+    customVariables,
+  } = frontMatterData;
+  debugLog(
+    `Parsed front matter - title: ${title}, author: ${author}, pdfConfig: ${JSON.stringify(frontMatterPdfConfig)}`,
+  );
+
+  // ── Step 2: Build effective options from args (tool call params) ──────────
   const options = buildEffectiveOptions(args);
+  debugLog(
+    `exportMarkdownPdf options.display_header_footer: ${options.display_header_footer}`,
+  );
+
+  // ── Step 3: Merge config (defaults < settings < front matter) ─────────────
+  // Build settings object from current options (which already merged args with global settings)
+  const settingsForMerge = {
+    page_format: options.page_format,
+    orientation: options.orientation,
+    scale: options.scale,
+    page_ranges: options.page_ranges,
+    print_background: options.print_background,
+    margin: options.margin,
+    font_family: options.font_family,
+    include_default_styles: options.include_default_styles,
+    highlight: options.highlight,
+    highlight_style: options.highlight_style,
+    breaks: options.breaks,
+    emoji: options.emoji,
+    display_header_footer: options.display_header_footer,
+    header_template: options.header_template,
+    footer_template: options.footer_template,
+    // Include structured header/footer from settings if present
+    header: settings.header || null,
+    footer: settings.footer || null,
+  };
+
+  const {
+    config: mergedConfig,
+    mode: headerFooterMode,
+    hasHeaderFooter,
+  } = mergeConfig(settingsForMerge, frontMatterPdfConfig, {
+    applyDefaults: false,
+  });
+
+  debugLog(
+    `Header/footer mode: ${headerFooterMode}, hasHeaderFooter: ${hasHeaderFooter}`,
+  );
+  debugLog(`Merged config: ${JSON.stringify(mergedConfig)}`);
+
+  // Override options with merged config values that may have come from front matter
+  const effectiveOptions = {
+    ...options,
+    page_format: mergedConfig.page_format ?? options.page_format,
+    orientation: mergedConfig.orientation ?? options.orientation,
+    scale: mergedConfig.scale ?? options.scale,
+    page_ranges: mergedConfig.page_ranges ?? options.page_ranges,
+    print_background: mergedConfig.print_background ?? options.print_background,
+    margin: mergedConfig.margin ?? options.margin,
+    font_family: mergedConfig.font_family ?? options.font_family,
+    include_default_styles:
+      mergedConfig.include_default_styles ?? options.include_default_styles,
+    highlight: mergedConfig.highlight ?? options.highlight,
+    highlight_style: mergedConfig.highlight_style ?? options.highlight_style,
+    breaks: mergedConfig.breaks ?? options.breaks,
+    emoji: mergedConfig.emoji ?? options.emoji,
+    display_header_footer:
+      hasHeaderFooter ||
+      mergedConfig.display_header_footer ||
+      options.display_header_footer,
+  };
 
   const outputPath = await resolveOutputPath(inputPath, options.output_path);
 
-  const { html, title } = await renderMarkdownToHtml(inputPath, options);
+  // ── Step 4: Render Markdown to HTML ───────────────────────────────────────
+  const { html } = await renderMarkdownToHtmlWithBody(
+    inputPath,
+    markdownBody,
+    title,
+    effectiveOptions,
+  );
 
   await ensureChromiumInstalled();
 
   const chromium = await getChromium();
   const browser = await chromium.launch({ headless: true });
+
+  let displayHeaderFooterResult = false;
 
   try {
     const page = await browser.newPage();
@@ -1097,41 +1229,122 @@ async function exportMarkdownPdf(args) {
 
     const pdfOptions = {
       path: outputPath,
-      format: options.page_format,
-      landscape: options.orientation === "landscape",
-      scale: options.scale,
-      printBackground: options.print_background,
-      margin: options.margin,
+      format: effectiveOptions.page_format,
+      landscape: effectiveOptions.orientation === "landscape",
+      scale: effectiveOptions.scale,
+      printBackground: effectiveOptions.print_background,
+      margin: effectiveOptions.margin,
     };
 
-    if (options.page_ranges && options.page_ranges.trim() !== "") {
-      pdfOptions.pageRanges = options.page_ranges;
+    if (
+      effectiveOptions.page_ranges &&
+      effectiveOptions.page_ranges.trim() !== ""
+    ) {
+      pdfOptions.pageRanges = effectiveOptions.page_ranges;
     }
 
-    if (options.display_header_footer) {
+    debugLog(`pdfOptions before header/footer: ${JSON.stringify(pdfOptions)}`);
+    debugLog(
+      `headerFooterMode: ${headerFooterMode}, hasHeaderFooter: ${hasHeaderFooter}`,
+    );
+
+    // ── Step 5: Generate header/footer templates ────────────────────────────
+    if (hasHeaderFooter || effectiveOptions.display_header_footer) {
+      debugLog("BRANCH: header/footer is enabled");
       pdfOptions.displayHeaderFooter = true;
-      pdfOptions.headerTemplate = transformTemplate(
-        options.header_template,
-        title,
-        options.font_family,
-      );
-      pdfOptions.footerTemplate = transformTemplate(
-        options.footer_template,
-        title,
-        options.font_family,
-      );
+
+      if (headerFooterMode === "structured") {
+        // ── Structured mode: use new pipeline ──
+        debugLog("Using STRUCTURED header/footer mode");
+
+        // Create render context for placeholders
+        const renderContext = createRenderContext({
+          inputPath,
+          title: title || "",
+          author: author || "",
+          frontMatter: { ...customVariables },
+          now: new Date(),
+        });
+
+        // Create resolvers
+        const placeholderResolver = createPlaceholderResolver(renderContext);
+        const assetResolver = createAssetResolver({ basePath: inputPath });
+
+        // Create HTML generator
+        const htmlGenerator = createHtmlGenerator({
+          placeholderResolver,
+          assetResolver,
+          fontFamily: effectiveOptions.font_family,
+        });
+
+        // Generate header template
+        if (mergedConfig.header) {
+          try {
+            pdfOptions.headerTemplate = await htmlGenerator.generateHeader(
+              mergedConfig.header,
+            );
+            debugLog(
+              `Generated structured header: ${pdfOptions.headerTemplate.substring(0, 200)}...`,
+            );
+          } catch (err) {
+            debugLog(`Error generating structured header: ${err.message}`);
+            pdfOptions.headerTemplate = "";
+          }
+        } else {
+          pdfOptions.headerTemplate = "";
+        }
+
+        // Generate footer template
+        if (mergedConfig.footer) {
+          try {
+            pdfOptions.footerTemplate = await htmlGenerator.generateFooter(
+              mergedConfig.footer,
+            );
+            debugLog(
+              `Generated structured footer: ${pdfOptions.footerTemplate.substring(0, 200)}...`,
+            );
+          } catch (err) {
+            debugLog(`Error generating structured footer: ${err.message}`);
+            pdfOptions.footerTemplate = "";
+          }
+        } else {
+          pdfOptions.footerTemplate = "";
+        }
+
+        // Log any asset warnings
+        const assetWarnings = assetResolver.getWarnings();
+        if (assetWarnings.length > 0) {
+          debugLog(`Asset warnings: ${JSON.stringify(assetWarnings)}`);
+        }
+      } else {
+        // ── Legacy mode: use raw HTML templates ──
+        debugLog("Using LEGACY header/footer mode");
+        pdfOptions.headerTemplate = transformTemplate(
+          mergedConfig.header_template || effectiveOptions.header_template,
+          title,
+          effectiveOptions.font_family,
+        );
+        pdfOptions.footerTemplate = transformTemplate(
+          mergedConfig.footer_template || effectiveOptions.footer_template,
+          title,
+          effectiveOptions.font_family,
+        );
+      }
     } else {
+      debugLog("BRANCH: header/footer is disabled");
       pdfOptions.displayHeaderFooter = false;
       pdfOptions.headerTemplate = "";
       pdfOptions.footerTemplate = "";
     }
 
+    debugLog(`final pdfOptions: ${JSON.stringify(pdfOptions)}`);
+    displayHeaderFooterResult = pdfOptions.displayHeaderFooter;
     await page.pdf(pdfOptions);
   } finally {
     await browser.close();
   }
 
-  if (options.open_after_export) {
+  if (effectiveOptions.open_after_export) {
     void openFile(outputPath);
   }
 
@@ -1139,13 +1352,14 @@ async function exportMarkdownPdf(args) {
     input_path: inputPath,
     output_path: outputPath,
     backend: "Playwright/Chromium",
-    page_format: options.page_format,
-    orientation: options.orientation,
-    scale: options.scale,
-    print_background: options.print_background,
-    margin: options.margin,
-    open_after_export: options.open_after_export,
-    display_header_footer: options.display_header_footer,
+    page_format: effectiveOptions.page_format,
+    orientation: effectiveOptions.orientation,
+    scale: effectiveOptions.scale,
+    print_background: effectiveOptions.print_background,
+    margin: effectiveOptions.margin,
+    open_after_export: effectiveOptions.open_after_export,
+    display_header_footer: displayHeaderFooterResult,
+    header_footer_mode: headerFooterMode,
   };
 }
 
@@ -1181,10 +1395,13 @@ function resolveStylesheetPath(baseDirectory, stylesheetPath) {
 }
 
 // ── HTML rendering ────────────────────────────────────────────────────────────
-async function renderMarkdownToHtml(inputPath, options) {
-  const source = await fs.readFile(inputPath, "utf8");
-  const { body, title } = splitFrontmatter(source, inputPath);
 
+/**
+ * Render Markdown to HTML with pre-parsed body and title.
+ * Used by the new structured header/footer pipeline where front matter
+ * is already parsed.
+ */
+async function renderMarkdownToHtmlWithBody(inputPath, body, title, options) {
   const markdown = await createMarkdown(options);
   const rendered = markdown.render(body);
 
@@ -1252,6 +1469,17 @@ async function renderMarkdownToHtml(inputPath, options) {
 </html>`,
     title,
   };
+}
+
+/**
+ * Original render function - reads file and parses front matter internally.
+ * Kept for backward compatibility.
+ */
+async function renderMarkdownToHtml(inputPath, options) {
+  const source = await fs.readFile(inputPath, "utf8");
+  const { body, title } = splitFrontmatter(source, inputPath);
+
+  return renderMarkdownToHtmlWithBody(inputPath, body, title, options);
 }
 
 function splitFrontmatter(source, inputPath) {

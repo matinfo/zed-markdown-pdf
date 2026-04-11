@@ -8,14 +8,18 @@
   "scripts": {
     "check": "node --check markdown_pdf_server.mjs",
     "build": "npm run check",
-    "test": "node ../test-fixtures/test-export.mjs",
+    "test": "node --test lib/__tests__/*.test.mjs",
+    "test:export": "node ../test-fixtures/test-export.mjs",
+    "test:all": "npm run test && npm run test:export",
     "install:chromium": "node node_modules/playwright-core/cli.js install chromium"
   },
   "dependencies": {
+    "date-fns": "^4.1.0",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.1",
     "markdown-it-emoji": "^3.0.0",
-    "playwright-core": "^1.53.0"
+    "playwright-core": "^1.53.0",
+    "yaml": "^2.7.0"
   },
   "engines": {
     "node": ">=18.18.0"
