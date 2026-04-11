@@ -567,7 +567,7 @@ export function validateStructuredConfig(config) {
 /**
  * Validate front matter PDF configuration.
  *
- * @param {any} frontMatterConfig - The markdown-pdf block from front matter
+ * @param {any} frontMatterConfig - The pdf block from front matter
  * @returns {import('./types.mjs').ValidationResult}
  */
 export function validateFrontMatterConfig(frontMatterConfig) {
@@ -581,7 +581,7 @@ export function validateFrontMatterConfig(frontMatterConfig) {
   if (typeof frontMatterConfig !== "object" || Array.isArray(frontMatterConfig)) {
     return {
       valid: false,
-      errors: [createError("markdown-pdf", "Front matter markdown-pdf must be an object", frontMatterConfig)],
+      errors: [createError("pdf", "Front matter pdf must be an object", frontMatterConfig)],
       warnings: [],
     };
   }
@@ -595,7 +595,7 @@ export function validateFrontMatterConfig(frontMatterConfig) {
   if (frontMatterConfig.display_header_footer !== undefined) {
     if (typeof frontMatterConfig.display_header_footer !== "boolean") {
       errors.push(createError(
-        "markdown-pdf.display_header_footer",
+        "pdf.display_header_footer",
         "display_header_footer must be a boolean",
         frontMatterConfig.display_header_footer
       ));
@@ -606,7 +606,7 @@ export function validateFrontMatterConfig(frontMatterConfig) {
     const validFormats = ["A4", "Letter", "Legal", "Tabloid", "Ledger", "A0", "A1", "A2", "A3", "A5", "A6"];
     if (!validFormats.includes(frontMatterConfig.page_format)) {
       errors.push(createError(
-        "markdown-pdf.page_format",
+        "pdf.page_format",
         `Invalid page format: "${frontMatterConfig.page_format}". Valid: ${validFormats.join(", ")}`,
         frontMatterConfig.page_format
       ));
@@ -616,7 +616,7 @@ export function validateFrontMatterConfig(frontMatterConfig) {
   if (frontMatterConfig.orientation !== undefined) {
     if (!["portrait", "landscape"].includes(frontMatterConfig.orientation)) {
       errors.push(createError(
-        "markdown-pdf.orientation",
+        "pdf.orientation",
         `Invalid orientation: "${frontMatterConfig.orientation}". Must be "portrait" or "landscape"`,
         frontMatterConfig.orientation
       ));
@@ -626,7 +626,7 @@ export function validateFrontMatterConfig(frontMatterConfig) {
   if (frontMatterConfig.scale !== undefined) {
     if (typeof frontMatterConfig.scale !== "number" || frontMatterConfig.scale < 0.1 || frontMatterConfig.scale > 2) {
       errors.push(createError(
-        "markdown-pdf.scale",
+        "pdf.scale",
         "Scale must be a number between 0.1 and 2",
         frontMatterConfig.scale
       ));
@@ -635,12 +635,12 @@ export function validateFrontMatterConfig(frontMatterConfig) {
 
   if (frontMatterConfig.margin !== undefined) {
     if (typeof frontMatterConfig.margin !== "object" || Array.isArray(frontMatterConfig.margin)) {
-      errors.push(createError("markdown-pdf.margin", "Margin must be an object", frontMatterConfig.margin));
+      errors.push(createError("pdf.margin", "Margin must be an object", frontMatterConfig.margin));
     } else {
       for (const side of ["top", "right", "bottom", "left"]) {
         if (frontMatterConfig.margin[side] !== undefined && !isCssLength(frontMatterConfig.margin[side])) {
           warnings.push(createWarning(
-            `markdown-pdf.margin.${side}`,
+            `pdf.margin.${side}`,
             `Invalid CSS length: "${frontMatterConfig.margin[side]}"`,
             frontMatterConfig.margin[side]
           ));
