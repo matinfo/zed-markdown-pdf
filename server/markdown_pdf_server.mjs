@@ -27,7 +27,12 @@ import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 // ── Debug logging ──────────────────────────────────────────────────────────────
-const DEBUG_LOG = path.join(os.tmpdir(), "zed-markdown-pdf-debug.log");
+// On macOS os.tmpdir() returns /var/folders/…/T which is hard to find.
+// Use /tmp directly on macOS/Linux so the path matches what is documented.
+const DEBUG_LOG =
+  process.platform === "win32"
+    ? path.join(os.tmpdir(), "zed-markdown-pdf-debug.log")
+    : "/tmp/zed-markdown-pdf-debug.log";
 
 function debugLog(message) {
   try {
