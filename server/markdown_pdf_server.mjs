@@ -27,12 +27,16 @@ import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 // ── Structured header/footer pipeline imports ─────────────────────────────────
-import { parseFrontMatter } from "./lib/frontmatter-parser.mjs";
+import {
+  parseFrontMatter,
+  ensureYamlLoaded,
+} from "./lib/frontmatter-parser.mjs";
 import { mergeConfig, detectMode } from "./lib/config-merger.mjs";
 import { createAssetResolver } from "./lib/asset-resolver.mjs";
 import {
   createPlaceholderResolver,
   createRenderContext,
+  ensureDateFnsLoaded,
 } from "./lib/placeholder-resolver.mjs";
 import { createHtmlGenerator } from "./lib/html-generator.mjs";
 
@@ -377,10 +381,12 @@ let dependenciesPromise = null;
 
 function ensureDependencies() {
   if (!dependenciesPromise) {
-    dependenciesPromise = installDepsIfNeeded().catch((error) => {
-      dependenciesPromise = null;
-      throw error;
-    });
+    dependenciesPromise = installDepsIfNeeded()
+      .then(() => Promise.all([ensureYamlLoaded(), ensureDateFnsLoaded()]))
+      .catch((error) => {
+        dependenciesPromise = null;
+        throw error;
+      });
   }
   return dependenciesPromise;
 }
@@ -391,6 +397,8 @@ async function installDepsIfNeeded() {
     "markdown-it",
     "highlight.js",
     "markdown-it-emoji",
+    "yaml",
+    "date-fns",
   ];
 
   try {

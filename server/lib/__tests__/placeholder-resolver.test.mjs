@@ -4,7 +4,7 @@
  * Run with: node --test server/lib/__tests__/placeholder-resolver.test.mjs
  */
 
-import { describe, it } from "node:test";
+import { describe, it, before } from "node:test";
 import assert from "node:assert/strict";
 
 import {
@@ -20,7 +20,13 @@ import {
   escapeHtml,
   listPlaceholders,
   validatePlaceholders,
+  ensureDateFnsLoaded,
 } from "../placeholder-resolver.mjs";
+
+// Ensure the lazy-loaded date-fns dependency is available before any test runs.
+before(async () => {
+  await ensureDateFnsLoaded();
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Test Fixtures

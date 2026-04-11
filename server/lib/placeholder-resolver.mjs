@@ -11,7 +11,19 @@
  * @module placeholder-resolver
  */
 
-import { format as formatDate } from "date-fns";
+// ── Lazy-loaded npm dependency ────────────────────────────────────────────────
+// Loaded dynamically so the MCP handshake can succeed before `npm install` runs.
+let formatDate = null;
+
+/**
+ * Ensure the `date-fns` package is loaded. Must be called (and awaited)
+ * before any function in this module that depends on date formatting.
+ */
+export async function ensureDateFnsLoaded() {
+  if (!formatDate) {
+    formatDate = (await import("date-fns")).format;
+  }
+}
 
 import { PLACEHOLDER_PATTERN, BUILTIN_PLACEHOLDERS } from "./types.mjs";
 

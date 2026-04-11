@@ -20,6 +20,7 @@ const SERVER_RELEASE_TAG: &str = "server-v0.1.1";
 ///   - markdown_pdf_server.mjs
 ///   - default.css
 ///   - package.json
+///   - package-lock.json
 ///   - lib/
 const SERVER_ASSET_NAME: &str = "markdown-pdf-server.tar.gz";
 
