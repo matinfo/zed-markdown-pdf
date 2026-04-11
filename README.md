@@ -9,7 +9,6 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - **Syntax highlighting** for fenced code blocks via highlight.js (80+ themes)
 - **Emoji shortcodes** rendered to Unicode via markdown-it-emoji
 - **Structured header/footer** with zones (left, center, right), custom variables, and date formatting
-- **Legacy header/footer** templates with date, title, and page-number placeholders
 - **Per-document overrides** via YAML front matter (`markdown-pdf:` block)
 - **Configurable page layout** — format, orientation, scale, margins, page ranges
 - **Custom CSS** support appended after the built-in neutral stylesheet
@@ -26,7 +25,6 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - Emoji `:shortcode:` rendering via markdown-it-emoji
 - Hard line-break mode for poetry or source-formatted text
 - Structured header/footer with zones, typed elements, and custom variables
-- Legacy header/footer templates with `%%ISO-DATE%%`, `%%TITLE%%`, page-number spans
 - Per-document settings via YAML front matter (`markdown-pdf:` block)
 - Portrait and landscape orientation
 - Page scale factor
@@ -230,21 +228,13 @@ Browse all 80+ themes at the [highlight.js demo](https://highlightjs.org/demo).
 
 ### Header and Footer
 
-There are two ways to configure headers and footers:
-
-1. **Structured configuration** (recommended) — declarative JSON with zones and typed elements
-2. **Legacy templates** — raw HTML strings with placeholder variables
-
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `display_header_footer` | `boolean` | `false` | Show header and footer on every page. |
 | `header` | `object \| null` | `null` | Structured header configuration. |
 | `footer` | `object \| null` | `null` | Structured footer configuration. |
-| `header_template` | `string` | title left, date right | Legacy HTML template for the page header. |
-| `footer_template` | `string` | page number centred | Legacy HTML template for the page footer. |
 
-When `header` or `footer` is set as an object, structured mode is used and
-`display_header_footer` is automatically enabled.
+When `header` or `footer` is configured, `display_header_footer` is automatically enabled.
 
 ---
 
@@ -350,60 +340,6 @@ For simple cases, use shorthand instead of full element definitions:
 
 ---
 
-### Legacy Header/Footer Templates
-
-For backward compatibility, raw HTML templates are still supported.
-
-#### Template Placeholders
-
-These are replaced before the template is passed to Chromium:
-
-| Placeholder | Replaced with |
-|-------------|---------------|
-| `%%ISO-DATE%%` | `YYYY-MM-DD` |
-| `%%ISO-DATETIME%%` | `YYYY-MM-DD HH:MM:SS` |
-| `%%ISO-TIME%%` | `HH:MM:SS` |
-| `%%TITLE%%` | Document title (from front-matter `title:` or filename stem) |
-
-Chromium also populates these `<span>` classes automatically:
-
-```html
-<span class="pageNumber"></span>   <!-- current page -->
-<span class="totalPages"></span>   <!-- total pages -->
-<span class="date"></span>         <!-- formatted print date -->
-<span class="title"></span>        <!-- document <title> -->
-<span class="url"></span>          <!-- document URL -->
-```
-
-> **Note:** Header/footer templates are rendered in an isolated context. External
-> stylesheets do not apply — use inline styles only. Font size defaults to `0`;
-> always set `font-size` explicitly.
-
-#### Default templates
-
-```html
-<!-- header (title left, date right) -->
-<div style="font-size:9px;margin-left:1cm;flex:1"><span class="title"></span></div>
-<div style="font-size:9px;margin-right:1cm">%%ISO-DATE%%</div>
-
-<!-- footer (page X / Y centred) -->
-<div style="font-size:9px;margin:0 auto">
-  <span class="pageNumber"></span> / <span class="totalPages"></span>
-</div>
-```
-
-#### Custom header/footer example
-
-```json
-{
-  "display_header_footer": true,
-  "header_template": "<div style='font-size:9px;margin-left:1cm;flex:1'>%%TITLE%%</div><div style='font-size:9px;margin-right:1cm'>%%ISO-DATE%%</div>",
-  "footer_template": "<div style='font-size:9px;width:100%;text-align:center'><span class='pageNumber'></span> of <span class='totalPages'></span></div>"
-}
-```
-
----
-
 ## Per-Export Overrides
 
 Every setting can also be passed directly in the tool call for a one-off override.
@@ -422,8 +358,7 @@ Margin overrides are merged: omitted sides fall back to your configured defaults
 
 ### Document Title
 
-The YAML front matter `title` field is used as the document title (HTML `<title>`,
-`%%TITLE%%` placeholder, and Chromium's `<span class="title">`).
+The YAML front matter `title` field is used as the document title (HTML `<title>` and Chromium's `<span class="title">`).
 
 ```markdown
 ---
