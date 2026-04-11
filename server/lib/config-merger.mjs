@@ -232,7 +232,6 @@ export function usesStructuredConfig(settings, frontMatterConfig) {
 /**
  * @typedef {Object} MergedConfig
  * @property {Object} config - Merged configuration
- * @property {HeaderFooterMode} mode - Detected header/footer mode
  * @property {boolean} hasHeaderFooter - Whether header/footer is enabled
  * @property {string[]} sources - List of sources that contributed to the config
  */

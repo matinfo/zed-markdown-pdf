@@ -378,7 +378,7 @@ documents.
 ### More code — inline examples
 
 Inline code references: `exportMarkdownPdf()`, `renderMarkdownToHtml()`,
-`buildEffectiveOptions()`, `transformTemplate()`, `normalizeSettings()`.
+`buildEffectiveOptions()`, `normalizeSettings()`.
 
 A mixed paragraph with `code`, **bold**, *italic*, and a
 [link](https://github.com/highlightjs/highlight.js) all together.
