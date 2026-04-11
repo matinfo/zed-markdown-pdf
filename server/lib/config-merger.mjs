@@ -56,12 +56,6 @@ export const EXTENSION_DEFAULTS = Object.freeze({
   header: null,
   footer: null,
 
-  // Legacy raw template defaults (used when display_header_footer is true but no structured config)
-  header_template:
-    '<div style="font-size:9px;margin-left:1cm;flex:1"><span class="title"></span></div><div style="font-size:9px;margin-right:1cm">%%ISO-DATE%%</div>',
-  footer_template:
-    '<div style="font-size:9px;margin:0 auto"><span class="pageNumber"></span> / <span class="totalPages"></span></div>',
-
   // Output settings
   output_directory: null,
   open_after_export: false,
@@ -183,7 +177,7 @@ function mergeHeaderFooter(target, source) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * @typedef {'structured'|'legacy'|'none'} HeaderFooterMode
+ * @typedef {'structured'|'none'} HeaderFooterMode
  */
 
 /**
@@ -200,12 +194,6 @@ export function detectMode(config) {
   // Check for structured config (header/footer as objects)
   if (isStructuredConfig(config)) {
     return "structured";
-  }
-
-  // Check if display_header_footer is explicitly enabled
-  // Legacy mode requires display_header_footer to be true
-  if (config.display_header_footer === true) {
-    return "legacy"; // Will use templates (custom or default)
   }
 
   return "none";
@@ -239,7 +227,6 @@ export function usesStructuredConfig(settings, frontMatterConfig) {
 /**
  * @typedef {Object} MergeOptions
  * @property {boolean} [applyDefaults=true] - Whether to apply extension defaults
- * @property {boolean} [preserveLegacy=true] - Whether to preserve legacy template fields
  */
 
 /**
@@ -276,7 +263,7 @@ export function mergeConfig(
   frontMatterConfig = null,
   options = {},
 ) {
-  const { applyDefaults = true, preserveLegacy = true } = options;
+  const { applyDefaults = true } = options;
 
   const sources = [];
 
@@ -347,14 +334,6 @@ export function mergeConfig(
     if (result.header && !result.footer && result.footer !== null) {
       result.footer = { ...DEFAULT_FOOTER };
     }
-  } else if (mode === "legacy") {
-    hasHeaderFooter = result.display_header_footer === true;
-  }
-
-  // Clean up legacy fields if using structured mode and not preserving
-  if (mode === "structured" && !preserveLegacy) {
-    delete result.header_template;
-    delete result.footer_template;
   }
 
   return {

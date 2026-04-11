@@ -31,8 +31,6 @@ describe("EXTENSION_DEFAULTS", () => {
     assert.ok("orientation" in EXTENSION_DEFAULTS);
     assert.ok("margin" in EXTENSION_DEFAULTS);
     assert.ok("display_header_footer" in EXTENSION_DEFAULTS);
-    assert.ok("header_template" in EXTENSION_DEFAULTS);
-    assert.ok("footer_template" in EXTENSION_DEFAULTS);
   });
 
   it("should have sensible default values", () => {
@@ -95,42 +93,6 @@ describe("detectMode", () => {
     );
   });
 
-  it("should return 'legacy' for raw template strings with display_header_footer", () => {
-    assert.equal(
-      detectMode({
-        display_header_footer: true,
-        header_template: "<div>Header</div>",
-      }),
-      "legacy",
-    );
-
-    assert.equal(
-      detectMode({
-        display_header_footer: true,
-        footer_template: "<div>Footer</div>",
-      }),
-      "legacy",
-    );
-  });
-
-  it("should return 'none' for raw templates without display_header_footer", () => {
-    assert.equal(
-      detectMode({
-        header_template: "<div>Header</div>",
-      }),
-      "none",
-    );
-  });
-
-  it("should return 'legacy' when display_header_footer is true without structured config", () => {
-    assert.equal(
-      detectMode({
-        display_header_footer: true,
-      }),
-      "legacy",
-    );
-  });
-
   it("should return 'none' when display_header_footer is false", () => {
     assert.equal(
       detectMode({
@@ -178,26 +140,12 @@ describe("usesStructuredConfig", () => {
   it("should return true when front matter overrides with structured config", () => {
     assert.equal(
       usesStructuredConfig(
-        {
-          header_template: "<div>Legacy</div>",
-        },
+        {},
         {
           header: { left_text: "Structured" },
         },
       ),
       true,
-    );
-  });
-
-  it("should return false for legacy templates only", () => {
-    assert.equal(
-      usesStructuredConfig(
-        {
-          header_template: "<div>Legacy</div>",
-        },
-        null,
-      ),
-      false,
     );
   });
 });
@@ -383,16 +331,6 @@ describe("mergeConfig - mode detection", () => {
 
     assert.equal(mode, "none");
     assert.equal(hasHeaderFooter, false);
-  });
-
-  it("should detect 'legacy' mode for raw templates", () => {
-    const { mode, hasHeaderFooter } = mergeConfig({
-      display_header_footer: true,
-      header_template: "<div>Test</div>",
-    });
-
-    assert.equal(mode, "legacy");
-    assert.equal(hasHeaderFooter, true);
   });
 
   it("should detect 'structured' mode for object header", () => {
