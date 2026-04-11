@@ -1,0 +1,18 @@
+[package]
+name = "markdown-pdf"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde_json = "1.0"
+zed_extension_api = "0.7.0"
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
+codegen-units = 1
