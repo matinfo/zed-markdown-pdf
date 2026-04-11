@@ -151,42 +151,44 @@ To disable highlighting entirely:
 
 ## 8. Header and Footer
 
-Disabled by default. Enable with:
+There are two ways to add headers and footers:
+
+### Structured (Recommended)
+
+Use zones (`left`, `center`, `right`) with typed elements:
 
 ```json
 {
-  "display_header_footer": true
+  "header": {
+    "height": "15mm",
+    "left_image": "./logo.svg",
+    "left_image_height": "12mm",
+    "center_text": "{title}",
+    "right_text": "{date:MMMM d, yyyy}"
+  },
+  "footer": {
+    "height": "10mm",
+    "center": {
+      "type": "text",
+      "content": "Page {page} of {pages}"
+    }
+  }
 }
 ```
 
-The default templates render the document title on the left, the current date on
-the right of the header, and a centred page count (`1 / 4`) in the footer.
+**Placeholders:** `{page}`, `{pages}`, `{date}`, `{date:FORMAT}`, `{title}`, `{filename}`, `{author}`, plus any front matter variable.
 
-### Template placeholders
+**Element types:** `text`, `image`, `page_number`, `total_pages`, `date`, `title`, `spacer`.
 
-| Placeholder | Output |
-|---|---|
-| `%%ISO-DATE%%` | `2025-06-14` |
-| `%%ISO-DATETIME%%` | `2025-06-14 09:30:00` |
-| `%%ISO-TIME%%` | `09:30:00` |
-| `%%TITLE%%` | Document title |
+### Legacy Templates
 
-Chromium also fills these `<span>` classes automatically:
-
-```html
-<span class="pageNumber"></span>   <!-- current page -->
-<span class="totalPages"></span>   <!-- total pages -->
-<span class="title"></span>        <!-- document <title> -->
-<span class="date"></span>         <!-- print date -->
-```
-
-### Custom header/footer
+For backward compatibility, raw HTML templates still work:
 
 ```json
 {
   "display_header_footer": true,
-  "header_template": "<div style='font-size:9px;margin-left:1cm;flex:1'>%%TITLE%%</div><div style='font-size:9px;margin-right:1cm'>%%ISO-DATE%%</div>",
-  "footer_template": "<div style='font-size:9px;width:100%;text-align:center'><span class='pageNumber'></span> of <span class='totalPages'></span></div>"
+  "header_template": "<div style='font-size:9px;margin-left:1cm'>%%TITLE%%</div>",
+  "footer_template": "<div style='font-size:9px;margin:0 auto'><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
 }
 ```
 
@@ -240,17 +242,37 @@ Place it anywhere in your Markdown — HTML pass-through is enabled by default.
 
 ## 12. Front Matter
 
-The `title` field in YAML front matter sets the document title used in the
-HTML `<title>` tag, the `%%TITLE%%` placeholder, and Chromium's
-`<span class="title">`:
+### Document Title
+
+The `title` field sets the document title used in headers and the HTML `<title>`:
 
 ```markdown
 ---
 title: Project Report Q2
 ---
-
-# Content starts here…
 ```
+
+### Per-Document PDF Settings
+
+Override any setting for a specific document with `markdown-pdf:`:
+
+```markdown
+---
+title: Quarterly Report
+author: Jane Smith
+company: Acme Corp
+markdown-pdf:
+  page_format: Letter
+  header:
+    left_text: "{company}"
+    center_text: "{title}"
+    right_text: "{date:MMMM d, yyyy}"
+  footer:
+    center_text: "Page {page} of {pages}"
+---
+```
+
+Custom front matter fields (`company`, `author`) become `{placeholders}` in headers/footers.
 
 ---
 
@@ -271,7 +293,8 @@ Or check the debug log:
 
 ---
 
-## Full Settings Reference
+## Full Documentation
 
-See [`configuration/installation_instructions.md`](configuration/installation_instructions.md)
-for the complete settings reference, or [`README.md`](README.md) for full documentation.
+- [`README.md`](README.md) — Complete settings reference
+- [`configuration/installation_instructions.md`](configuration/installation_instructions.md) — Installation guide
+- [Online Documentation](https://zed-markdown-pdf.matinfo.github.io/) — Full structured header/footer reference

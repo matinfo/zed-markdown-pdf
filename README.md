@@ -8,7 +8,9 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 
 - **Syntax highlighting** for fenced code blocks via highlight.js (80+ themes)
 - **Emoji shortcodes** rendered to Unicode via markdown-it-emoji
-- **Header and footer** templates with date, title, and page-number placeholders
+- **Structured header/footer** with zones (left, center, right), custom variables, and date formatting
+- **Legacy header/footer** templates with date, title, and page-number placeholders
+- **Per-document overrides** via YAML front matter (`markdown-pdf:` block)
 - **Configurable page layout** — format, orientation, scale, margins, page ranges
 - **Custom CSS** support appended after the built-in neutral stylesheet
 - **Automatic setup** — npm dependencies and Chromium install themselves on first use
@@ -23,7 +25,9 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - Syntax highlighting via highlight.js — 80+ themes to choose from
 - Emoji `:shortcode:` rendering via markdown-it-emoji
 - Hard line-break mode for poetry or source-formatted text
-- Header and footer templates with `%%ISO-DATE%%`, `%%TITLE%%`, page-number spans
+- Structured header/footer with zones, typed elements, and custom variables
+- Legacy header/footer templates with `%%ISO-DATE%%`, `%%TITLE%%`, page-number spans
+- Per-document settings via YAML front matter (`markdown-pdf:` block)
 - Portrait and landscape orientation
 - Page scale factor
 - Page ranges (print only selected pages)
@@ -226,11 +230,129 @@ Browse all 80+ themes at the [highlight.js demo](https://highlightjs.org/demo).
 
 ### Header and Footer
 
+There are two ways to configure headers and footers:
+
+1. **Structured configuration** (recommended) — declarative JSON with zones and typed elements
+2. **Legacy templates** — raw HTML strings with placeholder variables
+
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `display_header_footer` | `boolean` | `false` | Show header and footer on every page. |
-| `header_template` | `string` | title left, date right | HTML template for the page header. |
-| `footer_template` | `string` | page number centred | HTML template for the page footer. |
+| `header` | `object \| null` | `null` | Structured header configuration. |
+| `footer` | `object \| null` | `null` | Structured footer configuration. |
+| `header_template` | `string` | title left, date right | Legacy HTML template for the page header. |
+| `footer_template` | `string` | page number centred | Legacy HTML template for the page footer. |
+
+When `header` or `footer` is set as an object, structured mode is used and
+`display_header_footer` is automatically enabled.
+
+---
+
+### Structured Header/Footer (Recommended)
+
+The structured format uses zones (`left`, `center`, `right`) with typed elements:
+
+```json
+{
+  "header": {
+    "height": "15mm",
+    "padding": "0 10mm",
+    "font_size": "9px",
+    "border_bottom": "1px solid #ddd",
+    "left": {
+      "type": "image",
+      "src": "./logo.svg",
+      "height": "12mm"
+    },
+    "center": {
+      "type": "title",
+      "font_style": "italic"
+    },
+    "right": {
+      "type": "date",
+      "format": "MMMM d, yyyy"
+    }
+  },
+  "footer": {
+    "height": "10mm",
+    "center": {
+      "type": "text",
+      "content": "Page {page} of {pages}"
+    }
+  }
+}
+```
+
+#### Element Types
+
+| Type | Description | Key Properties |
+|------|-------------|----------------|
+| `text` | Static or dynamic text | `content` (with placeholders) |
+| `image` | Embedded image (SVG, PNG, JPG) | `src`, `height`, `width` |
+| `page_number` | Current page number | `format` (e.g., `"Page {page}"`) |
+| `total_pages` | Total page count | `format` |
+| `date` | Formatted date/time | `format` (date-fns pattern) |
+| `title` | Document title | `fallback` |
+| `spacer` | Flexible space | `width` (fixed) or flex |
+
+#### Placeholders
+
+Use placeholders in `text` elements or `format` strings:
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{page}` | Current page number (Chromium) |
+| `{pages}` | Total pages (Chromium) |
+| `{date}` | Current date (ISO format) |
+| `{date:FORMAT}` | Formatted date (date-fns) |
+| `{title}` | Document title |
+| `{filename}` | Source filename |
+| `{author}` | Author from front matter |
+| `{custom}` | Any front matter variable |
+
+#### Date Formats (date-fns)
+
+| Format | Example |
+|--------|---------|
+| `yyyy-MM-dd` | 2025-06-14 |
+| `MMMM d, yyyy` | June 14, 2025 |
+| `MM/dd/yyyy` | 06/14/2025 |
+| `dd.MM.yyyy` | 14.06.2025 |
+| `d MMMM yyyy` | 14 June 2025 |
+
+#### Shorthand Properties
+
+For simple cases, use shorthand instead of full element definitions:
+
+```json
+{
+  "header": {
+    "left_image": "./logo.svg",
+    "left_image_height": "12mm",
+    "center_text": "{title}",
+    "right_text": "{date:MMMM d, yyyy}"
+  }
+}
+```
+
+#### Container Properties
+
+| Property | Description |
+|----------|-------------|
+| `height` | Header/footer height (e.g., `"15mm"`) |
+| `padding` | CSS padding (e.g., `"0 10mm"`) |
+| `font_family` | Default font for all text |
+| `font_size` | Default font size |
+| `color` | Default text color |
+| `border_bottom` | Header bottom border |
+| `border_top` | Footer top border |
+| `background` | Background color |
+
+---
+
+### Legacy Header/Footer Templates
+
+For backward compatibility, raw HTML templates are still supported.
 
 #### Template Placeholders
 
@@ -298,6 +420,8 @@ Margin overrides are merged: omitted sides fall back to your configured defaults
 
 ## Front Matter
 
+### Document Title
+
 The YAML front matter `title` field is used as the document title (HTML `<title>`,
 `%%TITLE%%` placeholder, and Chromium's `<span class="title">`).
 
@@ -310,6 +434,55 @@ title: My Report
 ```
 
 If no `title` is present, the filename stem is used.
+
+### Per-Document PDF Settings
+
+Override any setting for a specific document using the `markdown-pdf:` block:
+
+```markdown
+---
+title: Quarterly Report
+author: Jane Smith
+company: Acme Corp
+version: 1.0.0
+markdown-pdf:
+  page_format: Letter
+  orientation: landscape
+  header:
+    height: 18mm
+    padding: 0 15mm
+    border_bottom: 1px solid #ccc
+    left:
+      - type: text
+        content: "{company}"
+        font_weight: bold
+    center:
+      type: title
+      font_style: italic
+    right:
+      type: date
+      format: MMMM d, yyyy
+  footer:
+    height: 12mm
+    left:
+      type: text
+      content: "v{version}"
+      color: "#666"
+    center:
+      type: text
+      content: "Page {page} of {pages}"
+    right:
+      type: text
+      content: "{author}"
+---
+
+# Content starts here
+```
+
+**Custom variables:** Any front matter field (like `company`, `version`) becomes
+available as a `{fieldname}` placeholder in headers and footers.
+
+**Priority order:** Front matter settings override global settings, which override defaults.
 
 ---
 

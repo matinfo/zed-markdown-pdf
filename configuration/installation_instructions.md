@@ -176,11 +176,131 @@ Browse all available styles at the
 
 ### Header and footer
 
+There are two modes for headers and footers:
+
+1. **Structured configuration** (recommended) — declarative JSON with zones and typed elements
+2. **Legacy templates** — raw HTML strings with placeholder variables
+
 | Key | Type | Default | Description |
 |---|---|---|---|
 | `display_header_footer` | `boolean` | `false` | Show a header and footer on every PDF page. |
-| `header_template` | `string` | title left, date right | HTML template for the page header. |
-| `footer_template` | `string` | page number centred | HTML template for the page footer. |
+| `header` | `object \| null` | `null` | Structured header configuration (see below). |
+| `footer` | `object \| null` | `null` | Structured footer configuration (see below). |
+| `header_template` | `string` | title left, date right | Legacy HTML template for the page header. |
+| `footer_template` | `string` | page number centred | Legacy HTML template for the page footer. |
+
+When `header` or `footer` is set as an object, structured mode is used and
+`display_header_footer` is automatically enabled.
+
+---
+
+### Structured header/footer (recommended)
+
+The structured format uses zones (`left`, `center`, `right`) with typed elements:
+
+```json
+{
+  "header": {
+    "height": "15mm",
+    "padding": "0 10mm",
+    "font_size": "9px",
+    "border_bottom": "1px solid #ddd",
+    "left": {
+      "type": "image",
+      "src": "./logo.svg",
+      "height": "12mm"
+    },
+    "center": {
+      "type": "title",
+      "font_style": "italic"
+    },
+    "right": {
+      "type": "date",
+      "format": "MMMM d, yyyy"
+    }
+  },
+  "footer": {
+    "height": "10mm",
+    "center": {
+      "type": "text",
+      "content": "Page {page} of {pages}"
+    }
+  }
+}
+```
+
+#### Element types
+
+| Type | Description | Key Properties |
+|---|---|---|
+| `text` | Static or dynamic text | `content` (supports placeholders) |
+| `image` | Embedded image (SVG, PNG, JPG) | `src`, `height`, `width` |
+| `page_number` | Current page number | `format` (e.g., `"Page {page}"`) |
+| `total_pages` | Total page count | `format` |
+| `date` | Formatted date/time | `format` (date-fns pattern) |
+| `title` | Document title | `fallback` |
+| `spacer` | Flexible space | `width` (fixed) or flex |
+
+#### Placeholders
+
+Use these in `text` elements or `format` strings:
+
+| Placeholder | Description |
+|---|---|
+| `{page}` | Current page number (rendered by Chromium) |
+| `{pages}` | Total pages (rendered by Chromium) |
+| `{date}` | Current date (ISO format) |
+| `{date:FORMAT}` | Formatted date using date-fns pattern |
+| `{title}` | Document title |
+| `{filename}` | Source filename |
+| `{author}` | Author from front matter |
+| `{custom}` | Any front matter variable |
+
+#### Date formats (date-fns)
+
+| Format | Example |
+|---|---|
+| `yyyy-MM-dd` | 2025-06-14 |
+| `MMMM d, yyyy` | June 14, 2025 |
+| `MM/dd/yyyy` | 06/14/2025 |
+| `dd.MM.yyyy` | 14.06.2025 |
+| `d MMMM yyyy` | 14 June 2025 |
+
+#### Shorthand properties
+
+For simple cases, use shorthand instead of full element definitions:
+
+```json
+{
+  "header": {
+    "left_image": "./logo.svg",
+    "left_image_height": "12mm",
+    "center_text": "{title}",
+    "right_text": "{date:MMMM d, yyyy}"
+  }
+}
+```
+
+Available shorthands: `left_text`, `left_image`, `left_image_height`,
+`center_text`, `center_image`, `center_image_height`,
+`right_text`, `right_image`, `right_image_height`.
+
+#### Container properties
+
+| Property | Description |
+|---|---|
+| `height` | Header/footer height (e.g., `"15mm"`) |
+| `padding` | CSS padding (e.g., `"0 10mm"`) |
+| `font_family` | Default font for all text |
+| `font_size` | Default font size |
+| `color` | Default text color |
+| `border_bottom` | Header bottom border |
+| `border_top` | Footer top border |
+| `background` | Background color |
+
+---
+
+### Legacy header/footer templates
 
 #### Template placeholder variables
 
@@ -236,6 +356,58 @@ always set an explicit `font-size` on your template elements.
   "footer_template": "<div style='font-size:9px;width:100%;text-align:center'><span class='pageNumber'></span> of <span class='totalPages'></span></div>"
 }
 ```
+
+---
+
+## Per-document settings (front matter)
+
+Override any setting for a specific document using the `markdown-pdf:` block
+in YAML front matter:
+
+```markdown
+---
+title: Quarterly Report
+author: Jane Smith
+company: Acme Corp
+version: 1.0.0
+markdown-pdf:
+  page_format: Letter
+  orientation: landscape
+  header:
+    height: 18mm
+    padding: 0 15mm
+    border_bottom: 1px solid #ccc
+    left:
+      - type: text
+        content: "{company}"
+        font_weight: bold
+    center:
+      type: title
+      font_style: italic
+    right:
+      type: date
+      format: MMMM d, yyyy
+  footer:
+    height: 12mm
+    left:
+      type: text
+      content: "v{version}"
+      color: "#666"
+    center:
+      type: text
+      content: "Page {page} of {pages}"
+    right:
+      type: text
+      content: "{author}"
+---
+
+# Content starts here
+```
+
+**Custom variables:** Any front matter field (like `company`, `version`) becomes
+available as a `{fieldname}` placeholder in headers and footers.
+
+**Priority order:** Front matter settings override global settings, which override defaults.
 
 ---
 
