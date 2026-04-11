@@ -2,6 +2,11 @@
   "type": "object",
   "title": "Markdown PDF",
   "properties": {
+    "font_family": {
+      "type": ["string", "null"],
+      "default": null,
+      "markdownDescription": "CSS `font-family` value applied to the document body and header/footer. `null` uses the default system font stack. Examples:\n- `\"Georgia, 'Times New Roman', serif\"`\n- `\"'Helvetica Neue', Arial, sans-serif\"`\n- `\"'Courier New', Courier, monospace\"`"
+    },
     "stylesheet_path": {
       "type": ["string", "null"],
       "default": null,

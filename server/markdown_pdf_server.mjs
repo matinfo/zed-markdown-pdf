@@ -65,6 +65,7 @@ const DEFAULT_SETTINGS = {
   print_background: true,
   margin: { top: "15mm", right: "15mm", bottom: "15mm", left: "15mm" },
   // content / rendering
+  font_family: null,
   include_default_styles: true,
   highlight: true,
   highlight_style: "github.css",
@@ -266,6 +267,7 @@ function normalizeSettings(raw) {
       typeof safe.footer_template === "string"
         ? safe.footer_template
         : DEFAULT_SETTINGS.footer_template,
+    font_family: normalizeNonEmptyString(safe.font_family),
   };
 }
 
@@ -336,6 +338,8 @@ function buildEffectiveOptions(args = {}) {
       typeof args.footer_template === "string"
         ? args.footer_template
         : settings.footer_template,
+    font_family:
+      normalizeNonEmptyString(args.font_family) ?? settings.font_family,
   };
 }
 
@@ -909,6 +913,11 @@ async function handleMessage(message) {
                   description:
                     "HTML template for the page footer. Same placeholder support as header_template.",
                 },
+                font_family: {
+                  type: "string",
+                  description:
+                    "CSS font-family value for the document body and header/footer. Overrides the default system font stack. Example: \"Georgia, 'Times New Roman', serif\".",
+                },
               },
             },
           },
@@ -1032,6 +1041,7 @@ async function doctorMarkdownPdf(args) {
       display_header_footer: settings.display_header_footer,
       header_template: settings.header_template,
       footer_template: settings.footer_template,
+      font_family: settings.font_family,
     },
     default_settings: DEFAULT_SETTINGS,
     server_dir: SERVER_DIR,
@@ -1041,16 +1051,22 @@ async function doctorMarkdownPdf(args) {
 }
 
 // ── Template helper ───────────────────────────────────────────────────────────
-function transformTemplate(templateText, title = "") {
+function transformTemplate(templateText, title = "", fontFamily = null) {
   const now = new Date();
   const isoDate = now.toISOString().slice(0, 10);
   const isoTime = now.toISOString().slice(11, 19);
   const isoDatetime = `${isoDate} ${isoTime}`;
-  return templateText
+  let result = templateText
     .replace(/%%ISO-DATE%%/g, isoDate)
     .replace(/%%ISO-DATETIME%%/g, isoDatetime)
     .replace(/%%ISO-TIME%%/g, isoTime)
     .replace(/%%TITLE%%/g, escapeHtml(title));
+  // Header/footer render in a separate Chromium context — page CSS does not
+  // reach them, so inject the font-family directly as a style block.
+  if (fontFamily) {
+    result = `<style>* { font-family: ${fontFamily} !important; }</style>${result}`;
+  }
+  return result;
 }
 
 async function exportMarkdownPdf(args) {
@@ -1092,10 +1108,12 @@ async function exportMarkdownPdf(args) {
       pdfOptions.headerTemplate = transformTemplate(
         options.header_template,
         title,
+        options.font_family,
       );
       pdfOptions.footerTemplate = transformTemplate(
         options.footer_template,
         title,
+        options.font_family,
       );
     } else {
       pdfOptions.displayHeaderFooter = false;
@@ -1171,6 +1189,11 @@ async function renderMarkdownToHtml(inputPath, options) {
   if (options.include_default_styles) {
     const defaultCss = await fs.readFile(DEFAULT_CSS_PATH, "utf8");
     styleBlocks += `<style>${defaultCss}</style>\n    `;
+  }
+
+  // Font family override (after default CSS so it wins over the root stack)
+  if (options.font_family) {
+    styleBlocks += `<style>:root { font-family: ${options.font_family}; }</style>\n    `;
   }
 
   // Highlight.js stylesheet
