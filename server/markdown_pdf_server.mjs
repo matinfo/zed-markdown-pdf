@@ -71,6 +71,7 @@ const DEFAULT_SETTINGS = {
   // output
   stylesheet_path: null,
   output_directory: null,
+  assets_directory: null,
   open_after_export: false,
   // page layout
   page_format: "A4",
@@ -237,6 +238,7 @@ function normalizeSettings(raw) {
   return {
     stylesheet_path: normalizeNonEmptyString(safe.stylesheet_path),
     output_directory: normalizeNonEmptyString(safe.output_directory),
+    assets_directory: normalizeNonEmptyString(safe.assets_directory),
     open_after_export: normalizeBoolean(
       safe.open_after_export,
       DEFAULT_SETTINGS.open_after_export,
@@ -1053,6 +1055,7 @@ async function doctorMarkdownPdf(args) {
     settings: {
       stylesheet_path: settings.stylesheet_path,
       output_directory: settings.output_directory,
+      assets_directory: settings.assets_directory,
       open_after_export: settings.open_after_export,
       page_format: settings.page_format,
       orientation: settings.orientation,
@@ -1268,7 +1271,10 @@ async function exportMarkdownPdf(args) {
 
         // Create resolvers
         const placeholderResolver = createPlaceholderResolver(renderContext);
-        const assetResolver = createAssetResolver({ basePath: inputPath });
+        const assetResolver = createAssetResolver({
+          basePath: inputPath,
+          assetsDirectory: settings.assets_directory,
+        });
 
         // Create HTML generator
         const htmlGenerator = createHtmlGenerator({

@@ -17,6 +17,11 @@
       "default": null,
       "description": "Directory for the output PDF. Relative to the Markdown file's location."
     },
+    "assets_directory": {
+      "type": ["string", "null"],
+      "default": null,
+      "markdownDescription": "Global directory for shared assets (images, logos). Supports `~` for home directory.\n\nPaths starting with `@/` in image sources are resolved relative to this directory.\n\n**Examples:**\n- `\"~/.config/zed-markdown-pdf/assets\"`\n- `\"~/Documents/brand-assets\"`\n\n**Usage in header/footer:**\n```json\n\"left_image\": \"@/company-logo.svg\"\n```"
+    },
     "open_after_export": {
       "type": "boolean",
       "default": false,
