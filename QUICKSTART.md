@@ -1,82 +1,86 @@
-# Quick Start: Markdown PDF Extension
+# Markdown PDF — Quick Start
 
-Get started with Markdown to PDF export in Zed in under 5 minutes.
+Export any Markdown file to a polished PDF directly from Zed's AI assistant.
 
-## Installation
+---
 
-### Step 1: Install the Extension
+## 1. Install the Extension
 
-1. Open Zed
-2. Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
-3. Type: `zed: install dev extension`
-4. Navigate to the `zed-markdown-pdf` directory and select it
+1. Open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+2. Run `zed: install dev extension`
+3. Select the `zed-markdown-pdf` folder
 
-Zed will build and install the extension automatically.
+Zed compiles and installs the extension automatically.
 
-### Step 2: Enable the MCP Server
+> **Requires:** Rust with `rustup target add wasm32-wasip1` and Node.js ≥ 18
 
-1. Open Zed Settings (`Cmd+,` on macOS)
-2. Navigate to **Agent** → **Context Servers**
-3. Enable the **markdown-pdf** server
+---
 
-### Step 3: That's it!
+## 2. Enable the Context Server
 
-On your first PDF export, Chromium (~150MB) will download automatically in the background. You'll see a message like:
+1. Open Zed Settings (`Cmd+,`)
+2. Go to **Agent → Context Servers**
+3. Enable **markdown-pdf**
+
+---
+
+## 3. First Export
+
+Open any `.md` file and ask the assistant:
 
 ```
-Chromium not found, installing automatically (this may take a few minutes)...
-Chromium installed successfully
+Export this file to PDF
 ```
 
-This happens only once. After the initial download, all subsequent exports are instant.
+On the very first run, Chromium (~150 MB) downloads automatically:
 
-**If automatic installation fails**, you can manually install Chromium:
-
-```bash
-# macOS
-cd ~/Library/Application\ Support/Zed/extensions/installed/markdown-pdf/server
-node node_modules/playwright-core/cli.js install chromium
-
-# Linux
-cd ~/.local/share/zed/extensions/installed/markdown-pdf/server
-node node_modules/playwright-core/cli.js install chromium
+```
+Installing npm dependencies (first run)…
+Chromium not found, installing automatically…
+Chromium installed successfully.
 ```
 
-## Usage
+This happens **once**. After that, exports are instant.
 
-### Export a Markdown File to PDF
+The PDF is saved next to your Markdown file by default.
 
-1. Open any Markdown file in Zed
-2. Open the Assistant panel
-3. Ask: **"Export this file to PDF"**
+---
 
-The AI will use the `export_markdown_pdf` tool to generate a PDF in the same directory as your Markdown file.
+## 4. Common Prompts
 
-### Example Prompts
+| What you want | What to ask |
+|---|---|
+| Basic export | `Export this file to PDF` |
+| Custom output path | `Export to docs/report.pdf` |
+| Dark code theme | `Export with the monokai theme` |
+| Landscape layout | `Export in landscape orientation` |
+| Header and footer | `Export with header and footer showing page numbers` |
+| Check setup | `Run doctor_markdown_pdf` |
 
-- "Export this to PDF"
-- "Convert this Markdown to PDF with custom styling"
-- "Export README.md to build/output.pdf"
-- "Check if the PDF exporter is set up correctly" (uses `doctor_markdown_pdf`)
+---
 
-## Optional: Configure Settings
+## 5. Settings
 
-Add custom settings in your Zed settings file:
+Add settings to your Zed `settings.json` for permanent defaults:
 
 ```json
 {
   "context_servers": {
     "markdown-pdf": {
       "settings": {
-        "stylesheet_path": "./custom.css",
-        "output_directory": "./pdf",
-        "page_format": "Letter",
-        "open_after_export": true,
+        "page_format": "A4",
+        "orientation": "portrait",
+        "print_background": true,
+        "highlight": true,
+        "highlight_style": "github.css",
+        "emoji": true,
+        "display_header_footer": false,
+        "open_after_export": false,
         "margin": {
-          "top": "18mm",
-          "right": "18mm",
-          "bottom": "18mm",
-          "left": "18mm"
+          "top": "25mm",
+          "right": "20mm",
+          "bottom": "25mm",
+          "left": "20mm"
         }
       }
     }
@@ -84,93 +88,166 @@ Add custom settings in your Zed settings file:
 }
 ```
 
-## Test the Extension
+---
 
-Use the included test fixture:
+## 6. Syntax Highlighting
 
-1. Open `test-fixtures/sample.md` in Zed
-2. Ask the AI: "Export this to PDF"
-3. Chromium will download automatically on first use (if not already installed)
-4. Check that `sample.pdf` was created
+Highlighting is **on by default** using the `github.css` theme.
 
-Or run the standalone test script:
+Change the theme in settings or ask the assistant directly:
 
-```bash
-cd zed-markdown-pdf/server
-npm install
-npm run test
+```
+Export this file to PDF using the atom-one-dark theme
 ```
 
-The test script will automatically install Chromium if needed.
+Popular themes:
 
-## Custom Styling
+| `github.css` | Light GitHub (default) |
+|---|---|
+| `github-dark.css` | Dark GitHub |
+| `monokai.css` | Classic Monokai dark |
+| `atom-one-dark.css` | Atom One Dark |
+| `nord.css` | Nord |
+| `tokyo-night-dark.css` | Tokyo Night |
+| `rose-pine.css` | Rosé Pine |
+| `vs.css` | Visual Studio light |
+| `vs2015.css` | Visual Studio dark |
+| `a11y-light.css` | Accessible light |
+| `a11y-dark.css` | Accessible dark |
 
-Create a CSS file to customize PDF appearance:
+80+ themes available — browse them at [highlightjs.org/demo](https://highlightjs.org/demo).
 
-```css
-/* custom.css */
-body {
-  font-family: 'Georgia', serif;
-  font-size: 12pt;
-}
+To disable highlighting entirely:
 
-h1 {
-  color: #2c3e50;
-  border-bottom: 2px solid #3498db;
-}
+```json
+{ "highlight": false }
 ```
 
-Then configure in settings:
+---
+
+## 7. Header and Footer
+
+Disabled by default. Enable with:
+
 ```json
 {
+  "display_header_footer": true
+}
+```
+
+The default templates render the document title on the left, the current date on
+the right of the header, and a centred page count (`1 / 4`) in the footer.
+
+### Template placeholders
+
+| Placeholder | Output |
+|---|---|
+| `%%ISO-DATE%%` | `2025-06-14` |
+| `%%ISO-DATETIME%%` | `2025-06-14 09:30:00` |
+| `%%ISO-TIME%%` | `09:30:00` |
+| `%%TITLE%%` | Document title |
+
+Chromium also fills these `<span>` classes automatically:
+
+```html
+<span class="pageNumber"></span>   <!-- current page -->
+<span class="totalPages"></span>   <!-- total pages -->
+<span class="title"></span>        <!-- document <title> -->
+<span class="date"></span>         <!-- print date -->
+```
+
+### Custom header/footer
+
+```json
+{
+  "display_header_footer": true,
+  "header_template": "<div style='font-size:9px;margin-left:1cm;flex:1'>%%TITLE%%</div><div style='font-size:9px;margin-right:1cm'>%%ISO-DATE%%</div>",
+  "footer_template": "<div style='font-size:9px;width:100%;text-align:center'><span class='pageNumber'></span> of <span class='totalPages'></span></div>"
+}
+```
+
+> Header/footer templates are isolated from page styles. Always use **inline styles**
+> and set `font-size` explicitly (Chromium defaults it to `0`).
+
+---
+
+## 8. Page Layout Options
+
+| Setting | Values | Default |
+|---|---|---|
+| `page_format` | `A4`, `Letter`, `Legal`, `A3`, `A5`, … | `A4` |
+| `orientation` | `portrait`, `landscape` | `portrait` |
+| `scale` | `0.1` – `2` | `1` |
+| `page_ranges` | `"1-5, 8"` | all pages |
+| `print_background` | `true` / `false` | `true` |
+
+---
+
+## 9. Custom Stylesheet
+
+Append your own CSS on top of the built-in neutral styles:
+
+```json
+{ "stylesheet_path": "./custom.css" }
+```
+
+To use **only** your stylesheet (no built-in CSS):
+
+```json
+{
+  "include_default_styles": false,
   "stylesheet_path": "./custom.css"
 }
 ```
 
-See `test-fixtures/custom.css` for a complete example.
+---
 
-## Troubleshooting
+## 10. Page Breaks
 
-### Chromium installation in progress
+The built-in stylesheet includes a `.page` utility class:
 
-**Message**: `Chromium not found, installing automatically...`
+```html
+<div class="page"></div>
+```
 
-**What's happening**: The extension is downloading Chromium (~150MB) automatically. This happens once on first use and takes a few minutes depending on your internet connection. Just wait for it to complete.
+Place it anywhere in your Markdown — HTML pass-through is enabled by default.
 
-### MCP server not starting
+---
 
-**Solution**: 
-1. Check the MCP server is enabled in Agent settings
-2. Restart Zed
-3. Check Zed logs (Help → View Logs)
+## 11. Front Matter
 
-### Export fails
+The `title` field in YAML front matter sets the document title used in the
+HTML `<title>` tag, the `%%TITLE%%` placeholder, and Chromium's
+`<span class="title">`:
 
-**Solution**:
-1. Ask the AI: "Check the Markdown PDF setup using doctor_markdown_pdf"
-2. Verify Chromium is installed
-3. Check file paths are correct
+```markdown
+---
+title: Project Report Q2
+---
 
-## Learn More
+# Content starts here…
+```
 
-- **README.md** - Complete documentation with all features and settings
-- **TESTING.md** - Developer testing guide
-- **test-fixtures/** - Sample Markdown files and custom CSS examples
+---
 
-## Features
+## 12. Diagnostics
 
-- **Zero manual setup** - Chromium installs automatically on first use
-- Zero system dependencies - no external binaries required
-- Modern CSS support (Flexbox, Grid, custom fonts)
-- Cross-platform (macOS, Linux, Windows)
-- MCP-native integration with Zed AI assistant
-- Custom styling with CSS
-- Configurable page formats and margins
-- Automatic relative asset resolution
+If something goes wrong, ask:
 
-## What You Get
+```
+Run doctor_markdown_pdf
+```
 
-Input: `document.md` with Markdown content  
-Output: `document.pdf` with professional formatting
+Or check the debug log:
 
-That's it! Start exporting your Markdown files to beautiful PDFs.
+```
+/tmp/zed-markdown-pdf-debug.log        # macOS / Linux
+%TEMP%\zed-markdown-pdf-debug.log      # Windows
+```
+
+---
+
+## Full Settings Reference
+
+See [`configuration/installation_instructions.md`](configuration/installation_instructions.md)
+for the complete settings reference, or [`README.md`](README.md) for full documentation.

@@ -1,52 +1,50 @@
-
 # Markdown PDF for Zed
 
 Export Markdown files to high-quality PDFs directly from Zed using Playwright and Chromium.
 
 ## Overview
 
-Markdown PDF adds a context server to Zed that lets the assistant export Markdown documents to PDF with:
+Markdown PDF adds a context server to Zed that lets the AI assistant export Markdown documents to PDF with:
 
-- custom CSS styling
-- configurable page format and margins
-- optional automatic opening after export
-- relative asset resolution for local images and files
-- per-export overrides for output path, stylesheet, margins, and more
-
-The extension is designed for a smooth first-run experience:
-- npm dependencies are installed automatically when needed
-- Chromium is installed automatically on first PDF export
+- **Syntax highlighting** for fenced code blocks via highlight.js (80+ themes)
+- **Emoji shortcodes** rendered to Unicode via markdown-it-emoji
+- **Header and footer** templates with date, title, and page-number placeholders
+- **Configurable page layout** — format, orientation, scale, margins, page ranges
+- **Custom CSS** support appended after the built-in neutral stylesheet
+- **Automatic setup** — npm dependencies and Chromium install themselves on first use
 
 ---
 
 ## Features
 
-- Native Zed integration through a context server
-- Markdown to PDF conversion powered by Playwright and Chromium
-- Custom stylesheet support
-- Configurable default output directory
-- Configurable default page format and margins
-- Per-export overrides for key PDF options
-- Automatic relative asset resolution from the Markdown file location
-- Cross-platform support for macOS, Linux, and Windows
-- Built-in diagnostic tool with `doctor_markdown_pdf`
+- Native Zed integration through a context server (MCP)
+- Markdown to PDF powered by Playwright / Chromium
+- Neutral, GitHub-style built-in stylesheet (or disable it and bring your own)
+- Syntax highlighting via highlight.js — 80+ themes to choose from
+- Emoji `:shortcode:` rendering via markdown-it-emoji
+- Hard line-break mode for poetry or source-formatted text
+- Header and footer templates with `%%ISO-DATE%%`, `%%TITLE%%`, page-number spans
+- Portrait and landscape orientation
+- Page scale factor
+- Page ranges (print only selected pages)
+- Per-export overrides for every PDF option
+- Automatic relative asset resolution (local images, fonts, …)
+- Built-in diagnostic tool (`doctor_markdown_pdf`)
+- Cross-platform: macOS, Linux, Windows
 
 ---
 
 ## Requirements
 
-For local development and dev-extension installation in Zed:
+To install the extension from source (dev extension):
 
-- Rust installed via `rustup`
-- `wasm32-wasip1` target installed
+- Rust with the `wasm32-wasip1` target
 - Node.js 18 or newer
-
-Example:
 
 ```bash
 rustup target add wasm32-wasip1
-node --version
-````
+node --version   # must be ≥ 18
+```
 
 ---
 
@@ -55,49 +53,39 @@ node --version
 ### Install as a dev extension
 
 1. Open Zed
-2. Open the command palette
-
-   * macOS: `Cmd+Shift+P`
-   * Windows/Linux: `Ctrl+Shift+P`
-3. Run:
-
-```text
-zed: install dev extension
-```
-
+2. Open the command palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+3. Run `zed: install dev extension`
 4. Select the root folder of this repository
 
 Zed will compile and install the extension.
 
 ### Enable the context server
 
-1. Open Zed settings
-2. Go to **Agent** → **Context Servers**
+1. Open Zed Settings
+2. Go to **Agent → Context Servers**
 3. Enable **markdown-pdf**
 
 ---
 
 ## First Run
 
-On first use, the server may need to install:
+On the very first export the server installs itself:
 
-* npm dependencies
-* Chromium for Playwright
-
-You may see messages such as:
-
-```text
+```
 Installing npm dependencies (first run)…
 Chromium not found, installing automatically…
 Chromium installed successfully.
 ```
 
-This setup normally happens only once.
-
-If automatic installation fails, install Chromium manually from the `server/` directory:
+Both steps happen only once. If automatic installation fails, run manually:
 
 ```bash
-cd server
+# macOS
+cd ~/Library/Application\ Support/Zed/extensions/installed/markdown-pdf/server
+
+# Linux
+cd ~/.local/share/zed/extensions/installed/markdown-pdf/server
+
 npm install
 node node_modules/playwright-core/cli.js install chromium
 ```
@@ -106,39 +94,44 @@ node node_modules/playwright-core/cli.js install chromium
 
 ## Usage
 
-Open a Markdown file in Zed, then ask the assistant something like:
+Open any Markdown file in Zed and ask the assistant:
 
-* `Export this file to PDF`
-* `Export this Markdown file to build/output.pdf`
-* `Export this file to PDF with a custom stylesheet`
-* `Run doctor_markdown_pdf`
+| Prompt | What happens |
+|--------|-------------|
+| `Export this file to PDF` | Generates a PDF next to the source file |
+| `Export to build/report.pdf with monokai theme` | Custom output path + highlight theme |
+| `Export in landscape A4 with header and footer` | Orientation + header/footer enabled |
+| `Run doctor_markdown_pdf` | Shows Chromium status and active settings |
 
-The extension exposes two tools:
+The extension exposes two MCP tools:
 
-* `export_markdown_pdf`
-* `doctor_markdown_pdf`
+- **`export_markdown_pdf`** — convert a Markdown file to PDF
+- **`doctor_markdown_pdf`** — inspect Chromium availability and current settings
 
 ---
 
 ## Settings
 
-Configure defaults in Zed settings.
+Place settings in your Zed `settings.json` under `context_servers.markdown-pdf.settings`.
 
 ```json
 {
   "context_servers": {
     "markdown-pdf": {
       "settings": {
-        "stylesheet_path": "./custom.css",
-        "output_directory": "./pdf",
         "page_format": "A4",
-        "open_after_export": false,
+        "orientation": "portrait",
         "print_background": true,
+        "highlight": true,
+        "highlight_style": "github.css",
+        "emoji": true,
+        "display_header_footer": false,
+        "open_after_export": false,
         "margin": {
-          "top": "18mm",
-          "right": "18mm",
-          "bottom": "18mm",
-          "left": "18mm"
+          "top": "25mm",
+          "right": "20mm",
+          "bottom": "25mm",
+          "left": "20mm"
         }
       }
     }
@@ -146,61 +139,158 @@ Configure defaults in Zed settings.
 }
 ```
 
-### Available Settings
+### Output
 
-| Setting             | Type      | Description                                             |
-| ------------------- | --------- | ------------------------------------------------------- |
-| `stylesheet_path`   | `string`  | Optional CSS file applied after the built-in stylesheet |
-| `output_directory`  | `string`  | Optional output directory for exported PDFs             |
-| `page_format`       | `string`  | Default paper format such as `A4`, `Letter`, or `Legal` |
-| `open_after_export` | `boolean` | Automatically open the generated PDF                    |
-| `print_background`  | `boolean` | Include background colors and images in the PDF         |
-| `margin`            | `object`  | Default page margins for PDF export                     |
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `output_directory` | `string \| null` | `null` | Directory for the output PDF. Relative to the Markdown file. |
+| `open_after_export` | `boolean` | `false` | Open the PDF in the system viewer after export. |
 
-### Supported Page Formats
+### Page Layout
 
-* `A0`
-* `A1`
-* `A2`
-* `A3`
-* `A4`
-* `A5`
-* `A6`
-* `Letter`
-* `Legal`
-* `Tabloid`
-* `Ledger`
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `page_format` | `string` | `"A4"` | Paper size: `A4`, `Letter`, `Legal`, `Tabloid`, `Ledger`, `A0`–`A3`, `A5`, `A6`. |
+| `orientation` | `string` | `"portrait"` | `"portrait"` or `"landscape"`. |
+| `scale` | `number` | `1` | Page rendering zoom (0.1 – 2). |
+| `page_ranges` | `string` | `""` | Pages to print, e.g. `"1-5, 8, 11-13"`. Empty = all pages. |
+| `print_background` | `boolean` | `true` | Print background colours and images. |
+| `margin` | `object` | see below | Per-side page margins as CSS length strings. |
+
+Default margins: `{ "top": "25mm", "right": "20mm", "bottom": "25mm", "left": "20mm" }`
+
+### Content / Rendering
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `include_default_styles` | `boolean` | `true` | Include the built-in neutral CSS. Set `false` to use only your own `stylesheet_path`. |
+| `stylesheet_path` | `string \| null` | `null` | Path to a custom CSS file appended after built-in styles. Relative to the Markdown file. |
+| `breaks` | `boolean` | `false` | Convert single newlines inside paragraphs to hard `<br>` line breaks. |
+| `emoji` | `boolean` | `true` | Render `:shortcode:` emoji (`:wave:` → 👋). |
+
+### Syntax Highlighting
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `highlight` | `boolean` | `true` | Enable syntax highlighting for fenced code blocks. |
+| `highlight_style` | `string` | `"github.css"` | Highlight.js theme filename. See the list below. |
+
+Popular themes:
+
+| Theme | Style |
+|-------|-------|
+| `github.css` | Light GitHub (default) |
+| `github-dark.css` | Dark GitHub |
+| `monokai.css` | Classic Monokai |
+| `atom-one-dark.css` | Atom One Dark |
+| `vs.css` | Visual Studio light |
+| `vs2015.css` | Visual Studio dark |
+| `nord.css` | Nord |
+| `tokyo-night-dark.css` | Tokyo Night dark |
+| `rose-pine.css` | Rosé Pine |
+| `a11y-light.css` | Accessible light |
+| `a11y-dark.css` | Accessible dark |
+| `obsidian.css` | Dark Obsidian |
+| `stackoverflow-light.css` | Stack Overflow light |
+| `stackoverflow-dark.css` | Stack Overflow dark |
+
+Browse all 80+ themes at the [highlight.js demo](https://highlightjs.org/demo).
+
+### Header and Footer
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `display_header_footer` | `boolean` | `false` | Show header and footer on every page. |
+| `header_template` | `string` | title left, date right | HTML template for the page header. |
+| `footer_template` | `string` | page number centred | HTML template for the page footer. |
+
+#### Template Placeholders
+
+These are replaced before the template is passed to Chromium:
+
+| Placeholder | Replaced with |
+|-------------|---------------|
+| `%%ISO-DATE%%` | `YYYY-MM-DD` |
+| `%%ISO-DATETIME%%` | `YYYY-MM-DD HH:MM:SS` |
+| `%%ISO-TIME%%` | `HH:MM:SS` |
+| `%%TITLE%%` | Document title (from front-matter `title:` or filename stem) |
+
+Chromium also populates these `<span>` classes automatically:
+
+```html
+<span class="pageNumber"></span>   <!-- current page -->
+<span class="totalPages"></span>   <!-- total pages -->
+<span class="date"></span>         <!-- formatted print date -->
+<span class="title"></span>        <!-- document <title> -->
+<span class="url"></span>          <!-- document URL -->
+```
+
+> **Note:** Header/footer templates are rendered in an isolated context. External
+> stylesheets do not apply — use inline styles only. Font size defaults to `0`;
+> always set `font-size` explicitly.
+
+#### Default templates
+
+```html
+<!-- header (title left, date right) -->
+<div style="font-size:9px;margin-left:1cm;flex:1"><span class="title"></span></div>
+<div style="font-size:9px;margin-right:1cm">%%ISO-DATE%%</div>
+
+<!-- footer (page X / Y centred) -->
+<div style="font-size:9px;margin:0 auto">
+  <span class="pageNumber"></span> / <span class="totalPages"></span>
+</div>
+```
+
+#### Custom header/footer example
+
+```json
+{
+  "display_header_footer": true,
+  "header_template": "<div style='font-size:9px;margin-left:1cm;flex:1'>%%TITLE%%</div><div style='font-size:9px;margin-right:1cm'>%%ISO-DATE%%</div>",
+  "footer_template": "<div style='font-size:9px;width:100%;text-align:center'><span class='pageNumber'></span> of <span class='totalPages'></span></div>"
+}
+```
 
 ---
 
 ## Per-Export Overrides
 
-In addition to default settings, the export tool supports per-call overrides for:
+Every setting can also be passed directly in the tool call for a one-off override.
+Just describe what you want to the assistant:
 
-* `output_path`
-* `stylesheet_path`
-* `open_after_export`
-* `page_format`
-* `print_background`
-* `margin`
-
-Example request:
-
-```text
-Export this file to PDF with 10mm top margin, 12mm bottom margin, and output it to build/report.pdf
+```
+Export this to PDF in landscape, Letter format, with the monokai theme,
+header and footer enabled, and output it to build/slides.pdf
 ```
 
-Per-call margin overrides are merged with defaults, so omitted sides fall back to configured settings.
+Margin overrides are merged: omitted sides fall back to your configured defaults.
+
+---
+
+## Front Matter
+
+The YAML front matter `title` field is used as the document title (HTML `<title>`,
+`%%TITLE%%` placeholder, and Chromium's `<span class="title">`).
+
+```markdown
+---
+title: My Report
+---
+
+# Content starts here
+```
+
+If no `title` is present, the filename stem is used.
 
 ---
 
 ## Custom Styling
 
-You can apply a custom stylesheet to control the PDF appearance.
-
-Example:
+Append a custom stylesheet to control the PDF appearance:
 
 ```css
+/* custom.css */
 body {
   font-family: Georgia, serif;
   font-size: 12pt;
@@ -212,33 +302,45 @@ h1 {
 }
 ```
 
-Then configure:
-
 ```json
 {
   "stylesheet_path": "./custom.css"
 }
 ```
 
+Set `"include_default_styles": false` to use your stylesheet exclusively, without the built-in neutral CSS.
+
+---
+
+## Page Break Helper
+
+The built-in stylesheet provides a `.page` utility class for hard page breaks:
+
+```html
+<div class="page"></div>
+```
+
+Place it anywhere in your Markdown (HTML pass-through is enabled by default).
+
 ---
 
 ## Project Structure
 
-```text
+```
 .
-├─ src/
-│  └─ lib.rs
-├─ configuration/
-│  ├─ installation_instructions.md
-│  ├─ settings_schema.json
-│  └─ default_settings.json
-├─ server/
-│  ├─ markdown_pdf_server.mjs
-│  ├─ default.css
-│  └─ package.json
-├─ test-fixtures/
-├─ Cargo.toml
-└─ extension.toml
+├── src/
+│   └── lib.rs                        # Rust Zed extension
+├── configuration/
+│   ├── installation_instructions.md  # Shown in Zed's context server UI
+│   ├── settings_schema.json          # JSON Schema for settings validation
+│   └── default_settings.json        # Default values
+├── server/
+│   ├── markdown_pdf_server.mjs       # MCP server (Node.js)
+│   ├── default.css                   # Built-in neutral stylesheet
+│   └── package.json
+├── test-fixtures/
+├── Cargo.toml
+└── extension.toml
 ```
 
 ---
@@ -247,97 +349,61 @@ Then configure:
 
 ### Rust extension
 
-Install the required Rust target:
-
 ```bash
 rustup target add wasm32-wasip1
 ```
 
 ### Server
 
-Install server dependencies:
-
 ```bash
 cd server
 npm install
+npm run check    # syntax check
+npm test         # end-to-end export test
 ```
 
-### Validate server syntax
+### Testing in Zed
 
-```bash
-npm run check
-```
-
-### Run the server test fixture
-
-```bash
-npm run test
-```
-
----
-
-## Testing in Zed
-
-1. Install the extension as a dev extension
-2. Enable the `markdown-pdf` context server
+1. Install as a dev extension
+2. Enable `markdown-pdf` in Agent → Context Servers
 3. Open `test-fixtures/sample.md`
-4. Ask:
-
-```text
-Export this file to PDF
-```
-
-5. Confirm that a PDF is generated
-
-You can also run:
-
-```text
-Run doctor_markdown_pdf
-```
-
-to verify that the environment is correctly configured.
+4. Ask: `Export this file to PDF`
 
 ---
 
 ## Troubleshooting
 
-### Dev extension fails to install
+### Dev extension fails to build
 
-Make sure Rust is installed with `rustup` and the WebAssembly target is available:
+Ensure Rust and the WASM target are installed:
 
 ```bash
 rustup target add wasm32-wasip1
 ```
 
-Also verify that `rustc`, `cargo`, and `rustup` come from `~/.cargo/bin` if you are on macOS with multiple Rust installations.
+On macOS with multiple Rust installations, ensure `rustc`, `cargo`, and `rustup` all resolve from `~/.cargo/bin`.
 
 ### Context server does not start
 
-* Verify that `markdown-pdf` is enabled in Zed settings
-* Restart Zed
-* Check Zed logs
-* Inspect the server debug log written to the system temp directory
+- Confirm `markdown-pdf` is enabled in **Agent → Context Servers**
+- Restart Zed
+- Check Zed logs (**Help → View Logs**)
+- Inspect the debug log at `/tmp/zed-markdown-pdf-debug.log` (macOS/Linux)
 
 ### PDF export fails
 
-Run:
+Ask the assistant:
 
-```text
+```
 Run doctor_markdown_pdf
 ```
 
-Then verify:
-
-* Chromium is installed
-* npm dependencies are installed
-* the Markdown file exists
-* stylesheet and output paths are valid
+This reports Chromium availability, active settings, and the server directory in one call.
 
 ### Chromium installation fails
 
-From the `server/` directory:
-
 ```bash
+cd server
 npm install
 node node_modules/playwright-core/cli.js install chromium
 ```
@@ -346,62 +412,29 @@ node node_modules/playwright-core/cli.js install chromium
 
 ## Architecture
 
-This extension consists of two parts:
+### Rust Zed extension (`src/lib.rs`)
 
-### 1. Rust Zed extension
+- Registers the extension with Zed
+- Exposes context server configuration and settings schema
+- Passes `MARKDOWN_PDF_SETTINGS` env var to the Node server
 
-Responsible for:
+### Node.js MCP server (`server/markdown_pdf_server.mjs`)
 
-* registering the extension
-* exposing the context server configuration
-* passing settings from Zed to the server
-
-### 2. Node.js MCP server
-
-Responsible for:
-
-* handling tool calls
-* rendering Markdown to HTML
-* generating PDFs with Playwright and Chromium
-* installing npm dependencies and Chromium when needed
+- Handles MCP tool calls over stdio
+- Renders Markdown → HTML with `markdown-it`, `highlight.js`, `markdown-it-emoji`
+- Converts HTML → PDF with Playwright / Chromium
+- Self-installs npm dependencies and Chromium on first run
 
 ---
 
 ## Why Playwright
 
-Playwright provides a robust browser-based rendering engine for Markdown to PDF export, which enables:
+Playwright provides a full browser rendering engine, which means:
 
-* modern CSS support
-* reliable print rendering
-* accurate pagination
-* good compatibility with local assets and stylesheets
-
----
-
-## Diagnostics
-
-The `doctor_markdown_pdf` tool helps inspect:
-
-* whether Chromium is available
-* the active server settings
-* the server directory
-* the debug log location
-* path resolution context
-
-This is the fastest way to diagnose setup and runtime issues.
-
----
-
-## Roadmap Ideas
-
-Potential future improvements:
-
-* header and footer templates
-* page numbering options
-* table of contents generation
-* theme presets
-* direct command palette actions for export
-* multi-file export workflows
+- accurate CSS rendering (Flexbox, Grid, custom fonts, `@media print`)
+- reliable pagination and page breaks
+- native PDF header/footer support with page numbers
+- correct resolution of local assets (images, fonts)
 
 ---
 
