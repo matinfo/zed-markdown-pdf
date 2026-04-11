@@ -1,5 +1,12 @@
 # Markdown PDF for Zed
 
+[![Version](https://img.shields.io/github/v/release/matinfo/zed-markdown-pdf?label=version&color=blue)](https://github.com/matinfo/zed-markdown-pdf/releases)
+[![CI](https://github.com/matinfo/zed-markdown-pdf/actions/workflows/server-release.yml/badge.svg)](https://github.com/matinfo/zed-markdown-pdf/actions/workflows/server-release.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-online-blue?logo=gitbook)](https://matinfo.github.io/zed-markdown-pdf/)
+[![Node.js ≥ 20](https://img.shields.io/badge/node-%E2%89%A520-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey?logo=github)](https://github.com/matinfo/zed-markdown-pdf)
+
 Export Markdown files to high-quality PDFs directly from Zed using Playwright and Chromium.
 
 ## Overview
