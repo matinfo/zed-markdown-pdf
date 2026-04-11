@@ -277,19 +277,40 @@ function normalizeSettings(raw) {
 }
 
 function loadSettings() {
+  const raw = process.env.MARKDOWN_PDF_SETTINGS ?? "{}";
+  debugLog(`MARKDOWN_PDF_SETTINGS env: ${raw}`);
+
+  // Empty or missing env — use defaults silently
+  if (!raw || raw.trim() === "" || raw.trim() === "{}") {
+    return normalizeSettings({});
+  }
+
+  let parsed;
   try {
-    const raw = process.env.MARKDOWN_PDF_SETTINGS ?? "{}";
-    debugLog(`MARKDOWN_PDF_SETTINGS env: ${raw}`);
-    const parsed = JSON.parse(raw);
-    debugLog(`parsed settings: ${JSON.stringify(parsed)}`);
+    parsed = JSON.parse(raw);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error(
+      `[markdown-pdf] ⚠️  Could not parse settings — falling back to defaults.\n` +
+        `  Reason : ${msg}\n` +
+        `  Fix    : Check the "context_servers.markdown-pdf.settings" block in your Zed settings.json for syntax errors.\n` +
+        `  Tip    : Use a JSON validator (e.g. https://jsonlint.com) to locate the problem.`,
+    );
+    debugLog(`raw settings that failed to parse: ${raw}`);
+    return normalizeSettings({});
+  }
+
+  try {
     const normalized = normalizeSettings(parsed);
     debugLog(
       `normalized settings.display_header_footer: ${normalized.display_header_footer}`,
     );
     return normalized;
   } catch (error) {
-    debugLog(
-      `settings parse failed: ${error instanceof Error ? error.message : String(error)}`,
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error(
+      `[markdown-pdf] ⚠️  Settings parsed but failed to normalize — falling back to defaults.\n` +
+        `  Reason : ${msg}`,
     );
     return normalizeSettings({});
   }
