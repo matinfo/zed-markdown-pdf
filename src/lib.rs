@@ -16,10 +16,11 @@ const GITHUB_REPO: &str = "matinfo/zed-markdown-pdf";
 const SERVER_RELEASE_TAG: &str = "server-v0.1.0";
 
 /// Name of the `.tar.gz` asset that must be attached to the release.
-/// The archive must contain these files at its root (no subdirectory wrapper):
+/// The archive must contain these files/directories at its root (no subdirectory wrapper):
 ///   - markdown_pdf_server.mjs
 ///   - default.css
 ///   - package.json
+///   - lib/
 const SERVER_ASSET_NAME: &str = "markdown-pdf-server.tar.gz";
 
 /// Destination directory inside the extension's working directory where the

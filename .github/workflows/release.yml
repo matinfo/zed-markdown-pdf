@@ -6,15 +6,35 @@ on:
       - "v*"
 
 jobs:
+  verify-server:
+    name: Verify server release exists
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check server release exists on GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(grep 'SERVER_RELEASE_TAG' src/lib.rs | grep -oP '"\K[^"]+' | head -1)
+          echo "SERVER_RELEASE_TAG in lib.rs: $TAG"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "✅ Server release '$TAG' exists."
+          else
+            echo ""
+            echo "❌ Server release '$TAG' not found on GitHub."
+            echo "Push the '$TAG' tag first to trigger the server-release workflow."
+            exit 1
+          fi
+
   release:
     name: Bump Zed Extension
     runs-on: ubuntu-latest
+    needs: verify-server
     steps:
       - uses: huacnlee/zed-extension-action@v2
         with:
           extension-name: markdown-pdf
           push-to: matinfo/zed-extensions
         env:
-          # Personal Access Token with "repo" and "workflow" scopes
-          # Add it in: Settings → Secrets and variables → Actions → New repository secret
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
