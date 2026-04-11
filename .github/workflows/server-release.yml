@@ -54,6 +54,7 @@ jobs:
             markdown_pdf_server.mjs \
             default.css \
             package.json \
+            package-lock.json \
             lib/
           echo "Archive contents:"
           tar -tzf ../markdown-pdf-server.tar.gz

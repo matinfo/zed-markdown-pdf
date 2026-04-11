@@ -11,7 +11,19 @@
  * @module frontmatter-parser
  */
 
-import { parse as parseYaml } from "yaml";
+// ── Lazy-loaded npm dependency ────────────────────────────────────────────────
+// Loaded dynamically so the MCP handshake can succeed before `npm install` runs.
+let parseYaml = null;
+
+/**
+ * Ensure the `yaml` package is loaded. Must be called (and awaited) before
+ * any function in this module that depends on YAML parsing.
+ */
+export async function ensureYamlLoaded() {
+  if (!parseYaml) {
+    parseYaml = (await import("yaml")).parse;
+  }
+}
 
 import { validateFrontMatterConfig } from "./schema-validator.mjs";
 
