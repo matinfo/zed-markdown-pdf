@@ -27,6 +27,7 @@ const SERVER_SCRIPT = path.join(
   "markdown_pdf_server.mjs",
 );
 const SAMPLE_MD = path.join(__dirname, "sample.md");
+const STRUCTURED_HEADER_MD = path.join(__dirname, "structured-header-test.md");
 const CUSTOM_CSS = path.join(__dirname, "custom.css");
 
 const KEEP_OUTPUT = process.argv.includes("--keep");
@@ -116,6 +117,15 @@ const SCENARIOS = [
     },
     output: path.join(__dirname, "out-08-no-highlight.pdf"),
     minSizeBytes: 40_000,
+  },
+  {
+    name: "09 — Structured header/footer (front matter)",
+    description:
+      "Structured header/footer config via YAML front matter with custom variables",
+    args: {},
+    input: STRUCTURED_HEADER_MD,
+    output: path.join(__dirname, "out-09-structured-header.pdf"),
+    minSizeBytes: 30_000,
   },
 ];
 
@@ -367,7 +377,7 @@ async function main() {
 
       try {
         const exportArgs = {
-          input_path: SAMPLE_MD,
+          input_path: scenario.input || SAMPLE_MD,
           output_path: scenario.output,
           open_after_export: false,
           ...scenario.args,
