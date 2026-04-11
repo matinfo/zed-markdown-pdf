@@ -23,7 +23,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/reference/settings" },
-      { text: "Examples", link: "/examples/basic" },
+      { text: "Examples", link: "/examples/quick-templates" },
       {
         text: "Links",
         items: [
@@ -85,6 +85,10 @@ export default defineConfig({
         {
           text: "Examples",
           items: [
+            {
+              text: "Quick Start Templates",
+              link: "/examples/quick-templates",
+            },
             { text: "Basic Header/Footer", link: "/examples/basic" },
             { text: "Two-Logo Header", link: "/examples/two-logo" },
             { text: "Corporate Letterhead", link: "/examples/corporate" },
