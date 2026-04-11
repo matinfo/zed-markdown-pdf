@@ -15,9 +15,10 @@ fully automated pipeline:
 Unlike traditional PDF exporters, this extension requires **no manual system
 installation**.
 
-The server's JavaScript dependencies are bundled for normal dev installs.
-If `server/node_modules` is missing the server will repair itself by running
-`npm install` the first time you invoke a tool.
+The MCP server script is **not bundled** with the extension. Instead, the
+extension downloads `markdown-pdf-server.tar.gz` from the matching GitHub
+release the first time you invoke a tool. If `server/node_modules` is missing,
+the server repairs itself by running `npm install` automatically.
 
 ## Automatic browser setup
 
@@ -33,15 +34,16 @@ This happens only once. The browser is cached on your system and shared across
 all Playwright-based tools. Subsequent exports are instant and work identically
 on macOS, Linux, and Windows.
 
-**If automatic installation fails**, you can install Chromium manually:
+**If automatic installation fails**, you can install Chromium manually.
+The server is extracted into the extension's working directory:
 
 ```bash
 # macOS
-cd ~/Library/Application\ Support/Zed/extensions/installed/markdown-pdf/server
+cd ~/Library/Application\ Support/Zed/extensions/work/markdown-pdf/server
 node node_modules/playwright-core/cli.js install chromium
 
 # Linux
-cd ~/.local/share/zed/extensions/installed/markdown-pdf/server
+cd ~/.local/share/zed/extensions/work/markdown-pdf/server
 node node_modules/playwright-core/cli.js install chromium
 ```
 
@@ -51,14 +53,17 @@ After enabling the extension:
 
 1. Open any Markdown file in Zed.
 2. Trigger an export using one of the methods below.
-3. The `export_markdown_pdf` tool generates a high-quality PDF next to the
+3. On the very first use the extension downloads the MCP server from GitHub
+   and installs its npm dependencies — this takes a few seconds and happens
+   only once.
+4. The `export_markdown_pdf` tool generates a high-quality PDF next to the
    source file (or in `output_directory` if configured).
 
 No manual setup is required.
 
-### Slash commands (quickest)
+### Slash commands (legacy assistant panel only)
 
-Type `/` in the assistant panel to invoke a slash command directly:
+Type `/` in the **assistant panel** to invoke a slash command directly:
 
 | Command | What it does |
 |---|---|
