@@ -1,0 +1,159 @@
+/* Custom PDF Styling for Markdown PDF Extension */
+
+/* Typography */
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #1a1a1a;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 24pt;
+  margin-top: 0;
+  margin-bottom: 24pt;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 8pt;
+}
+
+h2 {
+  font-size: 18pt;
+  margin-top: 20pt;
+  margin-bottom: 12pt;
+  border-bottom: 1px solid #bdc3c7;
+  padding-bottom: 4pt;
+}
+
+h3 {
+  font-size: 14pt;
+  margin-top: 16pt;
+  margin-bottom: 8pt;
+  color: #2980b9;
+}
+
+/* Code Blocks */
+pre {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-left: 4px solid #3498db;
+  padding: 12pt;
+  margin: 12pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 9pt;
+  background-color: #f8f9fa;
+  padding: 2pt 4pt;
+  border-radius: 2pt;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16pt 0;
+  page-break-inside: avoid;
+}
+
+th {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+  padding: 8pt;
+  text-align: left;
+  border: 1px solid #2980b9;
+}
+
+td {
+  padding: 6pt 8pt;
+  border: 1px solid #bdc3c7;
+}
+
+tr:nth-child(even) {
+  background-color: #ecf0f1;
+}
+
+/* Links */
+a {
+  color: #2980b9;
+  text-decoration: none;
+  border-bottom: 1px dotted #2980b9;
+}
+
+a:hover {
+  color: #3498db;
+  border-bottom: 1px solid #3498db;
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 16pt 0;
+  padding: 8pt 16pt;
+  background-color: #f8f9fa;
+  border-left: 4px solid #95a5a6;
+  color: #555;
+  font-style: italic;
+  page-break-inside: avoid;
+}
+
+blockquote p {
+  margin: 0;
+}
+
+/* Lists */
+ul, ol {
+  margin: 8pt 0;
+  padding-left: 24pt;
+}
+
+li {
+  margin: 4pt 0;
+}
+
+/* Horizontal Rules */
+hr {
+  border: none;
+  border-top: 2px solid #bdc3c7;
+  margin: 24pt 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  page-break-inside: avoid;
+}
+
+/* Page Break Utilities */
+.page-break {
+  page-break-after: always;
+}
+
+.avoid-break {
+  page-break-inside: avoid;
+}
+
+/* Print-specific adjustments */
+@media print {
+  body {
+    background: white;
+  }
+
+  a {
+    color: #2980b9;
+  }
+}
