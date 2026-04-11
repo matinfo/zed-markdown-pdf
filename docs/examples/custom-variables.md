@@ -22,7 +22,7 @@ company: Acme Corporation
 department: Engineering
 version: 1.0.0
 client: BigCorp Inc.
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     left_text: "{company}"
@@ -53,7 +53,7 @@ Combine multiple placeholders in a single text element:
 company: Acme Corp
 department: Engineering
 project_code: PRJ-2025-001
-markdown-pdf:
+pdf:
   header:
     left_text: "{company} — {department}"
     right_text: "{project_code}"
@@ -69,7 +69,7 @@ Apply different styles to different variables:
 title: Quarterly Report
 company: Acme Corporation
 confidential: true
-markdown-pdf:
+pdf:
   header:
     height: 18mm
     padding: 0 15mm
@@ -102,7 +102,7 @@ version: 2.3.1
 revision_date: 2025-06-14
 status: Draft
 change_id: CHG-2025-0142
-markdown-pdf:
+pdf:
   header:
     height: 16mm
     left_text: "{title}"
@@ -127,7 +127,7 @@ project_code: PHX-2025
 team: Platform Team
 sprint: 12
 sprint_dates: "Jun 1-14, 2025"
-markdown-pdf:
+pdf:
   header:
     height: 18mm
     padding: 0 15mm
@@ -170,7 +170,7 @@ client_name: BigCorp Industries
 client_contact: John Doe
 proposal_id: PROP-2025-0089
 valid_until: 2025-07-31
-markdown-pdf:
+pdf:
   page_format: Letter
   header:
     height: 20mm
@@ -225,7 +225,7 @@ quarter: Q2
 period: "Apr 1 - Jun 30, 2025"
 prepared_by: Finance Team
 classification: Internal
-markdown-pdf:
+pdf:
   header:
     height: 16mm
     left_text: "{company}"

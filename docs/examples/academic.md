@@ -90,7 +90,7 @@ department: Department of Computer Science
 course: CS229 - Machine Learning
 semester: Spring 2025
 advisor: Prof. John Doe
-markdown-pdf:
+pdf:
   page_format: Letter
   margin:
     top: 30mm
@@ -140,7 +140,7 @@ author: Jane Smith, Ph.D. Candidate
 university: Massachusetts Institute of Technology
 department: Department of Electrical Engineering and Computer Science
 year: 2025
-markdown-pdf:
+pdf:
   page_format: Letter
   orientation: portrait
   margin:
@@ -177,7 +177,7 @@ title: "Efficient Algorithms for Graph Processing"
 authors: "J. Smith, A. Johnson, M. Williams"
 conference: "International Conference on Machine Learning (ICML 2025)"
 paper_id: "ICML-2025-1234"
-markdown-pdf:
+pdf:
   page_format: Letter
   margin:
     top: 25mm
@@ -217,7 +217,7 @@ journal: "Journal of Computing"
 volume: 42
 issue: 3
 year: 2025
-markdown-pdf:
+pdf:
   page_format: A4
   margin:
     top: 25mm
@@ -257,7 +257,7 @@ For longer documents with chapters:
 title: "Introduction to Computer Science"
 chapter: "Chapter 3: Data Structures"
 author: Prof. Jane Smith
-markdown-pdf:
+pdf:
   header:
     height: 12mm
     padding: 0 20mm
@@ -350,7 +350,7 @@ Reference it in your front matter:
 ```yaml
 ---
 title: My Academic Paper
-markdown-pdf:
+pdf:
   stylesheet_path: "./academic.css"
   include_default_styles: true
 ---

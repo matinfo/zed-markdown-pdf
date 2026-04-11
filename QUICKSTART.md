@@ -216,14 +216,14 @@ title: Project Report Q2
 
 ### Per-Document PDF Settings
 
-Override any setting for a specific document with `markdown-pdf:`:
+Override any setting for a specific document with `pdf:`:
 
 ```markdown
 ---
 title: Quarterly Report
 author: Jane Smith
 company: Acme Corp
-markdown-pdf:
+pdf:
   page_format: Letter
   header:
     left_text: "{company}"

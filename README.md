@@ -16,7 +16,7 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - **Syntax highlighting** for fenced code blocks via highlight.js (80+ themes)
 - **Emoji shortcodes** rendered to Unicode via markdown-it-emoji
 - **Structured header/footer** with zones (left, center, right), custom variables, and date formatting
-- **Per-document overrides** via YAML front matter (`markdown-pdf:` block)
+- **Per-document overrides** via YAML front matter (`pdf:` block)
 - **Configurable page layout** — format, orientation, scale, margins, page ranges
 - **Custom CSS** support appended after the built-in neutral stylesheet
 - **Automatic setup** — npm dependencies and Chromium install themselves on first use
@@ -32,7 +32,7 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - Emoji `:shortcode:` rendering via markdown-it-emoji
 - Hard line-break mode for poetry or source-formatted text
 - Structured header/footer with zones, typed elements, and custom variables
-- Per-document settings via YAML front matter (`markdown-pdf:` block)
+- Per-document settings via YAML front matter (`pdf:` block)
 - Portrait and landscape orientation
 - Page scale factor
 - Page ranges (print only selected pages)
@@ -356,7 +356,7 @@ If no `title` is present, the filename stem is used.
 
 ### Per-Document PDF Settings
 
-Override any setting for a specific document using the `markdown-pdf:` block:
+Override any setting for a specific document using the `pdf:` block:
 
 ```markdown
 ---
@@ -364,7 +364,7 @@ title: Quarterly Report
 author: Jane Smith
 company: Acme Corp
 version: 1.0.0
-markdown-pdf:
+pdf:
   page_format: Letter
   orientation: landscape
   header:

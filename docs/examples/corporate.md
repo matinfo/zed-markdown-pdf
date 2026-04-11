@@ -99,7 +99,7 @@ author: Jane Smith
 company: Acme Corporation
 department: Finance Division
 classification: Internal Use Only
-markdown-pdf:
+pdf:
   header:
     left:
       - type: image
@@ -167,7 +167,7 @@ Include department information:
 company: Acme Corporation
 department: Human Resources
 division: Talent Acquisition
-markdown-pdf:
+pdf:
   header:
     height: 22mm
     padding: 0 15mm
@@ -318,7 +318,7 @@ company: Acme Corporation
 department: Finance
 fiscal_year: 2025
 classification: Confidential
-markdown-pdf:
+pdf:
   page_format: A4
   orientation: portrait
   margin:

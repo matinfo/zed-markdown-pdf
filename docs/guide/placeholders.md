@@ -124,7 +124,7 @@ All these are available:
 title: Project Report
 company: Acme Corp
 version: 2.0.0
-markdown-pdf:
+pdf:
   header:
     left_text: "{company}"
     center_text: "{title}"
@@ -235,7 +235,7 @@ company: Acme Corporation
 department: Finance
 fiscal_year: 2025
 confidential: true
-markdown-pdf:
+pdf:
   header:
     height: 18mm
     padding: 0 15mm

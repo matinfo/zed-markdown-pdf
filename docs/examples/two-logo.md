@@ -46,7 +46,7 @@ A header with logos on both left and right sides — common for joint reports, p
 ```yaml
 ---
 title: Joint Project Report
-markdown-pdf:
+pdf:
   header:
     height: 20mm
     padding: 0 15mm
@@ -206,7 +206,7 @@ If the image fails to load, the text still appears.
 title: Partnership Agreement
 author: Legal Department
 effective_date: 2025-07-01
-markdown-pdf:
+pdf:
   page_format: Letter
   header:
     height: 22mm

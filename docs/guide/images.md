@@ -60,7 +60,7 @@ project/
 In `report.md`:
 
 ```yaml
-markdown-pdf:
+pdf:
   header:
     left_image: "./images/logo.svg"
 ```
@@ -111,7 +111,7 @@ For organization-wide branding, configure a global assets directory and referenc
 **Step 3: Reference with @/ prefix:**
 
 ```yaml
-markdown-pdf:
+pdf:
   header:
     left_image: "@/company-logo.svg"
     right_image: "@/partner-logo.png"
@@ -365,7 +365,7 @@ Adjust the `height` property:
 ```yaml
 ---
 title: Annual Report 2025
-markdown-pdf:
+pdf:
   header:
     height: 20mm
     padding: 0 15mm

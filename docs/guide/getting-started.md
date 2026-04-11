@@ -59,7 +59,7 @@ Or configure per-document via front matter:
 ---
 title: My Report
 author: Jane Smith
-markdown-pdf:
+pdf:
   header:
     left_text: "{author}"
     center_text: "{title}"

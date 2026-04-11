@@ -352,7 +352,7 @@ Settings are applied in this order (later overrides earlier):
 
 1. **Extension defaults** — Built-in sensible defaults
 2. **Global settings** — Your `settings.json` configuration
-3. **Front matter** — Per-document `markdown-pdf:` block
+3. **Front matter** — Per-document `pdf:` block
 4. **Tool arguments** — Options passed in the prompt
 
 ## Minimal Configuration

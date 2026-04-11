@@ -309,7 +309,7 @@ Settings are applied in this order (later overrides earlier):
 
 1. **Extension defaults**
 2. **Global settings** (`settings.json`)
-3. **Front matter** (`markdown-pdf:` block)
+3. **Front matter** (`pdf:` block)
 4. **Tool arguments** (from prompt)
 
 ## Minimal Example
