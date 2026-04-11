@@ -28,6 +28,7 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - Page scale factor
 - Page ranges (print only selected pages)
 - Per-export overrides for every PDF option
+- Slash commands `/export-pdf` and `/export-pdf-with-headers` in the assistant panel
 - Automatic relative asset resolution (local images, fonts, …)
 - Built-in diagnostic tool (`doctor_markdown_pdf`)
 - Cross-platform: macOS, Linux, Windows
@@ -94,7 +95,25 @@ node node_modules/playwright-core/cli.js install chromium
 
 ## Usage
 
-Open any Markdown file in Zed and ask the assistant:
+### Slash Commands
+
+The extension registers two slash commands in the Zed assistant panel. Type `/` to
+invoke them — they are the quickest way to trigger an export without writing a prompt:
+
+| Command | What it does |
+|---------|--------------|
+| `/export-pdf` | Export the current Markdown file to PDF with default settings |
+| `/export-pdf README.md` | Export a specific file (path resolved from the worktree root) |
+| `/export-pdf-with-headers` | Export the current file with `display_header_footer: true` |
+| `/export-pdf-with-headers README.md` | Targeted export with header and footer |
+
+> **Note:** Zed's WASM extension API does not expose a Cmd+Shift+P command-palette
+> registration hook, so these live in the assistant panel (`/`) rather than the global
+> palette. This is the closest equivalent the current Zed extension API allows.
+
+### Natural-language prompts
+
+You can also open any Markdown file and describe what you want to the assistant:
 
 | Prompt | What happens |
 |--------|-------------|
@@ -103,7 +122,9 @@ Open any Markdown file in Zed and ask the assistant:
 | `Export in landscape A4 with header and footer` | Orientation + header/footer enabled |
 | `Run doctor_markdown_pdf` | Shows Chromium status and active settings |
 
-The extension exposes two MCP tools:
+### MCP tools
+
+The extension exposes two MCP tools directly callable by the AI:
 
 - **`export_markdown_pdf`** — convert a Markdown file to PDF
 - **`doctor_markdown_pdf`** — inspect Chromium availability and current settings

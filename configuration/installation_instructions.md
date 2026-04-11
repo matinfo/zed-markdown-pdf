@@ -50,11 +50,34 @@ node node_modules/playwright-core/cli.js install chromium
 After enabling the extension:
 
 1. Open any Markdown file in Zed.
-2. Ask the AI assistant: *"Export this to PDF"*.
+2. Trigger an export using one of the methods below.
 3. The `export_markdown_pdf` tool generates a high-quality PDF next to the
    source file (or in `output_directory` if configured).
 
 No manual setup is required.
+
+### Slash commands (quickest)
+
+Type `/` in the assistant panel to invoke a slash command directly:
+
+| Command | What it does |
+|---|---|
+| `/export-pdf` | Export the current Markdown file to PDF |
+| `/export-pdf README.md` | Export a specific file (resolved from the worktree root) |
+| `/export-pdf-with-headers` | Export with header and footer enabled |
+| `/export-pdf-with-headers README.md` | Targeted export with header and footer |
+
+> **Note:** Zed's WASM extension API does not expose a Cmd+Shift+P
+> command-palette registration hook. Slash commands in the assistant panel
+> (`/`) are the closest equivalent the current Zed extension API allows.
+
+### Natural-language prompts
+
+You can also just describe what you want to the assistant:
+
+- *"Export this to PDF"*
+- *"Export in landscape with the monokai theme"*
+- *"Export with header and footer showing page numbers"*
 
 ---
 

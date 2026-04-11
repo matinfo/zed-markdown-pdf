@@ -46,7 +46,24 @@ The PDF is saved next to your Markdown file by default.
 
 ---
 
-## 4. Common Prompts
+## 4. Slash Commands
+
+The extension registers two slash commands in the assistant panel. Type `/` to see them — they are the fastest way to trigger an export without writing a prompt:
+
+| Command | What it does |
+|---|---|
+| `/export-pdf` | Export the current Markdown file to PDF |
+| `/export-pdf README.md` | Export a specific file (resolved from the worktree root) |
+| `/export-pdf-with-headers` | Export with `display_header_footer: true` |
+| `/export-pdf-with-headers README.md` | Targeted export with header and footer |
+
+> **Note:** Zed's WASM extension API does not expose a Cmd+Shift+P command-palette
+> hook, so these commands live in the assistant panel (`/`) rather than the global
+> palette — the closest equivalent the current Zed extension API allows.
+
+---
+
+## 5. Common Prompts
 
 | What you want | What to ask |
 |---|---|
@@ -59,7 +76,7 @@ The PDF is saved next to your Markdown file by default.
 
 ---
 
-## 5. Settings
+## 6. Settings
 
 Add settings to your Zed `settings.json` for permanent defaults:
 
@@ -90,7 +107,7 @@ Add settings to your Zed `settings.json` for permanent defaults:
 
 ---
 
-## 6. Syntax Highlighting
+## 7. Syntax Highlighting
 
 Highlighting is **on by default** using the `github.css` theme.
 
@@ -125,7 +142,7 @@ To disable highlighting entirely:
 
 ---
 
-## 7. Header and Footer
+## 8. Header and Footer
 
 Disabled by default. Enable with:
 
@@ -171,7 +188,7 @@ Chromium also fills these `<span>` classes automatically:
 
 ---
 
-## 8. Page Layout Options
+## 9. Page Layout Options
 
 | Setting | Values | Default |
 |---|---|---|
@@ -183,7 +200,7 @@ Chromium also fills these `<span>` classes automatically:
 
 ---
 
-## 9. Custom Stylesheet
+## 10. Custom Stylesheet
 
 Append your own CSS on top of the built-in neutral styles:
 
@@ -202,7 +219,7 @@ To use **only** your stylesheet (no built-in CSS):
 
 ---
 
-## 10. Page Breaks
+## 11. Page Breaks
 
 The built-in stylesheet includes a `.page` utility class:
 
@@ -214,7 +231,7 @@ Place it anywhere in your Markdown — HTML pass-through is enabled by default.
 
 ---
 
-## 11. Front Matter
+## 12. Front Matter
 
 The `title` field in YAML front matter sets the document title used in the
 HTML `<title>` tag, the `%%TITLE%%` placeholder, and Chromium's
@@ -230,7 +247,7 @@ title: Project Report Q2
 
 ---
 
-## 12. Diagnostics
+## 13. Diagnostics
 
 If something goes wrong, ask:
 
