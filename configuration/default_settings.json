@@ -17,7 +17,5 @@
   "highlight_style": "github.css",
   "breaks": false,
   "emoji": true,
-  "display_header_footer": false,
-  "header_template": "<div style=\"font-size:9px;margin-left:1cm;flex:1\"><span class='title'></span></div><div style=\"font-size:9px;margin-right:1cm\">%%ISO-DATE%%</div>",
-  "footer_template": "<div style=\"font-size:9px;margin:0 auto\"><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
+  "display_header_footer": false
 }

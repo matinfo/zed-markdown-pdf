@@ -812,15 +812,6 @@ describe("isStructuredConfig", () => {
     );
   });
 
-  it("should return false when header/footer are strings (raw HTML)", () => {
-    assert.equal(
-      isStructuredConfig({
-        header_template: "<div>Raw HTML</div>",
-      }),
-      false,
-    );
-  });
-
   it("should return false when header is null", () => {
     assert.equal(
       isStructuredConfig({

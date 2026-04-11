@@ -206,20 +206,11 @@
       "default": false,
       "description": "Display header and footer on each PDF page."
     },
-    "header_template": {
-      "type": "string",
-      "default": "<div style=\"font-size:9px;margin-left:1cm;flex:1\"><span class='title'></span></div><div style=\"font-size:9px;margin-right:1cm\">%%ISO-DATE%%</div>",
-      "markdownDescription": "HTML template for the page header. Available placeholders: `%%ISO-DATE%%`, `%%ISO-DATETIME%%`, `%%ISO-TIME%%`, `%%TITLE%%`. Chromium span classes: `pageNumber`, `totalPages`, `date`, `title`, `url`."
-    },
-    "footer_template": {
-      "type": "string",
-      "default": "<div style=\"font-size:9px;margin:0 auto\"><span class='pageNumber'></span> / <span class='totalPages'></span></div>",
-      "markdownDescription": "HTML template for the page footer. Same placeholder support as `header_template`."
-    },
+
     "header": {
       "type": ["object", "null"],
       "default": null,
-      "markdownDescription": "**Structured header configuration.** When set, this takes precedence over `header_template`. Supports zones (left, center, right) with typed elements.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "markdownDescription": "**Structured header configuration.** Supports zones (left, center, right) with typed elements.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
       "properties": {
         "height": {
           "type": "string",
@@ -320,7 +311,7 @@
     "footer": {
       "type": ["object", "null"],
       "default": null,
-      "markdownDescription": "**Structured footer configuration.** When set, this takes precedence over `footer_template`. Supports the same options as `header`.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "markdownDescription": "**Structured footer configuration.** Supports the same options as `header`.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
       "properties": {
         "height": {
           "type": "string",

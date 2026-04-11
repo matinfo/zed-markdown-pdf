@@ -61,10 +61,11 @@ const SCENARIOS = [
   },
   {
     name: "03 — Header and footer",
-    description:
-      "display_header_footer with %%ISO-DATE%%, title, and page numbers",
+    description: "display_header_footer with structured header and footer",
     args: {
       display_header_footer: true,
+      header: { center_text: "{title}" },
+      footer: { center_text: "Page {page} of {pages}" },
     },
     output: path.join(__dirname, "out-03-header-footer.pdf"),
     minSizeBytes: 40_000,
