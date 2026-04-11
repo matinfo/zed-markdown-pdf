@@ -184,6 +184,7 @@ Default margins: `{ "top": "15mm", "right": "15mm", "bottom": "15mm", "left": "1
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
+| `font_family` | `string \| null` | `null` | CSS `font-family` value for the document body **and** header/footer. `null` keeps the default system-font stack. Example: `"Georgia, 'Times New Roman', serif"`. |
 | `include_default_styles` | `boolean` | `true` | Include the built-in neutral CSS. Set `false` to use only your own `stylesheet_path`. |
 | `stylesheet_path` | `string \| null` | `null` | Path to a custom CSS file appended after built-in styles. Relative to the Markdown file. |
 | `breaks` | `boolean` | `false` | Convert single newlines inside paragraphs to hard `<br>` line breaks. |

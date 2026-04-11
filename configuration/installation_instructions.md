@@ -115,6 +115,7 @@ Default margin:
 
 | Key | Type | Default | Description |
 |---|---|---|---|
+| `font_family` | `string \| null` | `null` | CSS `font-family` value for the document body **and** header/footer. `null` keeps the default system font stack. Example: `"Georgia, 'Times New Roman', serif"`. |
 | `include_default_styles` | `boolean` | `true` | Include the built-in neutral stylesheet. Set to `false` to use only your own `stylesheet_path`. |
 | `stylesheet_path` | `string \| null` | `null` | Path to a custom CSS file appended after the built-in styles. Relative paths are resolved from the Markdown file's directory. |
 | `breaks` | `boolean` | `false` | Convert single newlines inside paragraphs into hard `<br>` line breaks. |

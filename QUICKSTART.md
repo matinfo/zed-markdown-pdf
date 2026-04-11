@@ -85,6 +85,7 @@ Add settings to your Zed `settings.json` for permanent defaults:
   "context_servers": {
     "markdown-pdf": {
       "settings": {
+        "font_family": null,
         "page_format": "A4",
         "orientation": "portrait",
         "print_background": true,
