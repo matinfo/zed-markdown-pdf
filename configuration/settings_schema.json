@@ -210,6 +210,279 @@
       "type": "string",
       "default": "<div style=\"font-size:9px;margin:0 auto\"><span class='pageNumber'></span> / <span class='totalPages'></span></div>",
       "markdownDescription": "HTML template for the page footer. Same placeholder support as `header_template`."
+    },
+    "header": {
+      "type": ["object", "null"],
+      "default": null,
+      "markdownDescription": "**Structured header configuration.** When set, this takes precedence over `header_template`. Supports zones (left, center, right) with typed elements.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "properties": {
+        "height": {
+          "type": "string",
+          "description": "Height of the header area, e.g. '15mm', '0.5in'."
+        },
+        "padding": {
+          "type": "string",
+          "description": "CSS padding, e.g. '0 10mm'."
+        },
+        "font_family": {
+          "type": "string",
+          "description": "CSS font-family for all text in the header."
+        },
+        "font_size": {
+          "type": "string",
+          "description": "Default font-size for all elements, e.g. '9px', '10pt'."
+        },
+        "color": {
+          "type": "string",
+          "description": "Default text color, e.g. '#333', 'gray'."
+        },
+        "border_bottom": {
+          "type": "string",
+          "description": "Bottom border, e.g. '1px solid #ccc'."
+        },
+        "background": {
+          "type": "string",
+          "description": "Background color or CSS background value."
+        },
+        "left": {
+          "description": "Left zone content. Can be a single element or array of elements.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "center": {
+          "description": "Center zone content. Can be a single element or array of elements.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "right": {
+          "description": "Right zone content. Can be a single element or array of elements.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "left_text": {
+          "type": "string",
+          "description": "Shorthand: text content for left zone. Supports placeholders like {page}, {date}, {title}."
+        },
+        "left_image": {
+          "type": "string",
+          "description": "Shorthand: image path for left zone (relative to Markdown file)."
+        },
+        "left_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for left_image, e.g. '15mm'."
+        },
+        "center_text": {
+          "type": "string",
+          "description": "Shorthand: text content for center zone."
+        },
+        "center_image": {
+          "type": "string",
+          "description": "Shorthand: image path for center zone."
+        },
+        "center_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for center_image."
+        },
+        "right_text": {
+          "type": "string",
+          "description": "Shorthand: text content for right zone."
+        },
+        "right_image": {
+          "type": "string",
+          "description": "Shorthand: image path for right zone."
+        },
+        "right_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for right_image."
+        }
+      }
+    },
+    "footer": {
+      "type": ["object", "null"],
+      "default": null,
+      "markdownDescription": "**Structured footer configuration.** When set, this takes precedence over `footer_template`. Supports the same options as `header`.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "properties": {
+        "height": {
+          "type": "string",
+          "description": "Height of the footer area, e.g. '10mm', '0.4in'."
+        },
+        "padding": {
+          "type": "string",
+          "description": "CSS padding, e.g. '0 10mm'."
+        },
+        "font_family": {
+          "type": "string",
+          "description": "CSS font-family for all text in the footer."
+        },
+        "font_size": {
+          "type": "string",
+          "description": "Default font-size for all elements."
+        },
+        "color": {
+          "type": "string",
+          "description": "Default text color."
+        },
+        "border_top": {
+          "type": "string",
+          "description": "Top border, e.g. '1px solid #ccc'."
+        },
+        "background": {
+          "type": "string",
+          "description": "Background color or CSS background value."
+        },
+        "left": {
+          "description": "Left zone content.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "center": {
+          "description": "Center zone content.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "right": {
+          "description": "Right zone content.",
+          "oneOf": [
+            { "$ref": "#/$defs/headerFooterElement" },
+            {
+              "type": "array",
+              "items": { "$ref": "#/$defs/headerFooterElement" }
+            }
+          ]
+        },
+        "left_text": {
+          "type": "string",
+          "description": "Shorthand: text for left zone."
+        },
+        "left_image": {
+          "type": "string",
+          "description": "Shorthand: image path for left zone."
+        },
+        "left_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for left_image."
+        },
+        "center_text": {
+          "type": "string",
+          "description": "Shorthand: text for center zone."
+        },
+        "center_image": {
+          "type": "string",
+          "description": "Shorthand: image path for center zone."
+        },
+        "center_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for center_image."
+        },
+        "right_text": {
+          "type": "string",
+          "description": "Shorthand: text for right zone."
+        },
+        "right_image": {
+          "type": "string",
+          "description": "Shorthand: image path for right zone."
+        },
+        "right_image_height": {
+          "type": "string",
+          "description": "Shorthand: height for right_image."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "headerFooterElement": {
+      "type": "object",
+      "description": "An element in a header/footer zone.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "image",
+            "page_number",
+            "total_pages",
+            "date",
+            "title",
+            "spacer"
+          ],
+          "description": "Element type."
+        },
+        "content": {
+          "type": "string",
+          "description": "For 'text' type: text content with placeholder support ({page}, {pages}, {date}, {date:FORMAT}, {title}, {filename}, {author}, or custom front matter variables)."
+        },
+        "src": {
+          "type": "string",
+          "description": "For 'image' type: path to image file (SVG, PNG, JPG). Relative to Markdown file."
+        },
+        "format": {
+          "type": "string",
+          "description": "For 'date' type: date-fns format string, e.g. 'yyyy-MM-dd', 'MMMM d, yyyy', 'MM/dd/yyyy'."
+        },
+        "height": {
+          "type": "string",
+          "description": "CSS height for images, e.g. '15mm', '20px'."
+        },
+        "width": {
+          "type": "string",
+          "description": "CSS width (usually omit to preserve aspect ratio)."
+        },
+        "font_size": {
+          "type": "string",
+          "description": "CSS font-size, e.g. '9px', '10pt'."
+        },
+        "font_weight": {
+          "type": ["string", "number"],
+          "description": "CSS font-weight, e.g. 'bold', 'normal', 600."
+        },
+        "font_style": {
+          "type": "string",
+          "enum": ["normal", "italic", "oblique"],
+          "description": "CSS font-style."
+        },
+        "color": {
+          "type": "string",
+          "description": "CSS color, e.g. '#333', 'gray', 'rgb(100,100,100)'."
+        },
+        "style": {
+          "type": "string",
+          "description": "Additional inline CSS styles."
+        },
+        "fallback": {
+          "type": "string",
+          "description": "For 'title' type: fallback text if no title is found."
+        },
+        "alt": {
+          "type": "string",
+          "description": "For 'image' type: alt text for accessibility."
+        }
+      },
+      "required": ["type"]
     }
   }
 }
