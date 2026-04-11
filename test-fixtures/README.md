@@ -64,7 +64,7 @@ are used for each scenario so no server restart is needed.
 |---|------|---------------|
 | 01 | Default export | A4, `github.css` highlight theme, emoji enabled — the baseline |
 | 02 | Dark highlight theme | `atom-one-dark.css` syntax highlighting with `print_background: true` |
-| 03 | Header and footer | `display_header_footer: true` — `%%ISO-DATE%%`, title span, page numbers |
+| 03 | Header and footer | structured `header` and `footer` config — title, page numbers |
 | 04 | Landscape orientation | A4 landscape at `scale: 0.9` |
 | 05 | Custom stylesheet (stacked) | Built-in neutral styles + `custom.css` appended on top |
 | 06 | No default styles | `include_default_styles: false` — `custom.css` as the sole stylesheet |

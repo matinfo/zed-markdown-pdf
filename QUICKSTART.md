@@ -180,21 +180,6 @@ Use zones (`left`, `center`, `right`) with typed elements:
 
 **Element types:** `text`, `image`, `page_number`, `total_pages`, `date`, `title`, `spacer`.
 
-### Legacy Templates
-
-For backward compatibility, raw HTML templates still work:
-
-```json
-{
-  "display_header_footer": true,
-  "header_template": "<div style='font-size:9px;margin-left:1cm'>%%TITLE%%</div>",
-  "footer_template": "<div style='font-size:9px;margin:0 auto'><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
-}
-```
-
-> Header/footer templates are isolated from page styles. Always use **inline styles**
-> and set `font-size` explicitly (Chromium defaults it to `0`).
-
 ---
 
 ## 9. Page Layout Options

@@ -125,12 +125,13 @@ async function renderMarkdownToHtml(inputPath, options = {}) {
   return { html: wrapHtml(rendered, title), title };
 }
 
-// Template placeholder replacement
-function transformTemplate(text, title = "") {
-  const now = new Date();
-  return text
-    .replace(/%%ISO-DATE%%/g, now.toISOString().slice(0, 10))
-    .replace(/%%TITLE%%/g, escapeHtml(title));
+// Resolve {placeholder} tokens against a context object
+function resolvePlaceholders(text, context = {}) {
+  return text.replace(/\{(\w+)\}/g, (_, key) =>
+    Object.prototype.hasOwnProperty.call(context, key)
+      ? escapeHtml(String(context[key]))
+      : `{${key}}`
+  );
 }
 ```
 
