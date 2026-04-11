@@ -5,6 +5,9 @@ hero:
   name: Markdown PDF
   text: for Zed Editor
   tagline: Export Markdown to polished PDFs with structured headers, footers, and custom styling
+  image:
+    src: /logo.png
+    alt: Markdown PDF for Zed
   actions:
     - theme: brand
       text: Get Started

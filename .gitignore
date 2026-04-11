@@ -7,6 +7,11 @@ dist/
 
 # ── Node.js ────────────────────────────────────────────────────────────────────
 server/node_modules/
+docs/node_modules/
+
+# ── VitePress build / cache ────────────────────────────────────────────────────
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 
 # ── Built WASM artifact ───────────────────────────────────────────────────────
 # Rebuilt via `cargo build --release --target wasm32-wasip1`
