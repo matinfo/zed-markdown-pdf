@@ -13,10 +13,7 @@
 
 import { format as formatDate } from "date-fns";
 
-import {
-  PLACEHOLDER_PATTERN,
-  BUILTIN_PLACEHOLDERS,
-} from "./types.mjs";
+import { PLACEHOLDER_PATTERN, BUILTIN_PLACEHOLDERS } from "./types.mjs";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
@@ -269,7 +266,10 @@ export function resolvePlaceholders(text, context) {
   for (let i = placeholders.length - 1; i >= 0; i--) {
     const placeholder = placeholders[i];
     const resolved = resolvePlaceholder(placeholder, context);
-    result = result.slice(0, placeholder.start) + resolved + result.slice(placeholder.end);
+    result =
+      result.slice(0, placeholder.start) +
+      resolved +
+      result.slice(placeholder.end);
   }
 
   return result;
@@ -307,7 +307,7 @@ export function createRenderContext(options) {
   const filename = inputPath ? inputPath.split(/[/\\]/).pop() || "" : "";
 
   // Build custom variables from front matter (excluding known fields)
-  const knownFields = new Set(["title", "author", "date", "markdown-pdf"]);
+  const knownFields = new Set(["title", "author", "date", "pdf"]);
   const customVariables = {};
 
   for (const [key, value] of Object.entries(frontMatter)) {
