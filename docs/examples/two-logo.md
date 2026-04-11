@@ -77,7 +77,7 @@ Content goes here...
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  [LOGO A]          Joint Project Report         [LOGO B]   │
+│  [LOGO A]          Joint Project Report           [LOGO B]  │
 │─────────────────────────────────────────────────────────────│
 ```
 

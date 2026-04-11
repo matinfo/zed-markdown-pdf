@@ -105,7 +105,7 @@ export default defineConfig({
 
     footer: {
       message: "Released under the MIT License.",
-      copyright: "Copyright © 2025-present",
+      copyright: "Copyright © 2026",
     },
 
     search: {
