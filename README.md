@@ -111,6 +111,12 @@ invoke them — they are the quickest way to trigger an export without writing a
 > registration hook, so these live in the assistant panel (`/`) rather than the global
 > palette. This is the closest equivalent the current Zed extension API allows.
 
+> ⚠️ **Zed Agent users:** Slash commands from extensions are **not supported** in the
+> Agent panel. If you type `/export-pdf` there you will see:
+> *"The /export-pdf command is not supported by Zed Agent."*
+> Use natural language instead — the agent calls the MCP tool automatically:
+> `Export README.md to PDF`
+
 ### Natural-language prompts
 
 You can also open any Markdown file and describe what you want to the assistant:

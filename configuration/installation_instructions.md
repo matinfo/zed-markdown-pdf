@@ -71,6 +71,12 @@ Type `/` in the assistant panel to invoke a slash command directly:
 > command-palette registration hook. Slash commands in the assistant panel
 > (`/`) are the closest equivalent the current Zed extension API allows.
 
+> ⚠️ **Zed Agent users:** Slash commands from extensions are **not supported**
+> in the Agent panel. If you type `/export-pdf` there you will see:
+> *"The /export-pdf command is not supported by Zed Agent."*
+> Use natural language instead — the agent calls the MCP tool automatically:
+> *"Export README.md to PDF"*
+
 ### Natural-language prompts
 
 You can also just describe what you want to the assistant:

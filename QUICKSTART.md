@@ -61,6 +61,12 @@ The extension registers two slash commands in the assistant panel. Type `/` to s
 > hook, so these commands live in the assistant panel (`/`) rather than the global
 > palette — the closest equivalent the current Zed extension API allows.
 
+> ⚠️ **Zed Agent users:** Slash commands from extensions are **not supported** in the
+> Agent panel. If you type `/export-pdf` there you will see:
+> *"The /export-pdf command is not supported by Zed Agent."*
+> Use natural language instead — the agent calls the MCP tool automatically:
+> `Export QUICKSTART.md to PDF`
+
 ---
 
 ## 5. Common Prompts
