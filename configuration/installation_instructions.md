@@ -61,27 +61,6 @@ After enabling the extension:
 
 No manual setup is required.
 
-### Slash commands (legacy assistant panel only)
-
-Type `/` in the **assistant panel** to invoke a slash command directly:
-
-| Command | What it does |
-|---|---|
-| `/export-pdf` | Export the current Markdown file to PDF |
-| `/export-pdf README.md` | Export a specific file (resolved from the worktree root) |
-| `/export-pdf-with-headers` | Export with header and footer enabled |
-| `/export-pdf-with-headers README.md` | Targeted export with header and footer |
-
-> **Note:** Zed's WASM extension API does not expose a Cmd+Shift+P
-> command-palette registration hook. Slash commands in the assistant panel
-> (`/`) are the closest equivalent the current Zed extension API allows.
-
-> ⚠️ **Zed Agent users:** Slash commands from extensions are **not supported**
-> in the Agent panel. If you type `/export-pdf` there you will see:
-> *"The /export-pdf command is not supported by Zed Agent."*
-> Use natural language instead — the agent calls the MCP tool automatically:
-> *"Export README.md to PDF"*
-
 ### Natural-language prompts
 
 You can also just describe what you want to the assistant:
@@ -152,24 +131,6 @@ About 80 themes are available. A few popular choices:
 | `atom-one-light.css` | Atom One Light |
 | `vs.css` | Visual Studio light |
 | `vs2015.css` | Visual Studio dark |
-| `nord.css` | Nord |
-| `tokyo-night-dark.css` | Tokyo Night dark |
-| `tokyo-night-light.css` | Tokyo Night light |
-| `rose-pine.css` | Rosé Pine |
-| `rose-pine-dawn.css` | Rosé Pine Dawn (light) |
-| `rose-pine-moon.css` | Rosé Pine Moon |
-| `a11y-light.css` | Accessible light |
-| `a11y-dark.css` | Accessible dark |
-| `stackoverflow-light.css` | Stack Overflow light |
-| `stackoverflow-dark.css` | Stack Overflow dark |
-| `intellij-light.css` | IntelliJ IDEA light |
-| `panda-syntax-dark.css` | Panda Syntax dark |
-| `panda-syntax-light.css` | Panda Syntax light |
-| `night-owl.css` | Night Owl |
-| `agate.css` | Agate |
-| `docco.css` | Docco |
-| `grayscale.css` | Grayscale |
-| `xcode.css` | Xcode |
 
 Browse all available styles at the
 [highlight.js demo page](https://highlightjs.org/demo).
@@ -189,7 +150,7 @@ When `header` or `footer` is set as an object, structured mode is used and
 
 ---
 
-### Structured header/footer (recommended)
+### Structured header/footer
 
 The structured format uses zones (`left`, `center`, `right`) with typed elements:
 
@@ -224,18 +185,6 @@ The structured format uses zones (`left`, `center`, `right`) with typed elements
 }
 ```
 
-#### Element types
-
-| Type | Description | Key Properties |
-|---|---|---|
-| `text` | Static or dynamic text | `content` (supports placeholders) |
-| `image` | Embedded image (SVG, PNG, JPG) | `src`, `height`, `width` |
-| `page_number` | Current page number | `format` (e.g., `"Page {page}"`) |
-| `total_pages` | Total page count | `format` |
-| `date` | Formatted date/time | `format` (date-fns pattern) |
-| `title` | Document title | `fallback` |
-| `spacer` | Flexible space | `width` (fixed) or flex |
-
 #### Placeholders
 
 Use these in `text` elements or `format` strings:
@@ -250,16 +199,6 @@ Use these in `text` elements or `format` strings:
 | `{filename}` | Source filename |
 | `{author}` | Author from front matter |
 | `{custom}` | Any front matter variable |
-
-#### Date formats (date-fns)
-
-| Format | Example |
-|---|---|
-| `yyyy-MM-dd` | 2025-06-14 |
-| `MMMM d, yyyy` | June 14, 2025 |
-| `MM/dd/yyyy` | 06/14/2025 |
-| `dd.MM.yyyy` | 14.06.2025 |
-| `d MMMM yyyy` | 14 June 2025 |
 
 #### Shorthand properties
 
@@ -397,17 +336,3 @@ break after the element:
 
 Place it in your Markdown (HTML pass-through is enabled) wherever you want a
 hard page break.
-
----
-
-## Debugging
-
-The server writes a debug log to your system temp directory:
-
-```text
-/tmp/zed-markdown-pdf-debug.log          # macOS / Linux
-%TEMP%\zed-markdown-pdf-debug.log        # Windows
-```
-
-Use the `doctor_markdown_pdf` tool to inspect the current settings, Chromium
-availability, and server directory in one call.

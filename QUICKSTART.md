@@ -46,30 +46,7 @@ The PDF is saved next to your Markdown file by default.
 
 ---
 
-## 4. Slash Commands (legacy assistant panel only)
-
-The extension registers two slash commands in the assistant panel. Type `/` to see them — they are the fastest way to trigger an export without writing a prompt:
-
-| Command | What it does |
-|---|---|
-| `/export-pdf` | Export the current Markdown file to PDF |
-| `/export-pdf README.md` | Export a specific file (resolved from the worktree root) |
-| `/export-pdf-with-headers` | Export with `display_header_footer: true` |
-| `/export-pdf-with-headers README.md` | Targeted export with header and footer |
-
-> **Note:** Zed's WASM extension API does not expose a Cmd+Shift+P command-palette
-> hook, so these commands live in the assistant panel (`/`) rather than the global
-> palette — the closest equivalent the current Zed extension API allows.
-
-> ⚠️ **Zed Agent users:** Slash commands from extensions are **not supported** in the
-> Agent panel. If you type `/export-pdf` there you will see:
-> *"The /export-pdf command is not supported by Zed Agent."*
-> Use natural language instead — the agent calls the MCP tool automatically:
-> `Export QUICKSTART.md to PDF`
-
----
-
-## 5. Common Prompts
+## 4. Common Prompts
 
 | What you want | What to ask |
 |---|---|
@@ -82,7 +59,7 @@ The extension registers two slash commands in the assistant panel. Type `/` to s
 
 ---
 
-## 6. Settings
+## 5. Settings
 
 Add settings to your Zed `settings.json` for permanent defaults:
 
@@ -114,7 +91,7 @@ Add settings to your Zed `settings.json` for permanent defaults:
 
 ---
 
-## 7. Syntax Highlighting
+## 6. Syntax Highlighting
 
 Highlighting is **on by default** using the `github.css` theme.
 
@@ -149,7 +126,7 @@ To disable highlighting entirely:
 
 ---
 
-## 8. Header and Footer
+## 7. Header and Footer
 
 There are two ways to add headers and footers:
 
@@ -182,7 +159,7 @@ Use zones (`left`, `center`, `right`) with typed elements:
 
 ---
 
-## 9. Page Layout Options
+## 8. Page Layout Options
 
 | Setting | Values | Default |
 |---|---|---|
@@ -194,7 +171,7 @@ Use zones (`left`, `center`, `right`) with typed elements:
 
 ---
 
-## 10. Custom Stylesheet
+## 9. Custom Stylesheet
 
 Append your own CSS on top of the built-in neutral styles:
 
@@ -213,7 +190,7 @@ To use **only** your stylesheet (no built-in CSS):
 
 ---
 
-## 11. Page Breaks
+## 10. Page Breaks
 
 The built-in stylesheet includes a `.page` utility class:
 
@@ -225,7 +202,7 @@ Place it anywhere in your Markdown — HTML pass-through is enabled by default.
 
 ---
 
-## 12. Front Matter
+## 11. Front Matter
 
 ### Document Title
 
@@ -261,7 +238,7 @@ Custom front matter fields (`company`, `author`) become `{placeholders}` in head
 
 ---
 
-## 13. Diagnostics
+## 12. Diagnostics
 
 If something goes wrong, ask:
 

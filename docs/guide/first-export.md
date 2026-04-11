@@ -16,19 +16,6 @@ This guide walks you through creating your first PDF export with Markdown PDF.
 
 That's it! The extension handles everything automatically.
 
-## Slash Commands (legacy assistant panel only)
-
-For quick exports without typing prompts, use slash commands in the assistant panel:
-
-| Command | Description |
-|---------|-------------|
-| `/export-pdf` | Export the current file |
-| `/export-pdf README.md` | Export a specific file |
-| `/export-pdf-with-headers` | Export with headers and footers |
-
-::: tip
-Slash commands only work in the **assistant panel**, not in the Agent panel. For the Agent panel, use natural language prompts.
-:::
 
 ## Export with Options
 
