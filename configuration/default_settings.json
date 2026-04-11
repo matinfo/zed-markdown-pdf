@@ -1,0 +1,11 @@
+{
+  "open_after_export": false,
+  "page_format": "A4",
+  "print_background": true,
+  "margin": {
+    "top": "18mm",
+    "right": "18mm",
+    "bottom": "18mm",
+    "left": "18mm"
+  }
+}
