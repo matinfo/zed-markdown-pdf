@@ -3,7 +3,6 @@ use std::env;
 use zed::settings::ContextServerSettings;
 use zed_extension_api::{
     self as zed, ContextServerConfiguration, ContextServerId, DownloadedFileType, Project, Result,
-    SlashCommand, SlashCommandOutput, Worktree,
 };
 
 const CONTEXT_SERVER_ID: &str = "markdown-pdf";
@@ -121,38 +120,6 @@ impl zed::Extension for MarkdownPdfExtension {
             settings_schema,
             default_settings,
         }))
-    }
-
-    fn run_slash_command(
-        &self,
-        command: SlashCommand,
-        args: Vec<String>,
-        worktree: Option<&Worktree>,
-    ) -> Result<SlashCommandOutput, String> {
-        let with_headers = command.name == "export-pdf-with-headers";
-
-        let file_clause = match args.first() {
-            Some(path) => {
-                let resolved = worktree
-                    .map(|wt| format!("{}/{}", wt.root_path(), path))
-                    .unwrap_or_else(|| path.clone());
-                format!("`{resolved}`")
-            }
-            None => "the current Markdown file".to_string(),
-        };
-
-        let options = if with_headers {
-            " with header and footer enabled (`display_header_footer: true`)"
-        } else {
-            ""
-        };
-
-        let text = format!("Export {file_clause} to PDF{options}.");
-
-        Ok(SlashCommandOutput {
-            text,
-            sections: vec![],
-        })
     }
 }
 
