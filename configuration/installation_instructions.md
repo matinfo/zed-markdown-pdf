@@ -176,18 +176,13 @@ Browse all available styles at the
 
 ### Header and footer
 
-There are two modes for headers and footers:
-
-1. **Structured configuration** (recommended) — declarative JSON with zones and typed elements
-2. **Legacy templates** — raw HTML strings with placeholder variables
+**Structured configuration** (recommended) — declarative JSON with zones and typed elements.
 
 | Key | Type | Default | Description |
 |---|---|---|---|
 | `display_header_footer` | `boolean` | `false` | Show a header and footer on every PDF page. |
 | `header` | `object \| null` | `null` | Structured header configuration (see below). |
 | `footer` | `object \| null` | `null` | Structured footer configuration (see below). |
-| `header_template` | `string` | title left, date right | Legacy HTML template for the page header. |
-| `footer_template` | `string` | page number centred | Legacy HTML template for the page footer. |
 
 When `header` or `footer` is set as an object, structured mode is used and
 `display_header_footer` is automatically enabled.
@@ -297,65 +292,6 @@ Available shorthands: `left_text`, `left_image`, `left_image_height`,
 | `border_bottom` | Header bottom border |
 | `border_top` | Footer top border |
 | `background` | Background color |
-
----
-
-### Legacy header/footer templates
-
-#### Template placeholder variables
-
-The following placeholders are replaced before the template is passed to
-Chromium. They are available in both `header_template` and `footer_template`.
-
-| Placeholder | Replaced with |
-|---|---|
-| `%%ISO-DATE%%` | Current date in `YYYY-MM-DD` format |
-| `%%ISO-DATETIME%%` | Current date and time in `YYYY-MM-DD HH:MM:SS` format |
-| `%%ISO-TIME%%` | Current time in `HH:MM:SS` format |
-| `%%TITLE%%` | Document title (from front matter `title:` or the filename stem) |
-
-#### Chromium native span classes
-
-Chromium also populates certain `<span>` elements inside header/footer
-templates automatically. Use them like this:
-
-```html
-<span class="pageNumber"></span>   <!-- current page number -->
-<span class="totalPages"></span>   <!-- total number of pages -->
-<span class="date"></span>         <!-- formatted print date (browser locale) -->
-<span class="title"></span>        <!-- document <title> element -->
-<span class="url"></span>          <!-- document URL -->
-```
-
-**Important:** Chromium header/footer templates are rendered in a separate,
-isolated context. Inline styles must be applied directly — external
-stylesheets and the page stylesheet do not apply. Font size defaults to `0`;
-always set an explicit `font-size` on your template elements.
-
-#### Default templates
-
-```html
-<!-- header_template default -->
-<div style="font-size:9px;margin-left:1cm;flex:1">
-  <span class="title"></span>
-</div>
-<div style="font-size:9px;margin-right:1cm">%%ISO-DATE%%</div>
-
-<!-- footer_template default -->
-<div style="font-size:9px;margin:0 auto">
-  <span class="pageNumber"></span> / <span class="totalPages"></span>
-</div>
-```
-
-#### Custom header/footer example
-
-```json
-{
-  "display_header_footer": true,
-  "header_template": "<div style='font-size:9px;margin-left:1cm;flex:1'>%%TITLE%%</div><div style='font-size:9px;margin-right:1cm'>%%ISO-DATE%%</div>",
-  "footer_template": "<div style='font-size:9px;width:100%;text-align:center'><span class='pageNumber'></span> of <span class='totalPages'></span></div>"
-}
-```
 
 ---
 
