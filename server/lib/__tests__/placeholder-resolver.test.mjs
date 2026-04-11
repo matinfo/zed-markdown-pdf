@@ -77,7 +77,9 @@ describe("parsePlaceholders", () => {
   });
 
   it("should parse mixed placeholders", () => {
-    const result = parsePlaceholders("{title} - {date:MM/dd/yyyy} - Page {page}");
+    const result = parsePlaceholders(
+      "{title} - {date:MM/dd/yyyy} - Page {page}",
+    );
 
     assert.equal(result.length, 3);
     assert.equal(result[0].name, "title");
@@ -234,8 +236,14 @@ describe("getDateFormatPresets", () => {
 
     for (const [name, format] of Object.entries(presets)) {
       const result = formatDateTime(TEST_DATE, format);
-      assert.ok(typeof result === "string", `Preset "${name}" should produce string`);
-      assert.ok(result.length > 0, `Preset "${name}" should produce non-empty string`);
+      assert.ok(
+        typeof result === "string",
+        `Preset "${name}" should produce string`,
+      );
+      assert.ok(
+        result.length > 0,
+        `Preset "${name}" should produce non-empty string`,
+      );
     }
   });
 });
@@ -267,7 +275,11 @@ describe("resolvePlaceholder", () => {
   });
 
   it("should resolve {date:format} with custom format", () => {
-    const placeholder = { full: "{date:MM/dd/yyyy}", name: "date", format: "MM/dd/yyyy" };
+    const placeholder = {
+      full: "{date:MM/dd/yyyy}",
+      name: "date",
+      format: "MM/dd/yyyy",
+    };
     const result = resolvePlaceholder(placeholder, createTestContext());
 
     assert.equal(result, "01/15/2025");
@@ -323,7 +335,9 @@ describe("resolvePlaceholder", () => {
   });
 
   it("should escape HTML in resolved values", () => {
-    const context = createTestContext({ title: "<script>alert('xss')</script>" });
+    const context = createTestContext({
+      title: "<script>alert('xss')</script>",
+    });
     const placeholder = { full: "{title}", name: "title", format: null };
     const result = resolvePlaceholder(placeholder, context);
 
@@ -335,12 +349,18 @@ describe("resolvePlaceholder", () => {
     const context = createTestContext({ title: "", author: undefined });
 
     assert.equal(
-      resolvePlaceholder({ full: "{title}", name: "title", format: null }, context),
-      ""
+      resolvePlaceholder(
+        { full: "{title}", name: "title", format: null },
+        context,
+      ),
+      "",
     );
     assert.equal(
-      resolvePlaceholder({ full: "{author}", name: "author", format: null }, context),
-      ""
+      resolvePlaceholder(
+        { full: "{author}", name: "author", format: null },
+        context,
+      ),
+      "",
     );
   });
 });
@@ -356,13 +376,16 @@ describe("resolvePlaceholders", () => {
 
     assert.equal(
       result,
-      'Page <span class="pageNumber"></span> of <span class="totalPages"></span>'
+      'Page <span class="pageNumber"></span> of <span class="totalPages"></span>',
     );
   });
 
   it("should resolve mixed placeholder types", () => {
     const context = createTestContext();
-    const result = resolvePlaceholders("{title} - {date} - Page {page}", context);
+    const result = resolvePlaceholders(
+      "{title} - {date} - Page {page}",
+      context,
+    );
 
     assert.ok(result.includes("Test Document"));
     assert.ok(result.includes("2025-01-15"));
@@ -381,7 +404,10 @@ describe("resolvePlaceholders", () => {
   });
 
   it("should handle multiple occurrences of same placeholder", () => {
-    const result = resolvePlaceholders("{page}/{pages} - {page}/{pages}", createTestContext());
+    const result = resolvePlaceholders(
+      "{page}/{pages} - {page}/{pages}",
+      createTestContext(),
+    );
 
     const pageSpanCount = (result.match(/pageNumber/g) || []).length;
     const pagesSpanCount = (result.match(/totalPages/g) || []).length;
@@ -391,7 +417,10 @@ describe("resolvePlaceholders", () => {
   });
 
   it("should preserve text between placeholders", () => {
-    const result = resolvePlaceholders("Start {page} middle {pages} end", createTestContext());
+    const result = resolvePlaceholders(
+      "Start {page} middle {pages} end",
+      createTestContext(),
+    );
 
     assert.ok(result.startsWith("Start "));
     assert.ok(result.includes(" middle "));
@@ -468,7 +497,7 @@ describe("createRenderContext", () => {
         title: "Title",
         author: "Author",
         date: "2025-01-15",
-        "markdown-pdf": { header: {} },
+        pdf: { header: {} },
         custom: "value",
       },
     });
@@ -476,7 +505,7 @@ describe("createRenderContext", () => {
     assert.ok(!("title" in context.customVariables));
     assert.ok(!("author" in context.customVariables));
     assert.ok(!("date" in context.customVariables));
-    assert.ok(!("markdown-pdf" in context.customVariables));
+    assert.ok(!("pdf" in context.customVariables));
     assert.ok("custom" in context.customVariables);
   });
 
@@ -638,14 +667,20 @@ describe("validatePlaceholders", () => {
   });
 
   it("should return valid when all custom placeholders have values", () => {
-    const result = validatePlaceholders("{version} {client}", createTestContext());
+    const result = validatePlaceholders(
+      "{version} {client}",
+      createTestContext(),
+    );
 
     assert.equal(result.valid, true);
     assert.deepEqual(result.missing, []);
   });
 
   it("should return invalid when custom placeholders are missing", () => {
-    const result = validatePlaceholders("{unknown} {missing}", createTestContext());
+    const result = validatePlaceholders(
+      "{unknown} {missing}",
+      createTestContext(),
+    );
 
     assert.equal(result.valid, false);
     assert.ok(result.missing.includes("unknown"));
@@ -653,7 +688,10 @@ describe("validatePlaceholders", () => {
   });
 
   it("should identify specific missing placeholders", () => {
-    const result = validatePlaceholders("{version} {notdefined}", createTestContext());
+    const result = validatePlaceholders(
+      "{version} {notdefined}",
+      createTestContext(),
+    );
 
     assert.equal(result.valid, false);
     assert.deepEqual(result.missing, ["notdefined"]);
@@ -728,7 +766,7 @@ describe("integration", () => {
 
     assert.equal(
       resolvePlaceholders("{date:EEEE, MMMM d, yyyy}", context),
-      "Wednesday, January 15, 2025"
+      "Wednesday, January 15, 2025",
     );
   });
 });
