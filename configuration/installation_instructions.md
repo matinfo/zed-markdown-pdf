@@ -85,7 +85,7 @@ arguments to override them on a per-export basis.
 Default margin:
 
 ```json
-{ "top": "25mm", "right": "20mm", "bottom": "25mm", "left": "20mm" }
+{ "top": "15mm", "right": "15mm", "bottom": "15mm", "left": "15mm" }
 ```
 
 ### Content / rendering

@@ -128,10 +128,10 @@ Place settings in your Zed `settings.json` under `context_servers.markdown-pdf.s
         "display_header_footer": false,
         "open_after_export": false,
         "margin": {
-          "top": "25mm",
-          "right": "20mm",
-          "bottom": "25mm",
-          "left": "20mm"
+          "top": "15mm",
+          "right": "15mm",
+          "bottom": "15mm",
+          "left": "15mm"
         }
       }
     }
@@ -157,7 +157,7 @@ Place settings in your Zed `settings.json` under `context_servers.markdown-pdf.s
 | `print_background` | `boolean` | `true` | Print background colours and images. |
 | `margin` | `object` | see below | Per-side page margins as CSS length strings. |
 
-Default margins: `{ "top": "25mm", "right": "20mm", "bottom": "25mm", "left": "20mm" }`
+Default margins: `{ "top": "15mm", "right": "15mm", "bottom": "15mm", "left": "15mm" }`
 
 ### Content / Rendering
 

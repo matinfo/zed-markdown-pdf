@@ -93,7 +93,7 @@ The server is started with these defaults (all overridable per scenario):
   "display_header_footer": false,
   "orientation": "portrait",
   "scale": 1,
-  "margin": { "top": "25mm", "right": "20mm", "bottom": "25mm", "left": "20mm" }
+  "margin": { "top": "15mm", "right": "15mm", "bottom": "15mm", "left": "15mm" }
 }
 ```
 

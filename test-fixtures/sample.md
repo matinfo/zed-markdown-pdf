@@ -191,10 +191,10 @@ LIMIT 50;
         "print_background": true,
         "display_header_footer": false,
         "margin": {
-          "top": "25mm",
-          "right": "20mm",
-          "bottom": "25mm",
-          "left": "20mm"
+          "top": "15mm",
+          "right": "15mm",
+          "bottom": "15mm",
+          "left": "15mm"
         }
       }
     }
@@ -226,10 +226,10 @@ header_footer:
   footer: "<div style='font-size:9px;margin:0 auto'><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
 
 margin:
-  top: 25mm
-  right: 20mm
-  bottom: 25mm
-  left: 20mm
+  top: 15mm
+  right: 15mm
+  bottom: 15mm
+  left: 15mm
 ```
 
 ---

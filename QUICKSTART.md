@@ -77,10 +77,10 @@ Add settings to your Zed `settings.json` for permanent defaults:
         "display_header_footer": false,
         "open_after_export": false,
         "margin": {
-          "top": "25mm",
-          "right": "20mm",
-          "bottom": "25mm",
-          "left": "20mm"
+          "top": "15mm",
+          "right": "15mm",
+          "bottom": "15mm",
+          "left": "15mm"
         }
       }
     }
