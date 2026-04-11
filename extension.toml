@@ -7,3 +7,11 @@ description = "PDF Markdown export for Zed through an MCP server powered by Play
 repository = "https://github.com/matinfo/zed-markdown-pdf"
 
 [context_servers.markdown-pdf]
+
+[slash_commands.export-pdf]
+description = "Export a Markdown file to PDF"
+requires_argument = false
+
+[slash_commands.export-pdf-with-headers]
+description = "Export a Markdown file to PDF with header and footer"
+requires_argument = false
