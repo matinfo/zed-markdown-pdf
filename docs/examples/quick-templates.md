@@ -8,7 +8,7 @@ Add these to your Zed `settings.json` under `context_servers.markdown-pdf.settin
 
 ---
 
-### 🎯 Minimal — Just Page Numbers
+### Minimal — Just Page Numbers
 
 The simplest setup. Adds page numbers at the bottom.
 
@@ -40,7 +40,7 @@ The simplest setup. Adds page numbers at the bottom.
 
 ---
 
-### 📄 Simple Header & Footer
+### Simple Header & Footer
 
 Title and date in header, page numbers in footer.
 
@@ -78,7 +78,7 @@ Title and date in header, page numbers in footer.
 
 ---
 
-### 📋 Professional Document
+### Professional Document
 
 Clean look with borders and styling.
 
@@ -129,7 +129,7 @@ Clean look with borders and styling.
 
 ---
 
-### 🏢 Company Logo Header
+### Company Logo Header
 
 Logo on left, title centered, date on right.
 
@@ -183,7 +183,7 @@ Place your logo at `~/.config/zed-markdown-pdf/assets/company-logo.svg`
 
 ---
 
-### 🎨 Two Logos — Partner Branding
+### Two Logos — Partner Branding
 
 Your logo on left, partner logo on right.
 
@@ -236,7 +236,7 @@ Your logo on left, partner logo on right.
 
 ---
 
-### 📚 Academic Paper
+### Academic Paper
 
 Author-focused with institutional format.
 
@@ -288,7 +288,7 @@ Author-focused with institutional format.
 
 ---
 
-### 📊 Technical Report
+### Technical Report
 
 Detailed footer with document metadata.
 
@@ -346,7 +346,7 @@ Add these to the top of your Markdown files:
 
 ---
 
-### 📝 Basic Document
+### Basic Document
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -381,7 +381,7 @@ Start writing...
 
 ---
 
-### 📅 Meeting Notes
+### Meeting Notes
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -435,7 +435,7 @@ markdown-pdf:
 
 ---
 
-### 📑 Project Proposal
+### Project Proposal
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -494,7 +494,7 @@ markdown-pdf:
 
 ---
 
-### 📈 Report with Logo
+### Report with Logo
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -558,7 +558,7 @@ markdown-pdf:
 
 ---
 
-### 🧾 Invoice / Formal Document
+### Invoice / Formal Document
 
 ```
 ┌────────────────────────────────────────────────────────────┐
