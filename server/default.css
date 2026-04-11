@@ -139,6 +139,7 @@ pre:not(.hljs) code {
 }
 
 pre.hljs {
+  background: #f6f8fa;
   border-radius: 6px;
   padding: 1rem;
   overflow-x: auto;
