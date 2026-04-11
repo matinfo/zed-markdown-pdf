@@ -3,7 +3,7 @@ title: Structured Header Test Document
 author: Test Author
 version: 1.0.0
 company: Acme Corp
-markdown-pdf:
+pdf:
   display_header_footer: true
   header:
     height: 18mm

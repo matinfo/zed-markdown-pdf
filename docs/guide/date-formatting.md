@@ -238,7 +238,7 @@ Dates are rendered using the local time of the machine running the export. The c
 ```yaml
 ---
 title: Quarterly Report
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     left_text: "Acme Corp"

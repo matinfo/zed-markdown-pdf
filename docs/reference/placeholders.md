@@ -150,7 +150,7 @@ All are available as placeholders:
 ---
 company: Acme Corp
 version: 1.0.0
-markdown-pdf:
+pdf:
   header:
     left_text: "{company}"
     right_text: "v{version}"

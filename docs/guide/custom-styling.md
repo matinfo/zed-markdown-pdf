@@ -22,7 +22,7 @@ Or in front matter:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   stylesheet_path: "./custom.css"
 ---
 ```
@@ -394,7 +394,7 @@ h1 {
 ```yaml
 ---
 title: Corporate Report
-markdown-pdf:
+pdf:
   include_default_styles: true
   stylesheet_path: "./styles/corporate.css"
   font_family: "Helvetica Neue, Arial, sans-serif"

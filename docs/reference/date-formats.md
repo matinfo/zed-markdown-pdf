@@ -275,7 +275,7 @@ If no format is specified, the default is `yyyy-MM-dd`:
 ```yaml
 ---
 title: Monthly Report
-markdown-pdf:
+pdf:
   header:
     right:
       type: date

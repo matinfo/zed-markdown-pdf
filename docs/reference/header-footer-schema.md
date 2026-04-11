@@ -287,7 +287,7 @@ title: Quarterly Report
 author: Jane Smith
 company: Acme Corp
 version: 1.0.0
-markdown-pdf:
+pdf:
   header:
     height: 18mm
     padding: 0 15mm

@@ -68,7 +68,7 @@ Override for a specific document:
 ---
 title: Quarterly Report
 author: Jane Smith
-markdown-pdf:
+pdf:
   header:
     left_text: "{author}"
     center_text: "{title}"

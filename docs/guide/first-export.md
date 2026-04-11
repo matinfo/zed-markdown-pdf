@@ -40,7 +40,7 @@ To add a structured header and footer, use front matter:
 ```yaml
 ---
 title: My Document
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     center_text: "{title}"

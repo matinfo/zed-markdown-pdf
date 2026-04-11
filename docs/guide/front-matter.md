@@ -1,6 +1,6 @@
 # Front Matter
 
-YAML front matter lets you configure PDF settings on a per-document basis. Any setting can be overridden in the `markdown-pdf:` block.
+YAML front matter lets you configure PDF settings on a per-document basis. Any setting can be overridden in the `pdf:` block.
 
 ## Basic Structure
 
@@ -8,7 +8,7 @@ YAML front matter lets you configure PDF settings on a per-document basis. Any s
 ---
 title: My Document
 author: Jane Smith
-markdown-pdf:
+pdf:
   page_format: Letter
   header:
     center_text: "{title}"
@@ -17,7 +17,7 @@ markdown-pdf:
 # Document Content
 ```
 
-The `markdown-pdf:` block contains all PDF-specific settings. Other front matter fields (like `title` and `author`) are available as placeholders.
+The `pdf:` block contains all PDF-specific settings. Other front matter fields (like `title` and `author`) are available as placeholders.
 
 ## Document Metadata
 
@@ -59,7 +59,7 @@ Use them in headers and footers:
 title: Project Report
 company: Acme Corp
 version: 2.0.0
-markdown-pdf:
+pdf:
   header:
     left_text: "{company}"
     center_text: "{title}"
@@ -69,13 +69,13 @@ markdown-pdf:
 
 ## PDF Settings
 
-All global settings can be overridden in `markdown-pdf:`:
+All global settings can be overridden in `pdf:`:
 
 ### Page Layout
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   page_format: Letter
   orientation: landscape
   scale: 0.9
@@ -93,7 +93,7 @@ markdown-pdf:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   font_family: "Georgia, serif"
   include_default_styles: true
   stylesheet_path: "./custom.css"
@@ -108,7 +108,7 @@ markdown-pdf:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     left_image: "./logo.svg"
@@ -131,7 +131,7 @@ company: Acme Corporation
 department: Finance
 fiscal_year: 2025
 version: 1.0.0
-markdown-pdf:
+pdf:
   page_format: Letter
   orientation: portrait
   margin:
@@ -183,7 +183,7 @@ Content goes here...
 
 Settings are merged with this priority (highest to lowest):
 
-1. **Front matter** (`markdown-pdf:` block)
+1. **Front matter** (`pdf:` block)
 2. **Tool call arguments** (from AI assistant)
 3. **Global settings** (`settings.json`)
 4. **Extension defaults**
@@ -191,7 +191,7 @@ Settings are merged with this priority (highest to lowest):
 ```yaml
 # This overrides any global settings:
 ---
-markdown-pdf:
+pdf:
   page_format: Letter  # Takes priority over "A4" in settings.json
 ---
 ```
@@ -202,7 +202,7 @@ To disable a header or footer for a specific document:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   header: null
   footer:
     center_text: "Page {page}"
@@ -229,7 +229,7 @@ When you define a zone in front matter, it **replaces** the global setting for t
 ```yaml
 # Front matter - replaces only the left zone
 ---
-markdown-pdf:
+pdf:
   header:
     left:
       type: text
@@ -259,7 +259,7 @@ Common issues:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   footer:
     center_text: >
       Page {page} of {pages}
@@ -271,7 +271,7 @@ markdown-pdf:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   header:
     left_text: "{company}"  # Quotes recommended for curly braces
     right_text: "Date: {date:yyyy-MM-dd}"
@@ -282,7 +282,7 @@ markdown-pdf:
 
 ```yaml
 ---
-markdown-pdf:
+pdf:
   header:
     left:
       - type: image

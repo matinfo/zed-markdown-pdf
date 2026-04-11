@@ -3,7 +3,7 @@
  *
  * This module handles:
  * - Extracting YAML front matter from Markdown content
- * - Parsing the `markdown-pdf:` configuration block
+ * - Parsing the `pdf:` configuration block
  * - Extracting document metadata (title, author, date)
  * - Collecting custom variables for placeholder resolution
  * - Validating the extracted configuration
@@ -29,18 +29,13 @@ const FRONTMATTER_DELIMITER = "---";
  * Key for PDF configuration in front matter.
  * @type {string}
  */
-const PDF_CONFIG_KEY = "markdown-pdf";
+const PDF_CONFIG_KEY = "pdf";
 
 /**
  * Known front matter fields that have special handling.
  * @type {Set<string>}
  */
-const KNOWN_FIELDS = new Set([
-  "title",
-  "author",
-  "date",
-  PDF_CONFIG_KEY,
-]);
+const KNOWN_FIELDS = new Set(["title", "author", "date", PDF_CONFIG_KEY]);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -86,8 +81,10 @@ export function hasFrontMatter(content) {
     return false;
   }
 
-  return content.startsWith(`${FRONTMATTER_DELIMITER}\n`) ||
-         content.startsWith(`${FRONTMATTER_DELIMITER}\r\n`);
+  return (
+    content.startsWith(`${FRONTMATTER_DELIMITER}\n`) ||
+    content.startsWith(`${FRONTMATTER_DELIMITER}\r\n`)
+  );
 }
 
 /**
@@ -321,7 +318,7 @@ export function extractCustomVariables(frontMatter) {
  * const content = `---
  * title: My Document
  * author: Jane Doe
- * markdown-pdf:
+ * pdf:
  *   header:
  *     left_image: ./logo.svg
  * ---
@@ -357,7 +354,11 @@ export function parseFrontMatter(content, options = {}) {
   }
 
   // Split front matter from body
-  const { frontMatter, body, hasFrontMatter: found } = splitFrontMatter(content);
+  const {
+    frontMatter,
+    body,
+    hasFrontMatter: found,
+  } = splitFrontMatter(content);
 
   if (!found) {
     // Try to extract title from H1
@@ -478,7 +479,12 @@ export function createFrontMatter(data) {
 
     if (typeof value === "string") {
       // Quote strings that might be ambiguous
-      if (value.includes(":") || value.includes("#") || value.startsWith("'") || value.startsWith('"')) {
+      if (
+        value.includes(":") ||
+        value.includes("#") ||
+        value.startsWith("'") ||
+        value.startsWith('"')
+      ) {
         lines.push(`${key}: "${value.replace(/"/g, '\\"')}"`);
       } else {
         lines.push(`${key}: ${value}`);

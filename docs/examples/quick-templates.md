@@ -364,7 +364,7 @@ Add these to the top of your Markdown files:
 ---
 title: My Document Title
 author: Your Name
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     left_text: "{title}"
@@ -402,7 +402,7 @@ author: Note Taker
 date: 2026-04-11
 attendees: Alice, Bob, Charlie
 project: Project X
-markdown-pdf:
+pdf:
   header:
     height: 16mm
     padding: 0 15mm
@@ -458,7 +458,7 @@ department: Engineering
 date: 2026-04-11
 version: "1.0"
 status: Draft
-markdown-pdf:
+pdf:
   margin:
     top: 28mm
     bottom: 25mm
@@ -514,7 +514,7 @@ markdown-pdf:
 title: Quarterly Report
 author: Jane Smith
 quarter: Q1 2026
-markdown-pdf:
+pdf:
   margin:
     top: 28mm
     bottom: 22mm
@@ -579,7 +579,7 @@ invoice_number: INV-2026-001
 client: Client Company Name
 date: 2026-04-11
 due_date: 2026-05-11
-markdown-pdf:
+pdf:
   page_format: A4
   margin:
     top: 30mm

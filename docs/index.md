@@ -49,7 +49,7 @@ Add a structured header and footer to your Markdown document:
 title: Project Report
 author: Jane Smith
 company: Acme Corp
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     left_text: "{company}"

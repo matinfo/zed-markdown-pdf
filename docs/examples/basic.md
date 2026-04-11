@@ -71,7 +71,7 @@ Use in your Markdown document:
 ---
 title: My Document
 author: Jane Smith
-markdown-pdf:
+pdf:
   header:
     height: 15mm
     left_text: "{author}"

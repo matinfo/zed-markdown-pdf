@@ -140,7 +140,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * PDF configuration block that can appear in front matter under `markdown-pdf:`.
+ * PDF configuration block that can appear in front matter under `pdf:`.
  *
  * @typedef {Object} FrontMatterPdfConfig
  * @property {HeaderFooterConfig} [header] - Header configuration
