@@ -298,6 +298,32 @@ For simple headers/footers:
 
 ## Output Settings
 
+### assets_directory
+
+Global directory for shared assets (images, logos). Supports `~` for home directory.
+
+- **Type**: `string | null`
+- **Default**: `null`
+
+```json
+{ "assets_directory": "~/.config/zed-markdown-pdf/assets" }
+```
+
+Paths starting with `@/` in image sources are resolved relative to this directory:
+
+```json
+{
+  "assets_directory": "~/.config/zed-markdown-pdf/assets",
+  "header": {
+    "left_image": "@/company-logo.svg"
+  }
+}
+```
+
+The `~` expands to your home directory on all platforms:
+- **macOS/Linux**: `$HOME` (e.g., `/Users/john`)
+- **Windows**: `%USERPROFILE%` (e.g., `C:\Users\john`)
+
 ### output_directory
 
 Default directory for output PDFs.
@@ -353,19 +379,20 @@ A minimal setup with header and footer:
 
 ## Organization-Wide Settings
 
-For consistent branding across all documents:
+For consistent branding across all documents, use the global assets directory:
 
 ```json
 {
   "context_servers": {
     "markdown-pdf": {
       "settings": {
+        "assets_directory": "~/.config/zed-markdown-pdf/assets",
         "font_family": "Helvetica, Arial, sans-serif",
         "header": {
           "height": "20mm",
           "padding": "0 15mm",
           "border_bottom": "2px solid #0066cc",
-          "left_image": "./brand/logo.svg",
+          "left_image": "@/logos/company-logo.svg",
           "left_image_height": "15mm",
           "right_text": "{date:MMMM d, yyyy}"
         },
@@ -383,6 +410,12 @@ For consistent branding across all documents:
   }
 }
 ```
+
+Each team member places their copy of the brand assets in the configured `assets_directory`.
+
+::: tip Team Setup
+Share a ZIP of your brand assets with team members. They extract it to `~/.config/zed-markdown-pdf/assets/` and the same settings work for everyone.
+:::
 
 ## Next Steps
 

@@ -43,7 +43,11 @@ Embed images (logos, icons, graphics) directly in your PDF headers and footers. 
 
 ## Path Resolution
 
-Image paths are resolved relative to the Markdown file:
+Image paths can be resolved in several ways:
+
+### Relative Paths (Default)
+
+Paths are resolved relative to the Markdown file:
 
 ```
 project/
@@ -61,9 +65,65 @@ markdown-pdf:
     left_image: "./images/logo.svg"
 ```
 
+### Home Directory (~)
+
+Use `~` to reference your home directory. Works on **macOS, Linux, and Windows**:
+
+```json
+{
+  "header": {
+    "left_image": "~/Documents/brand-assets/logo.svg"
+  }
+}
+```
+
+On each platform, `~` expands to:
+- **macOS/Linux**: `$HOME` (e.g., `/Users/john` or `/home/john`)
+- **Windows**: `%USERPROFILE%` (e.g., `C:\Users\john`)
+
+### Global Assets Directory (@/)
+
+For organization-wide branding, configure a global assets directory and reference files with the `@/` prefix:
+
+**Step 1: Configure the assets directory in Zed settings:**
+
+```json
+{
+  "context_servers": {
+    "markdown-pdf": {
+      "settings": {
+        "assets_directory": "~/.config/zed-markdown-pdf/assets"
+      }
+    }
+  }
+}
+```
+
+**Step 2: Place your shared assets there:**
+
+```
+~/.config/zed-markdown-pdf/assets/
+├── company-logo.svg
+├── partner-logo.png
+└── watermark.svg
+```
+
+**Step 3: Reference with @/ prefix:**
+
+```yaml
+markdown-pdf:
+  header:
+    left_image: "@/company-logo.svg"
+    right_image: "@/partner-logo.png"
+```
+
+::: tip
+The `@/` prefix is ideal for logos and branding assets used across multiple projects. Configure once, use everywhere!
+:::
+
 ### Absolute Paths
 
-You can also use absolute paths:
+You can also use absolute paths (less portable):
 
 ```json
 {
@@ -334,8 +394,55 @@ markdown-pdf:
 Content goes here...
 ```
 
+## Global Assets Setup
+
+For teams and organizations, set up a shared assets directory:
+
+### Recommended Structure
+
+```
+~/.config/zed-markdown-pdf/
+└── assets/
+    ├── logos/
+    │   ├── company-logo.svg
+    │   └── company-logo-dark.svg
+    ├── icons/
+    │   └── document-icon.svg
+    └── branding/
+        └── watermark.svg
+```
+
+### Team Configuration
+
+Share this snippet with your team for consistent branding:
+
+```json
+{
+  "context_servers": {
+    "markdown-pdf": {
+      "settings": {
+        "assets_directory": "~/.config/zed-markdown-pdf/assets",
+        "header": {
+          "height": "18mm",
+          "padding": "0 15mm",
+          "left_image": "@/logos/company-logo.svg",
+          "left_image_height": "14mm",
+          "right_text": "{date:MMMM d, yyyy}"
+        },
+        "footer": {
+          "center_text": "Page {page} of {pages}"
+        }
+      }
+    }
+  }
+}
+```
+
+Each team member places their copy of the logos in `~/.config/zed-markdown-pdf/assets/logos/`.
+
 ## Next Steps
 
 - [Zones & Layout](/guide/zones) — Position images in zones
 - [Elements](/guide/elements) — All element types
+- [Global Settings](/guide/global-settings) — Configure defaults
 - [Examples](/examples/two-logo) — Two-logo header example
