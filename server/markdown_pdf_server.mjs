@@ -63,7 +63,7 @@ const DEFAULT_SETTINGS = {
   scale: 1,
   page_ranges: "",
   print_background: true,
-  margin: { top: "25mm", right: "20mm", bottom: "25mm", left: "20mm" },
+  margin: { top: "15mm", right: "15mm", bottom: "15mm", left: "15mm" },
   // content / rendering
   include_default_styles: true,
   highlight: true,

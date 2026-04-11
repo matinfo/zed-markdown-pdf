@@ -69,22 +69,22 @@
       "properties": {
         "top": {
           "type": "string",
-          "default": "25mm",
+          "default": "15mm",
           "description": "Top margin."
         },
         "right": {
           "type": "string",
-          "default": "20mm",
+          "default": "15mm",
           "description": "Right margin."
         },
         "bottom": {
           "type": "string",
-          "default": "25mm",
+          "default": "15mm",
           "description": "Bottom margin."
         },
         "left": {
           "type": "string",
-          "default": "20mm",
+          "default": "15mm",
           "description": "Left margin."
         }
       }
