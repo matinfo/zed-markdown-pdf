@@ -1,6 +1,6 @@
 {
   "name": "zed-markdown-pdf-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "MCP server for Markdown to PDF conversion using Playwright",
   "type": "module",
   "private": true,
@@ -12,7 +12,9 @@
     "install:chromium": "node node_modules/playwright-core/cli.js install chromium"
   },
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.1",
+    "markdown-it-emoji": "^3.0.0",
     "playwright-core": "^1.53.0"
   },
   "engines": {
