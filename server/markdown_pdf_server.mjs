@@ -89,11 +89,6 @@ const DEFAULT_SETTINGS = {
   emoji: true,
   // header / footer
   display_header_footer: false,
-  header_template:
-    "<div style=\"font-size:9px;margin-left:1cm;flex:1\"><span class='title'></span></div>" +
-    '<div style="font-size:9px;margin-right:1cm">%%ISO-DATE%%</div>',
-  footer_template:
-    "<div style=\"font-size:9px;margin:0 auto\"><span class='pageNumber'></span> / <span class='totalPages'></span></div>",
 };
 
 const ALLOWED_ORIENTATIONS = new Set(["portrait", "landscape"]);
@@ -276,14 +271,7 @@ function normalizeSettings(raw) {
       safe.display_header_footer,
       DEFAULT_SETTINGS.display_header_footer,
     ),
-    header_template:
-      typeof safe.header_template === "string"
-        ? safe.header_template
-        : DEFAULT_SETTINGS.header_template,
-    footer_template:
-      typeof safe.footer_template === "string"
-        ? safe.footer_template
-        : DEFAULT_SETTINGS.footer_template,
+
     font_family: normalizeNonEmptyString(safe.font_family),
   };
 }
@@ -357,14 +345,7 @@ function buildEffectiveOptions(args = {}) {
       typeof args.display_header_footer === "boolean"
         ? args.display_header_footer
         : settings.display_header_footer,
-    header_template:
-      typeof args.header_template === "string"
-        ? args.header_template
-        : settings.header_template,
-    footer_template:
-      typeof args.footer_template === "string"
-        ? args.footer_template
-        : settings.footer_template,
+
     font_family:
       normalizeNonEmptyString(args.font_family) ?? settings.font_family,
   };
@@ -932,16 +913,7 @@ async function handleMessage(message) {
                   description:
                     "Display header and footer on each page. Defaults to false — omit this parameter to use the saved setting (which defaults to false if not configured).",
                 },
-                header_template: {
-                  type: "string",
-                  description:
-                    "HTML template for the page header. Supports %%ISO-DATE%%, %%ISO-DATETIME%%, %%ISO-TIME%%, %%TITLE%%, and Playwright span classes: pageNumber, totalPages, date, title.",
-                },
-                footer_template: {
-                  type: "string",
-                  description:
-                    "HTML template for the page footer. Same placeholder support as header_template.",
-                },
+
                 font_family: {
                   type: "string",
                   description:
@@ -1069,8 +1041,6 @@ async function doctorMarkdownPdf(args) {
       breaks: settings.breaks,
       emoji: settings.emoji,
       display_header_footer: settings.display_header_footer,
-      header_template: settings.header_template,
-      footer_template: settings.footer_template,
       font_family: settings.font_family,
     },
     default_settings: DEFAULT_SETTINGS,
@@ -1078,25 +1048,6 @@ async function doctorMarkdownPdf(args) {
     input_path: inputPath,
     debug_log: DEBUG_LOG,
   };
-}
-
-// ── Template helper ───────────────────────────────────────────────────────────
-function transformTemplate(templateText, title = "", fontFamily = null) {
-  const now = new Date();
-  const isoDate = now.toISOString().slice(0, 10);
-  const isoTime = now.toISOString().slice(11, 19);
-  const isoDatetime = `${isoDate} ${isoTime}`;
-  let result = templateText
-    .replace(/%%ISO-DATE%%/g, isoDate)
-    .replace(/%%ISO-DATETIME%%/g, isoDatetime)
-    .replace(/%%ISO-TIME%%/g, isoTime)
-    .replace(/%%TITLE%%/g, escapeHtml(title));
-  // Header/footer render in a separate Chromium context — page CSS does not
-  // reach them, so inject the font-family directly as a style block.
-  if (fontFamily) {
-    result = `<style>* { font-family: ${fontFamily} !important; }</style>${result}`;
-  }
-  return result;
 }
 
 async function exportMarkdownPdf(args) {
@@ -1163,24 +1114,20 @@ async function exportMarkdownPdf(args) {
     breaks: options.breaks,
     emoji: options.emoji,
     display_header_footer: options.display_header_footer,
-    header_template: options.header_template,
-    footer_template: options.footer_template,
     // Include structured header/footer from settings if present
     header: settings.header || null,
     footer: settings.footer || null,
   };
 
-  const {
-    config: mergedConfig,
-    mode: headerFooterMode,
-    hasHeaderFooter,
-  } = mergeConfig(settingsForMerge, frontMatterPdfConfig, {
-    applyDefaults: false,
-  });
-
-  debugLog(
-    `Header/footer mode: ${headerFooterMode}, hasHeaderFooter: ${hasHeaderFooter}`,
+  const { config: mergedConfig, hasHeaderFooter } = mergeConfig(
+    settingsForMerge,
+    frontMatterPdfConfig,
+    {
+      applyDefaults: false,
+    },
   );
+
+  debugLog(`hasHeaderFooter: ${hasHeaderFooter}`);
   debugLog(`Merged config: ${JSON.stringify(mergedConfig)}`);
 
   // Override options with merged config values that may have come from front matter
@@ -1247,94 +1194,74 @@ async function exportMarkdownPdf(args) {
     }
 
     debugLog(`pdfOptions before header/footer: ${JSON.stringify(pdfOptions)}`);
-    debugLog(
-      `headerFooterMode: ${headerFooterMode}, hasHeaderFooter: ${hasHeaderFooter}`,
-    );
+    debugLog(`hasHeaderFooter: ${hasHeaderFooter}`);
 
     // ── Step 5: Generate header/footer templates ────────────────────────────
     if (hasHeaderFooter || effectiveOptions.display_header_footer) {
       debugLog("BRANCH: header/footer is enabled");
       pdfOptions.displayHeaderFooter = true;
 
-      if (headerFooterMode === "structured") {
-        // ── Structured mode: use new pipeline ──
-        debugLog("Using STRUCTURED header/footer mode");
+      // Create render context for placeholders
+      const renderContext = createRenderContext({
+        inputPath,
+        title: title || "",
+        author: author || "",
+        frontMatter: { ...customVariables },
+        now: new Date(),
+      });
 
-        // Create render context for placeholders
-        const renderContext = createRenderContext({
-          inputPath,
-          title: title || "",
-          author: author || "",
-          frontMatter: { ...customVariables },
-          now: new Date(),
-        });
+      // Create resolvers
+      const placeholderResolver = createPlaceholderResolver(renderContext);
+      const assetResolver = createAssetResolver({
+        basePath: inputPath,
+        assetsDirectory: settings.assets_directory,
+      });
 
-        // Create resolvers
-        const placeholderResolver = createPlaceholderResolver(renderContext);
-        const assetResolver = createAssetResolver({
-          basePath: inputPath,
-          assetsDirectory: settings.assets_directory,
-        });
+      // Create HTML generator
+      const htmlGenerator = createHtmlGenerator({
+        placeholderResolver,
+        assetResolver,
+        fontFamily: effectiveOptions.font_family,
+      });
 
-        // Create HTML generator
-        const htmlGenerator = createHtmlGenerator({
-          placeholderResolver,
-          assetResolver,
-          fontFamily: effectiveOptions.font_family,
-        });
-
-        // Generate header template
-        if (mergedConfig.header) {
-          try {
-            pdfOptions.headerTemplate = await htmlGenerator.generateHeader(
-              mergedConfig.header,
-            );
-            debugLog(
-              `Generated structured header: ${pdfOptions.headerTemplate.substring(0, 200)}...`,
-            );
-          } catch (err) {
-            debugLog(`Error generating structured header: ${err.message}`);
-            pdfOptions.headerTemplate = "";
-          }
-        } else {
+      // Generate header template
+      if (mergedConfig.header) {
+        try {
+          pdfOptions.headerTemplate = await htmlGenerator.generateHeader(
+            mergedConfig.header,
+          );
+          debugLog(
+            `Generated structured header: ${pdfOptions.headerTemplate.substring(0, 200)}...`,
+          );
+        } catch (err) {
+          debugLog(`Error generating structured header: ${err.message}`);
           pdfOptions.headerTemplate = "";
         }
+      } else {
+        pdfOptions.headerTemplate = "";
+      }
 
-        // Generate footer template
-        if (mergedConfig.footer) {
-          try {
-            pdfOptions.footerTemplate = await htmlGenerator.generateFooter(
-              mergedConfig.footer,
-            );
-            debugLog(
-              `Generated structured footer: ${pdfOptions.footerTemplate.substring(0, 200)}...`,
-            );
-          } catch (err) {
-            debugLog(`Error generating structured footer: ${err.message}`);
-            pdfOptions.footerTemplate = "";
-          }
-        } else {
+      // Generate footer template
+      if (mergedConfig.footer) {
+        try {
+          pdfOptions.footerTemplate = await htmlGenerator.generateFooter(
+            mergedConfig.footer,
+          );
+          debugLog(
+            `Generated structured footer: ${pdfOptions.footerTemplate.substring(0, 200)}...`,
+          );
+        } catch (err) {
+          debugLog(`Error generating structured footer: ${err.message}`);
           pdfOptions.footerTemplate = "";
         }
-
-        // Log any asset warnings
-        const assetWarnings = assetResolver.getWarnings();
-        if (assetWarnings.length > 0) {
-          debugLog(`Asset warnings: ${JSON.stringify(assetWarnings)}`);
-        }
       } else {
-        // ── Legacy mode: use raw HTML templates ──
-        debugLog("Using LEGACY header/footer mode");
-        pdfOptions.headerTemplate = transformTemplate(
-          mergedConfig.header_template || effectiveOptions.header_template,
-          title,
-          effectiveOptions.font_family,
-        );
-        pdfOptions.footerTemplate = transformTemplate(
-          mergedConfig.footer_template || effectiveOptions.footer_template,
-          title,
-          effectiveOptions.font_family,
-        );
+        pdfOptions.footerTemplate = "";
+      }
+
+      // Log any asset warnings
+      const assetWarnings = assetResolver.getWarnings();
+      if (assetWarnings.length > 0) {
+        debugLog(`Asset warnings: ${JSON.stringify(assetWarnings)}`);
       }
     } else {
       debugLog("BRANCH: header/footer is disabled");
@@ -1365,7 +1292,6 @@ async function exportMarkdownPdf(args) {
     margin: effectiveOptions.margin,
     open_after_export: effectiveOptions.open_after_export,
     display_header_footer: displayHeaderFooterResult,
-    header_footer_mode: headerFooterMode,
   };
 }
 
