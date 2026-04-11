@@ -331,4 +331,4 @@ export const DEFAULT_FOOTER = Object.freeze({
  * VitePress documentation URL.
  * @type {string}
  */
-export const DOCS_URL = "https://zed-markdown-pdf.matinfo.github.io/";
+export const DOCS_URL = "https://matinfo.github.io/zed-markdown-pdf/";

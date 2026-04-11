@@ -259,4 +259,4 @@ Or check the debug log:
 
 - [`README.md`](README.md) — Complete settings reference
 - [`configuration/installation_instructions.md`](configuration/installation_instructions.md) — Installation guide
-- [Online Documentation](https://zed-markdown-pdf.matinfo.github.io/) — Full structured header/footer reference
+- [Online Documentation](https://matinfo.github.io/zed-markdown-pdf/) — Full structured header/footer reference

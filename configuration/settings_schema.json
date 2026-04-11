@@ -210,7 +210,7 @@
     "header": {
       "type": ["object", "null"],
       "default": null,
-      "markdownDescription": "**Structured header configuration.** Supports zones (left, center, right) with typed elements.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "markdownDescription": "**Structured header configuration.** Supports zones (left, center, right) with typed elements.\n\nSee [full documentation](https://matinfo.github.io/zed-markdown-pdf/) for details.",
       "properties": {
         "height": {
           "type": "string",
@@ -311,7 +311,7 @@
     "footer": {
       "type": ["object", "null"],
       "default": null,
-      "markdownDescription": "**Structured footer configuration.** Supports the same options as `header`.\n\nSee [full documentation](https://zed-markdown-pdf.matinfo.github.io/) for details.",
+      "markdownDescription": "**Structured footer configuration.** Supports the same options as `header`.\n\nSee [full documentation](https://matinfo.github.io/zed-markdown-pdf/) for details.",
       "properties": {
         "height": {
           "type": "string",
