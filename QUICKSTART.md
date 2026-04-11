@@ -46,7 +46,7 @@ The PDF is saved next to your Markdown file by default.
 
 ---
 
-## 4. Slash Commands
+## 4. Slash Commands (legacy assistant panel only)
 
 The extension registers two slash commands in the assistant panel. Type `/` to see them — they are the fastest way to trigger an export without writing a prompt:
 

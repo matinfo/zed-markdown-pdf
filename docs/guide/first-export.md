@@ -16,7 +16,7 @@ This guide walks you through creating your first PDF export with Markdown PDF.
 
 That's it! The extension handles everything automatically.
 
-## Slash Commands
+## Slash Commands (legacy assistant panel only)
 
 For quick exports without typing prompts, use slash commands in the assistant panel:
 

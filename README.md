@@ -30,7 +30,7 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - Page scale factor
 - Page ranges (print only selected pages)
 - Per-export overrides for every PDF option
-- Slash commands `/export-pdf` and `/export-pdf-with-headers` in the assistant panel
+- Slash commands `/export-pdf` and `/export-pdf-with-headers` (legacy assistant panel only)
 - Automatic relative asset resolution (local images, fonts, …)
 - Built-in diagnostic tool (`doctor_markdown_pdf`)
 - Cross-platform: macOS, Linux, Windows
@@ -97,7 +97,7 @@ node node_modules/playwright-core/cli.js install chromium
 
 ## Usage
 
-### Slash Commands
+### Slash Commands (legacy assistant panel only)
 
 The extension registers two slash commands in the Zed assistant panel. Type `/` to
 invoke them — they are the quickest way to trigger an export without writing a prompt:
