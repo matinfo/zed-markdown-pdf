@@ -1,0 +1,125 @@
+:root {
+  color-scheme: light;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  line-height: 1.55;
+  font-size: 15px;
+  color: #1c1b1a;
+  background: #f8f5ef;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f8f5ef;
+}
+
+body {
+  padding: 2.4rem 2.8rem 3rem;
+}
+
+main {
+  max-width: 7.2in;
+  margin: 0 auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #171311;
+  font-family: "Avenir Next Condensed", "Gill Sans Nova", "Gill Sans", sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 1.5em 0 0.5em;
+}
+
+h1 {
+  font-size: 2.1rem;
+  border-bottom: 2px solid #d8c8ae;
+  padding-bottom: 0.35rem;
+}
+
+h2 {
+  font-size: 1.45rem;
+}
+
+p,
+ul,
+ol,
+blockquote,
+table,
+pre {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: #9b3d2e;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(155, 61, 46, 0.25);
+}
+
+img {
+  max-width: 100%;
+}
+
+blockquote {
+  border-left: 4px solid #c49b6c;
+  margin-left: 0;
+  padding: 0.2rem 0 0.2rem 1rem;
+  color: #5f5248;
+}
+
+code,
+pre,
+kbd {
+  font-family: "Iosevka Term", "SF Mono", Menlo, Consolas, monospace;
+}
+
+code {
+  background: rgba(116, 83, 40, 0.1);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.3rem;
+}
+
+pre {
+  background: #201a17;
+  color: #f7efe4;
+  border-radius: 0.7rem;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #d7c4a7;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+}
+
+thead th {
+  background: #efe5d6;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #d7c4a7;
+  margin: 2rem 0;
+}
+
+li + li {
+  margin-top: 0.3rem;
+}

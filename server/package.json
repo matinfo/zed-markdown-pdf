@@ -1,0 +1,37 @@
+{
+  "name": "zed-markdown-pdf-server",
+  "version": "0.0.1",
+  "description": "MCP server for Markdown to PDF conversion using Playwright",
+  "type": "module",
+  "private": true,
+  "main": "markdown_pdf_server.mjs",
+  "scripts": {
+    "check": "node --check markdown_pdf_server.mjs",
+    "build": "npm run check",
+    "test": "node ../test-fixtures/test-export.mjs",
+    "install:chromium": "node node_modules/playwright-core/cli.js install chromium"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.1",
+    "playwright-core": "^1.53.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "playwright",
+    "zed",
+    "mcp",
+    "export",
+    "converter"
+  ],
+  "author": "Mat <mat@matinfo.ch>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matinfo/zed-markdown-pdf"
+  },
+  "packageManager": "npm@11.12.1"
+}
