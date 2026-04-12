@@ -13,7 +13,7 @@ const GITHUB_REPO: &str = "matinfo/zed-markdown-pdf";
 /// Git tag used to identify the server release asset.
 /// Update this constant (and cut a matching GitHub release) whenever the
 /// server script or its bundled CSS changes.
-const SERVER_RELEASE_TAG: &str = "server-v0.1.2";
+const SERVER_RELEASE_TAG: &str = "server-v0.1.3";
 
 /// Name of the `.tar.gz` asset that must be attached to the release.
 /// The archive must contain these files/directories at its root (no subdirectory wrapper):
@@ -67,16 +67,63 @@ impl MarkdownPdfExtension {
         Ok(server_script.to_string_lossy().into_owned())
     }
 
-    fn settings_env(project: &Project) -> Result<Vec<(String, String)>> {
-        let settings = ContextServerSettings::for_project(CONTEXT_SERVER_ID, project)
+    /// Read user settings from the project's `settings.json` and return them
+    /// as a `serde_json::Value`. Returns an empty object `{}` when no settings
+    /// are configured or when reading fails.
+    fn user_settings(project: &Project) -> serde_json::Value {
+        ContextServerSettings::for_project(CONTEXT_SERVER_ID, project)
             .ok()
             .and_then(|settings| settings.settings)
-            .unwrap_or_else(|| serde_json::json!({}));
+            .unwrap_or_else(|| serde_json::json!({}))
+    }
 
+    fn settings_env(project: &Project) -> Result<Vec<(String, String)>> {
+        let settings = Self::user_settings(project);
         Ok(vec![(
             "MARKDOWN_PDF_SETTINGS".to_string(),
             settings.to_string(),
         )])
+    }
+
+    /// Deep-merge `overlay` into `base`. For objects, keys from `overlay`
+    /// override keys in `base` recursively. For all other types, `overlay`
+    /// replaces `base` entirely.
+    fn deep_merge(base: &mut serde_json::Value, overlay: &serde_json::Value) {
+        match (base, overlay) {
+            (serde_json::Value::Object(base_map), serde_json::Value::Object(overlay_map)) => {
+                for (key, overlay_value) in overlay_map {
+                    let entry = base_map
+                        .entry(key.clone())
+                        .or_insert(serde_json::Value::Null);
+                    Self::deep_merge(entry, overlay_value);
+                }
+            }
+            (base, overlay) => {
+                *base = overlay.clone();
+            }
+        }
+    }
+
+    /// Build the effective settings by merging the static defaults with the
+    /// user's overrides from `settings.json`. This is returned as
+    /// `default_settings` so that the "Configure Server" modal in Zed shows
+    /// the user's current effective configuration rather than bare defaults.
+    fn effective_settings(project: &Project) -> String {
+        let default_json = include_str!("../configuration/default_settings.json");
+        let mut base: serde_json::Value =
+            serde_json::from_str(default_json).unwrap_or_else(|_| serde_json::json!({}));
+
+        let user = Self::user_settings(project);
+
+        // Only merge if the user has provided an object with at least one key.
+        if let serde_json::Value::Object(ref map) = user {
+            if !map.is_empty() {
+                Self::deep_merge(&mut base, &user);
+            }
+        }
+
+        // Pretty-print with 2-space indentation for readability in the modal.
+        serde_json::to_string_pretty(&base).unwrap_or_else(|_| default_json.to_string())
     }
 }
 
@@ -104,7 +151,7 @@ impl zed::Extension for MarkdownPdfExtension {
     fn context_server_configuration(
         &mut self,
         context_server_id: &ContextServerId,
-        _project: &Project,
+        project: &Project,
     ) -> Result<Option<ContextServerConfiguration>> {
         if context_server_id.as_ref() != CONTEXT_SERVER_ID {
             return Ok(None);
@@ -115,7 +162,10 @@ impl zed::Extension for MarkdownPdfExtension {
 
         let settings_schema = include_str!("../configuration/settings_schema.json").to_string();
 
-        let default_settings = include_str!("../configuration/default_settings.json").to_string();
+        // Merge the user's current settings on top of the defaults so that the
+        // "Configure Server" modal reflects the effective configuration, not
+        // just the bare defaults.
+        let default_settings = Self::effective_settings(project);
 
         Ok(Some(ContextServerConfiguration {
             installation_instructions,

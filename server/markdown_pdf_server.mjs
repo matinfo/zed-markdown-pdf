@@ -67,7 +67,7 @@ debugLog(`PATH=${process.env.PATH ?? ""}`);
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SERVER_NAME = "markdown-pdf";
-const SERVER_VERSION = "0.1.2";
+const SERVER_VERSION = "0.1.3";
 const SERVER_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CSS_PATH = path.join(SERVER_DIR, "default.css");
 
@@ -277,6 +277,11 @@ function normalizeSettings(raw) {
     ),
 
     font_family: normalizeNonEmptyString(safe.font_family),
+
+    // Structured header/footer configs – pass through as-is for the
+    // config-merger / html-generator pipeline to consume.
+    header: safe.header && typeof safe.header === "object" ? safe.header : null,
+    footer: safe.footer && typeof safe.footer === "object" ? safe.footer : null,
   };
 }
 
@@ -1264,10 +1269,10 @@ async function exportMarkdownPdf(args) {
           );
         } catch (err) {
           debugLog(`Error generating structured header: ${err.message}`);
-          pdfOptions.headerTemplate = "";
+          pdfOptions.headerTemplate = "<span></span>";
         }
       } else {
-        pdfOptions.headerTemplate = "";
+        pdfOptions.headerTemplate = "<span></span>";
       }
 
       // Generate footer template
@@ -1281,10 +1286,10 @@ async function exportMarkdownPdf(args) {
           );
         } catch (err) {
           debugLog(`Error generating structured footer: ${err.message}`);
-          pdfOptions.footerTemplate = "";
+          pdfOptions.footerTemplate = "<span></span>";
         }
       } else {
-        pdfOptions.footerTemplate = "";
+        pdfOptions.footerTemplate = "<span></span>";
       }
 
       // Log any asset warnings
