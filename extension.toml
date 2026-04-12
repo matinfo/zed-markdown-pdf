@@ -1,6 +1,6 @@
 id = "markdown-pdf"
 name = "Markdown PDF"
-version = "0.1.2"
+version = "0.1.3"
 schema_version = 1
 authors = ["Mat <mat@matinfo.ch>"]
 description = "PDF Markdown export for Zed through an MCP server powered by Playwright"

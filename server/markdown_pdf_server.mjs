@@ -67,7 +67,7 @@ debugLog(`PATH=${process.env.PATH ?? ""}`);
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SERVER_NAME = "markdown-pdf";
-const SERVER_VERSION = "0.1.2";
+const SERVER_VERSION = "0.1.3";
 const SERVER_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CSS_PATH = path.join(SERVER_DIR, "default.css");
 
