@@ -13,7 +13,7 @@ const GITHUB_REPO: &str = "matinfo/zed-markdown-pdf";
 /// Git tag used to identify the server release asset.
 /// Update this constant (and cut a matching GitHub release) whenever the
 /// server script or its bundled CSS changes.
-const SERVER_RELEASE_TAG: &str = "server-v0.1.4";
+const SERVER_RELEASE_TAG: &str = "server-v0.2.0";
 
 /// Name of the `.tar.gz` asset that must be attached to the release.
 /// The archive must contain these files/directories at its root (no subdirectory wrapper):
@@ -22,6 +22,8 @@ const SERVER_RELEASE_TAG: &str = "server-v0.1.4";
 ///   - package.json
 ///   - package-lock.json
 ///   - lib/
+///   - scripts/
+///   - vendor/   (bundled KaTeX CSS with inlined fonts)
 const SERVER_ASSET_NAME: &str = "markdown-pdf-server.tar.gz";
 
 /// Destination directory inside the extension's working directory where the
