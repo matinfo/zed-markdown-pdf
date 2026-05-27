@@ -39,6 +39,14 @@ for f in markdown_pdf_server.mjs default.css package.json; do
   fi
 done
 
+# Bundle KaTeX CSS with inlined fonts (writes server/vendor/katex-inline.css).
+if [[ -d "$SERVER_DIR/node_modules/katex" ]]; then
+  echo "Bundling KaTeX CSS…"
+  node "$SERVER_DIR/scripts/bundle-katex-css.mjs"
+else
+  echo "WARN: katex not installed; skipping vendor/katex-inline.css build" >&2
+fi
+
 mkdir -p "$OUTPUT_DIR"
 
 # ---------------------------------------------------------------------------
@@ -49,11 +57,19 @@ mkdir -p "$OUTPUT_DIR"
 # ---------------------------------------------------------------------------
 ARCHIVE_PATH="$OUTPUT_DIR/$ARCHIVE_NAME"
 
-tar -czf "$ARCHIVE_PATH" \
-  -C "$SERVER_DIR" \
-  markdown_pdf_server.mjs \
-  default.css \
+TAR_ARGS=(
+  -C "$SERVER_DIR"
+  markdown_pdf_server.mjs
+  default.css
   package.json
+)
+
+[[ -f "$SERVER_DIR/package-lock.json" ]] && TAR_ARGS+=(package-lock.json)
+[[ -d "$SERVER_DIR/lib" ]] && TAR_ARGS+=(lib)
+[[ -d "$SERVER_DIR/scripts" ]] && TAR_ARGS+=(scripts)
+[[ -d "$SERVER_DIR/vendor" ]] && TAR_ARGS+=(vendor)
+
+tar -czf "$ARCHIVE_PATH" "${TAR_ARGS[@]}"
 
 echo "Created $ARCHIVE_PATH"
 

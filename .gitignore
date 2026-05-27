@@ -9,6 +9,9 @@ dist/
 server/node_modules/
 docs/node_modules/
 
+# ── Generated KaTeX CSS bundle (built by server/scripts/bundle-katex-css.mjs) ──
+server/vendor/
+
 # ── VitePress build / cache ────────────────────────────────────────────────────
 docs/.vitepress/cache/
 docs/.vitepress/dist/

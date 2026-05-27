@@ -47,6 +47,18 @@ jobs:
           fi
           echo "✅ Tag matches SERVER_RELEASE_TAG in src/lib.rs"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server deps (for KaTeX CSS bundling)
+        run: npm install --prefix server --no-audit --no-fund
+
+      - name: Bundle KaTeX CSS with inlined fonts
+        run: node server/scripts/bundle-katex-css.mjs
+
       - name: Package server archive
         run: |
           cd server
@@ -55,7 +67,9 @@ jobs:
             default.css \
             package.json \
             package-lock.json \
-            lib/
+            lib/ \
+            scripts/ \
+            vendor/
           echo "Archive contents:"
           tar -tzf ../markdown-pdf-server.tar.gz
 
