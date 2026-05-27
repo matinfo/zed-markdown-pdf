@@ -14,14 +14,16 @@ Export Markdown files to high-quality PDFs directly from Zed using Playwright an
 Markdown PDF adds a context server to Zed that lets the AI assistant export Markdown documents to PDF with:
 
 - **Syntax highlighting** for fenced code blocks via highlight.js (80+ themes)
-- **Math rendering** via KaTeX (`$inline$`, `$$display$$`) — fonts inlined, fully self-contained
-- **Table of contents** auto-generated from `[[toc]]` marker with clickable heading anchors
+- **[Math rendering](https://matinfo.github.io/zed-markdown-pdf/guide/math)** via KaTeX (`$inline$`, `$$display$$`) — fonts inlined, fully self-contained
+- **[Table of contents](https://matinfo.github.io/zed-markdown-pdf/guide/toc-and-anchors)** auto-generated from `[[toc]]` marker with clickable heading anchors
 - **Emoji shortcodes** rendered to Unicode via markdown-it-emoji
-- **Structured header/footer** with zones (left, center, right), custom variables, and date formatting
-- **Per-document overrides** via YAML front matter (`pdf:` block)
+- **[Structured header/footer](https://matinfo.github.io/zed-markdown-pdf/guide/header-footer)** with zones (left, center, right), custom variables, and date formatting
+- **[Per-document overrides](https://matinfo.github.io/zed-markdown-pdf/guide/front-matter)** via YAML front matter (`pdf:` block)
 - **Configurable page layout** — format, orientation, scale, margins, page ranges
-- **Custom CSS** support appended after the built-in neutral stylesheet
+- **[Custom CSS](https://matinfo.github.io/zed-markdown-pdf/guide/custom-styling)** support appended after the built-in neutral stylesheet
 - **Automatic setup** — npm dependencies and Chromium install themselves on first use
+
+📖 **Full documentation:** <https://matinfo.github.io/zed-markdown-pdf/> · [Settings reference](https://matinfo.github.io/zed-markdown-pdf/reference/settings) · [Getting started](https://matinfo.github.io/zed-markdown-pdf/guide/getting-started)
 
 ---
 
