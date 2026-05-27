@@ -163,6 +163,76 @@ Render emoji shortcodes (`:smile:` → 😄).
 { "emoji": true }
 ```
 
+### math
+
+Render LaTeX math via KaTeX. Use `$inline$` and `$$display$$` syntax.
+
+| Type | Default |
+|------|---------|
+| `boolean` | `false` |
+
+```json
+{ "math": true }
+```
+
+### math_options
+
+Pass-through options to KaTeX. See [Math (KaTeX)](/guide/math).
+
+| Type | Default |
+|------|---------|
+| `object` | `{ throw_on_error: false, error_color: "#cc0000", macros: {} }` |
+
+```json
+{
+  "math_options": {
+    "throw_on_error": false,
+    "error_color": "#cc0000",
+    "macros": { "\\RR": "\\mathbb{R}" }
+  }
+}
+```
+
+### heading_anchors
+
+Add `id="slug"` attributes to headings. Required infrastructure for in-document
+links; auto-enabled when `toc` is `true`.
+
+| Type | Default |
+|------|---------|
+| `boolean` | `false` |
+
+```json
+{ "heading_anchors": true }
+```
+
+### toc
+
+Render the literal marker `[[toc]]` in your markdown as an auto-generated
+table of contents. Also enables heading anchors.
+
+| Type | Default |
+|------|---------|
+| `boolean` | `false` |
+
+```json
+{ "toc": true }
+```
+
+### toc_options
+
+Heading levels and list type for the table of contents.
+
+| Type | Default |
+|------|---------|
+| `object` | `{ level: [1, 2, 3], list_type: "ul" }` |
+
+```json
+{
+  "toc_options": { "level": [1, 2, 3], "list_type": "ol" }
+}
+```
+
 ## Syntax Highlighting
 
 ### highlight

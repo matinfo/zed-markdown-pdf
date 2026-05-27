@@ -14,6 +14,8 @@ Export Markdown files to high-quality PDFs directly from Zed using Playwright an
 Markdown PDF adds a context server to Zed that lets the AI assistant export Markdown documents to PDF with:
 
 - **Syntax highlighting** for fenced code blocks via highlight.js (80+ themes)
+- **Math rendering** via KaTeX (`$inline$`, `$$display$$`) — fonts inlined, fully self-contained
+- **Table of contents** auto-generated from `[[toc]]` marker with clickable heading anchors
 - **Emoji shortcodes** rendered to Unicode via markdown-it-emoji
 - **Structured header/footer** with zones (left, center, right), custom variables, and date formatting
 - **Per-document overrides** via YAML front matter (`pdf:` block)
@@ -29,6 +31,8 @@ Markdown PDF adds a context server to Zed that lets the AI assistant export Mark
 - Markdown to PDF powered by Playwright / Chromium
 - Neutral, GitHub-style built-in stylesheet (or disable it and bring your own)
 - Syntax highlighting via highlight.js — 80+ themes to choose from
+- Math rendering via KaTeX (`$inline$` and `$$display$$` syntax), with custom macros
+- Auto-generated table of contents from a `[[toc]]` marker; heading anchors for in-document links
 - Emoji `:shortcode:` rendering via markdown-it-emoji
 - Hard line-break mode for poetry or source-formatted text
 - Structured header/footer with zones, typed elements, and custom variables

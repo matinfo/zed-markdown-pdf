@@ -65,6 +65,13 @@ export default defineConfig({
             { text: "Custom Styling", link: "/guide/custom-styling" },
           ],
         },
+        {
+          text: "Content Features",
+          items: [
+            { text: "Math (KaTeX)", link: "/guide/math" },
+            { text: "TOC & Anchors", link: "/guide/toc-and-anchors" },
+          ],
+        },
       ],
       "/reference/": [
         {
