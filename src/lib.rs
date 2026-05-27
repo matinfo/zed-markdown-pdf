@@ -13,7 +13,7 @@ const GITHUB_REPO: &str = "matinfo/zed-markdown-pdf";
 /// Git tag used to identify the server release asset.
 /// Update this constant (and cut a matching GitHub release) whenever the
 /// server script or its bundled CSS changes.
-const SERVER_RELEASE_TAG: &str = "server-v0.1.3";
+const SERVER_RELEASE_TAG: &str = "server-v0.1.4";
 
 /// Name of the `.tar.gz` asset that must be attached to the release.
 /// The archive must contain these files/directories at its root (no subdirectory wrapper):
