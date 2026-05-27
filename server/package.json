@@ -1,23 +1,28 @@
 {
   "name": "zed-markdown-pdf-server",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "MCP server for Markdown to PDF conversion using Playwright",
   "type": "module",
   "private": true,
   "main": "markdown_pdf_server.mjs",
   "scripts": {
     "check": "node --check markdown_pdf_server.mjs",
-    "build": "npm run check",
+    "build": "npm run check && node scripts/bundle-katex-css.mjs",
+    "build:katex-css": "node scripts/bundle-katex-css.mjs",
     "test": "node --test lib/__tests__/*.test.mjs",
     "test:export": "node ../test-fixtures/test-export.mjs",
     "test:all": "npm run test && npm run test:export",
     "install:chromium": "node node_modules/playwright-core/cli.js install chromium"
   },
   "dependencies": {
+    "@vscode/markdown-it-katex": "^1.1.2",
     "date-fns": "^4.1.0",
     "highlight.js": "^11.11.1",
+    "katex": "^0.17.0",
     "markdown-it": "^14.1.1",
+    "markdown-it-anchor": "^9.2.0",
     "markdown-it-emoji": "^3.0.0",
+    "markdown-it-toc-done-right": "^4.2.0",
     "playwright-core": "^1.53.0",
     "yaml": "^2.7.0"
   },

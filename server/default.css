@@ -196,3 +196,35 @@ ol {
 .page {
   page-break-after: always;
 }
+
+/* Auto-generated table of contents (markdown-it-toc-done-right) */
+.markdown-toc {
+  margin: 0 0 2em;
+  page-break-after: always;
+}
+
+.markdown-toc ul,
+.markdown-toc ol {
+  list-style: none;
+  padding-left: 1.25em;
+  margin: 0;
+}
+
+.markdown-toc > ul,
+.markdown-toc > ol {
+  padding-left: 0;
+}
+
+.markdown-toc li {
+  margin: 0.25em 0;
+  line-height: 1.4;
+}
+
+.markdown-toc a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.markdown-toc a:hover {
+  text-decoration: underline;
+}

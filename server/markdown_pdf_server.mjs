@@ -67,7 +67,7 @@ debugLog(`PATH=${process.env.PATH ?? ""}`);
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SERVER_NAME = "markdown-pdf";
-const SERVER_VERSION = "0.1.3";
+const SERVER_VERSION = "0.2.0";
 const SERVER_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CSS_PATH = path.join(SERVER_DIR, "default.css");
 
@@ -91,6 +91,20 @@ const DEFAULT_SETTINGS = {
   highlight_style: "github.css",
   breaks: false,
   emoji: true,
+  // math (KaTeX)
+  math: false,
+  math_options: {
+    throw_on_error: false,
+    error_color: "#cc0000",
+    macros: {},
+  },
+  // headings / TOC
+  heading_anchors: false,
+  toc: false,
+  toc_options: {
+    level: [1, 2, 3],
+    list_type: "ul",
+  },
   // header / footer
   display_header_footer: false,
 };
@@ -232,6 +246,40 @@ function normalizeMargin(raw, fallback = DEFAULT_SETTINGS.margin) {
   };
 }
 
+function normalizeMathOptions(raw, fallback = DEFAULT_SETTINGS.math_options) {
+  const safe = raw && typeof raw === "object" ? raw : {};
+  const macros =
+    safe.macros && typeof safe.macros === "object" && !Array.isArray(safe.macros)
+      ? safe.macros
+      : fallback.macros;
+  return {
+    throw_on_error: normalizeBoolean(safe.throw_on_error, fallback.throw_on_error),
+    error_color:
+      typeof safe.error_color === "string" && safe.error_color.trim() !== ""
+        ? safe.error_color
+        : fallback.error_color,
+    macros,
+  };
+}
+
+function normalizeTocOptions(raw, fallback = DEFAULT_SETTINGS.toc_options) {
+  const safe = raw && typeof raw === "object" ? raw : {};
+  let level = fallback.level;
+  if (Array.isArray(safe.level)) {
+    const filtered = safe.level
+      .map((n) => (typeof n === "number" ? Math.floor(n) : NaN))
+      .filter((n) => Number.isFinite(n) && n >= 1 && n <= 6);
+    if (filtered.length > 0) level = filtered;
+  } else if (typeof safe.level === "number" && safe.level >= 1 && safe.level <= 6) {
+    level = [Math.floor(safe.level)];
+  }
+  const list_type =
+    safe.list_type === "ol" || safe.list_type === "ul"
+      ? safe.list_type
+      : fallback.list_type;
+  return { level, list_type };
+}
+
 function normalizeSettings(raw) {
   const safe = raw && typeof raw === "object" ? raw : {};
   return {
@@ -271,6 +319,14 @@ function normalizeSettings(raw) {
         : DEFAULT_SETTINGS.highlight_style,
     breaks: normalizeBoolean(safe.breaks, DEFAULT_SETTINGS.breaks),
     emoji: normalizeBoolean(safe.emoji, DEFAULT_SETTINGS.emoji),
+    math: normalizeBoolean(safe.math, DEFAULT_SETTINGS.math),
+    math_options: normalizeMathOptions(safe.math_options),
+    heading_anchors: normalizeBoolean(
+      safe.heading_anchors,
+      DEFAULT_SETTINGS.heading_anchors,
+    ),
+    toc: normalizeBoolean(safe.toc, DEFAULT_SETTINGS.toc),
+    toc_options: normalizeTocOptions(safe.toc_options),
     display_header_footer: normalizeBoolean(
       safe.display_header_footer,
       DEFAULT_SETTINGS.display_header_footer,
@@ -371,6 +427,20 @@ function buildEffectiveOptions(args = {}) {
         : settings.highlight_style,
     breaks: typeof args.breaks === "boolean" ? args.breaks : settings.breaks,
     emoji: typeof args.emoji === "boolean" ? args.emoji : settings.emoji,
+    math: typeof args.math === "boolean" ? args.math : settings.math,
+    math_options:
+      args.math_options && typeof args.math_options === "object"
+        ? normalizeMathOptions(args.math_options, settings.math_options)
+        : settings.math_options,
+    heading_anchors:
+      typeof args.heading_anchors === "boolean"
+        ? args.heading_anchors
+        : settings.heading_anchors,
+    toc: typeof args.toc === "boolean" ? args.toc : settings.toc,
+    toc_options:
+      args.toc_options && typeof args.toc_options === "object"
+        ? normalizeTocOptions(args.toc_options, settings.toc_options)
+        : settings.toc_options,
     display_header_footer:
       typeof args.display_header_footer === "boolean"
         ? args.display_header_footer
@@ -402,6 +472,10 @@ async function installDepsIfNeeded() {
     "markdown-it",
     "highlight.js",
     "markdown-it-emoji",
+    "@vscode/markdown-it-katex",
+    "katex",
+    "markdown-it-anchor",
+    "markdown-it-toc-done-right",
     "yaml",
     "date-fns",
   ];
@@ -512,6 +586,49 @@ async function getHljs() {
   return hljs_module;
 }
 
+let katexPlugin = null;
+async function getKatexPlugin() {
+  if (!katexPlugin) {
+    await ensureDependencies();
+    const mod = await import("@vscode/markdown-it-katex");
+    // The CJS->ESM bridge nests the plugin under .default.default
+    let plugin = mod.default ?? mod;
+    if (typeof plugin !== "function" && typeof plugin?.default === "function") {
+      plugin = plugin.default;
+    }
+    katexPlugin = plugin;
+  }
+  return katexPlugin;
+}
+
+let anchorPlugin = null;
+async function getAnchorPlugin() {
+  if (!anchorPlugin) {
+    await ensureDependencies();
+    const mod = await import("markdown-it-anchor");
+    anchorPlugin = mod.default ?? mod;
+  }
+  return anchorPlugin;
+}
+
+let tocPlugin = null;
+async function getTocPlugin() {
+  if (!tocPlugin) {
+    await ensureDependencies();
+    const mod = await import("markdown-it-toc-done-right");
+    tocPlugin = mod.default ?? mod;
+  }
+  return tocPlugin;
+}
+
+function ghSlugify(str) {
+  return String(str)
+    .trim()
+    .toLowerCase()
+    .replace(/[^\w\sÀ-￿-]/g, "")
+    .replace(/\s+/g, "-");
+}
+
 let emojiPlugin = null;
 async function getEmojiPlugin() {
   if (!emojiPlugin) {
@@ -565,6 +682,48 @@ async function createMarkdown(options) {
       md.use(emoji);
     } catch {
       debugLog("markdown-it-emoji not available, skipping emoji support");
+    }
+  }
+
+  if (options.math) {
+    try {
+      const katex = await getKatexPlugin();
+      md.use(katex, {
+        throwOnError: options.math_options.throw_on_error,
+        errorColor: options.math_options.error_color,
+        macros: options.math_options.macros,
+      });
+    } catch (error) {
+      debugLog(
+        `KaTeX plugin not available: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  if (options.heading_anchors || options.toc) {
+    try {
+      const anchor = await getAnchorPlugin();
+      md.use(anchor, { permalink: false, slugify: ghSlugify });
+    } catch (error) {
+      debugLog(
+        `markdown-it-anchor not available: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  if (options.toc) {
+    try {
+      const toc = await getTocPlugin();
+      md.use(toc, {
+        level: options.toc_options.level,
+        listType: options.toc_options.list_type,
+        containerClass: "markdown-toc",
+        slugify: ghSlugify,
+      });
+    } catch (error) {
+      debugLog(
+        `markdown-it-toc-done-right not available: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -941,6 +1100,60 @@ async function handleMessage(message) {
                   description:
                     "Render :emoji: shortcodes as Unicode characters.",
                 },
+                math: {
+                  type: "boolean",
+                  description:
+                    "Render LaTeX math via KaTeX. Use $inline$ and $$display$$ syntax.",
+                },
+                math_options: {
+                  type: "object",
+                  additionalProperties: false,
+                  description: "KaTeX rendering options.",
+                  properties: {
+                    throw_on_error: {
+                      type: "boolean",
+                      description:
+                        "If true, abort rendering on a LaTeX error. Default false (renders error inline).",
+                    },
+                    error_color: {
+                      type: "string",
+                      description: "CSS color used for inline error messages.",
+                    },
+                    macros: {
+                      type: "object",
+                      additionalProperties: { type: "string" },
+                      description:
+                        'User-defined LaTeX macros, e.g. {"\\\\RR": "\\\\mathbb{R}"}.',
+                    },
+                  },
+                },
+                heading_anchors: {
+                  type: "boolean",
+                  description:
+                    "Add id slugs to headings (required infrastructure for TOC links).",
+                },
+                toc: {
+                  type: "boolean",
+                  description:
+                    "Render a [[toc]] marker as an auto-generated table of contents (also enables heading anchors).",
+                },
+                toc_options: {
+                  type: "object",
+                  additionalProperties: false,
+                  description: "Table-of-contents rendering options.",
+                  properties: {
+                    level: {
+                      type: "array",
+                      items: { type: "number" },
+                      description: "Heading levels to include, e.g. [1, 2, 3].",
+                    },
+                    list_type: {
+                      type: "string",
+                      enum: ["ul", "ol"],
+                      description: "List type for the TOC.",
+                    },
+                  },
+                },
                 display_header_footer: {
                   type: "boolean",
                   default: false,
@@ -1180,6 +1393,13 @@ async function exportMarkdownPdf(args) {
     highlight_style: mergedConfig.highlight_style ?? options.highlight_style,
     breaks: mergedConfig.breaks ?? options.breaks,
     emoji: mergedConfig.emoji ?? options.emoji,
+    math: mergedConfig.math ?? options.math,
+    math_options:
+      mergedConfig.math_options ?? options.math_options,
+    heading_anchors:
+      mergedConfig.heading_anchors ?? options.heading_anchors,
+    toc: mergedConfig.toc ?? options.toc,
+    toc_options: mergedConfig.toc_options ?? options.toc_options,
     display_header_footer:
       hasHeaderFooter ||
       mergedConfig.display_header_footer ||
@@ -1393,6 +1613,22 @@ async function renderMarkdownToHtmlWithBody(inputPath, body, title, options) {
   // Font family override (after default CSS so it wins over the root stack)
   if (options.font_family) {
     styleBlocks += `<style>:root { font-family: ${options.font_family}; }</style>\n    `;
+  }
+
+  // KaTeX stylesheet (with inlined fonts when bundled, else read from node_modules)
+  if (options.math) {
+    try {
+      const vendorCss = path.join(SERVER_DIR, "vendor", "katex-inline.css");
+      const katexCssPath = (await fileExists(vendorCss))
+        ? vendorCss
+        : path.join(SERVER_DIR, "node_modules", "katex", "dist", "katex.min.css");
+      const katexCss = await fs.readFile(katexCssPath, "utf8");
+      styleBlocks += `<style>${katexCss}</style>\n    `;
+    } catch (error) {
+      debugLog(
+        `Could not load KaTeX CSS: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   }
 
   // Highlight.js stylesheet
