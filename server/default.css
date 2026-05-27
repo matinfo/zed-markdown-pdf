@@ -128,7 +128,9 @@ pre:not(.hljs) {
   background: #f6f8fa;
   border-radius: 6px;
   padding: 1rem;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 pre:not(.hljs) code {
@@ -142,7 +144,9 @@ pre.hljs {
   background: #f6f8fa;
   border-radius: 6px;
   padding: 1rem;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 pre.hljs code {
@@ -151,6 +155,7 @@ pre.hljs code {
   font-size: 100%;
   border-radius: 0;
 }
+
 
 table {
   border-collapse: collapse;
