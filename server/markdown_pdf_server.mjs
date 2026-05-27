@@ -1206,10 +1206,21 @@ async function exportMarkdownPdf(args) {
   try {
     const page = await browser.newPage();
 
-    await page.goto(
-      `data:text/html;charset=utf-8,${encodeURIComponent(html)}`,
-      { waitUntil: "networkidle" },
-    );
+    // Write HTML to a uniquely-named temp file so parallel exports don't collide
+    const { randomUUID } = await import('node:crypto');
+    const tempHtmlPath = path.join(path.dirname(inputPath), `.${randomUUID()}.temp_render.html`);
+    await fs.writeFile(tempHtmlPath, html, 'utf8');
+
+    try {
+      const tempUrl = pathToFileURL(tempHtmlPath).href;
+      await page.goto(tempUrl, { waitUntil: "networkidle" });
+    } finally {
+      try {
+        await fs.unlink(tempHtmlPath);
+      } catch {
+        // ignore cleanup errors
+      }
+    }
 
     const pdfOptions = {
       path: outputPath,

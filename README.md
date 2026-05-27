@@ -112,6 +112,7 @@ You can also open any Markdown file and describe what you want to the assistant:
 | `Export this file to PDF` | Generates a PDF next to the source file |
 | `Export to build/report.pdf with monokai theme` | Custom output path + highlight theme |
 | `Export in landscape A4 with header and footer` | Orientation + header/footer enabled |
+| `Run export_markdown_pdf for file <path>` | Exports the specified Markdown file to PDF |
 | `Run doctor_markdown_pdf` | Shows Chromium status and active settings |
 
 ### MCP tools
