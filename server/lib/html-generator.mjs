@@ -629,30 +629,23 @@ export function generateHtml(options) {
   // Build the final HTML
   const containerStyleStr = stylesToString(containerStyles);
 
-  // If center exists, we need a different layout strategy
-  // Left takes natural width, center is flexible and centered, right takes natural width
+  // If center exists, anchor it to the true page midpoint via absolute
+  // positioning so left/right content width never shifts the center.
   if (centerHtml) {
-    // Three-column layout with center taking remaining space
+    const containerStyleStrAbs = stylesToString({
+      ...containerStyles,
+      position: "relative",
+    });
     const leftWrapperStyle = "flex-shrink:0;min-width:0;";
-    const centerWrapperStyle = "flex:1;display:flex;justify-content:center;min-width:0;";
-    const rightWrapperStyle = "flex-shrink:0;min-width:0;";
+    const rightWrapperStyle = "flex-shrink:0;min-width:0;margin-left:auto;";
+    const centerWrapperStyle =
+      "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);" +
+      "display:flex;align-items:center;justify-content:center;";
 
-    let html = `<div style="${escapeHtml(containerStyleStr)}">`;
-
-    if (leftHtml) {
-      html += `<div style="${leftWrapperStyle}">${leftHtml}</div>`;
-    } else {
-      html += `<div style="${leftWrapperStyle}"></div>`;
-    }
-
+    let html = `<div style="${escapeHtml(containerStyleStrAbs)}">`;
+    html += `<div style="${leftWrapperStyle}">${leftHtml || ""}</div>`;
     html += `<div style="${centerWrapperStyle}">${centerHtml}</div>`;
-
-    if (rightHtml) {
-      html += `<div style="${rightWrapperStyle}">${rightHtml}</div>`;
-    } else {
-      html += `<div style="${rightWrapperStyle}"></div>`;
-    }
-
+    html += `<div style="${rightWrapperStyle}">${rightHtml || ""}</div>`;
     html += "</div>";
     return html;
   }

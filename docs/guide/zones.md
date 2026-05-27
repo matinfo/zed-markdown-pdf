@@ -6,14 +6,18 @@ The structured header/footer system uses a **three-zone layout**: left, center, 
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  LEFT          │       CENTER       │          RIGHT   │
-│  (flex-shrink) │    (flex: 1)       │   (flex-shrink)  │
+│  LEFT                  CENTER                  RIGHT    │
+│  (flows left)    (anchored to page midpoint)  (flows right) │
 └─────────────────────────────────────────────────────────┘
 ```
 
 - **Left zone** — Shrinks to fit content, aligned left
-- **Center zone** — Expands to fill available space, content centered
+- **Center zone** — Anchored to the true page midpoint (independent of left/right widths)
 - **Right zone** — Shrinks to fit content, aligned right
+
+::: tip
+The center zone is positioned absolutely at 50% of the page width, so page numbers and titles stay perfectly centered regardless of how wide the left or right content is. If left/right content is long enough to reach the center, visual overlap can occur — keep them short or move content to a different zone.
+:::
 
 ## Basic Example
 
